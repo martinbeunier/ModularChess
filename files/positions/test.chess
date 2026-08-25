@@ -1,0 +1,79 @@
+Width : 10 Height: 10
+
+Tiles promotion colours :
+promotion colours of tile : 0 0 White
+promotion colours of tile : 1 0 White
+promotion colours of tile : 2 0 White
+promotion colours of tile : 3 0 White
+promotion colours of tile : 4 0 White
+promotion colours of tile : 5 0 White
+promotion colours of tile : 6 0 White
+promotion colours of tile : 7 0 White
+promotion colours of tile : 8 0 White
+promotion colours of tile : 9 0 White
+promotion colours of tile : 0 9 Black
+promotion colours of tile : 1 9 Black
+promotion colours of tile : 2 9 Black
+promotion colours of tile : 3 9 Black
+promotion colours of tile : 4 9 Black
+promotion colours of tile : 5 9 Black
+promotion colours of tile : 6 9 Black
+promotion colours of tile : 7 9 Black
+promotion colours of tile : 8 9 Black
+promotion colours of tile : 9 9 Black
+
+Tiles water :
+
+Pieces :
+piece : class pieces.Rook ;Black Rook; 0 0 Black true 500
+piece : class pieces.Knight ;Black Knight; 1 0 Black true 300
+piece : class pieces.Bishop ;Black Bishop; 2 0 Black true 320
+piece : class pieces.Fighter ;Black Fighter; 3 0 Black true 0 2
+piece : class pieces.Queen ;Black Queen; 4 0 Black true 900
+piece : class pieces.King ;bKing; 5 0 Black true 10000
+piece : class pieces.Fighter ;Black Fighter; 6 0 Black true 0 2
+piece : class pieces.Bishop ;Black Bishop; 7 0 Black true 320
+piece : class pieces.Knight ;Black Knight; 8 0 Black true 300
+piece : class pieces.Rook ;Black Rook; 9 0 Black true 500
+piece : class pieces.ArciBishop ;Black ArciBishop; 0 1 Black true 700
+piece : class pieces.LandCarrier ;B Land Carrie; 1 1 Black true 0
+piece : class pieces.LinebreakerRook ;bLBRook; 2 1 Black true 500
+piece : class pieces.Airplane ;bAirplane; 3 1 Black true 0 2
+piece : class pieces.Airplane ;bAirplane; 4 1 Black true 0 2
+piece : class pieces.Airplane ;bAirplane; 5 1 Black true 0 2
+piece : class pieces.Airplane ;bAirplane; 6 1 Black true 0 2
+piece : class pieces.Pawn ;bPawn; 7 1 Black true 100 2
+piece : class pieces.Pawn ;bPawn; 8 1 Black true 100 2
+piece : class pieces.Pawn ;bPawn; 9 1 Black true 100 2
+piece : class pieces.Pawn ;bPawn; 0 2 Black true 100 2
+piece : class pieces.Pawn ;bPawn; 1 2 Black true 100 2
+piece : class pieces.Pawn ;bPawn; 2 2 Black true 100 2
+piece : class pieces.Pawn ;wPawn; 0 7 White true 100 0
+piece : class pieces.Pawn ;wPawn; 1 7 White true 100 0
+piece : class pieces.Pawn ;wPawn; 2 7 White true 100 0
+piece : class pieces.ArciBishop ;Black ArciBishop; 0 8 White true 700
+piece : class pieces.LandCarrier ;W Land Carrie; 1 8 White true 0
+piece : class pieces.LinebreakerRook ;wLBRook; 2 8 White true 500
+piece : class pieces.Airplane ;wAirplane; 3 8 White true 0 0
+piece : class pieces.Airplane ;wAirplane; 4 8 White true 0 0
+piece : class pieces.Airplane ;wAirplane; 5 8 White true 0 0
+piece : class pieces.Airplane ;wAirplane; 6 8 White true 0 0
+piece : class pieces.Pawn ;wPawn; 7 8 White true 100 0
+piece : class pieces.Pawn ;wPawn; 8 8 White true 100 0
+piece : class pieces.Pawn ;wPawn; 9 8 White true 100 0
+piece : class pieces.Rook ;White Rook; 0 9 White true 500
+piece : class pieces.Knight ;White Knight; 1 9 White true 300
+piece : class pieces.Bishop ;White Bishop; 2 9 White true 320
+piece : class pieces.Fighter ;White Fighter; 3 9 White true 0 0
+piece : class pieces.Queen ;White Queen; 4 9 White true 900
+piece : class pieces.King ;wKing; 5 9 White true 10000
+piece : class pieces.Fighter ;White Fighter; 6 9 White true 0 0
+piece : class pieces.Bishop ;White Bishop; 7 9 White true 320
+piece : class pieces.Knight ;White Knight; 8 9 White true 300
+piece : class pieces.Rook ;White Rook; 9 9 White true 500
+
+Players :
+Player :  ;Bílý; White 600 PowerUps :
+Player :  ;Černý; Black 600 PowerUps :
+
+current player : White

@@ -1,0 +1,93 @@
+Width : 9 Height: 9
+
+Tiles promotion colours :
+promotion colours of tile : 0 0 White
+promotion colours of tile : 1 0 White
+promotion colours of tile : 2 0 White
+promotion colours of tile : 3 0 White
+promotion colours of tile : 4 0 White
+promotion colours of tile : 5 0 White
+promotion colours of tile : 6 0 White
+promotion colours of tile : 7 0 White
+promotion colours of tile : 8 0 White
+promotion colours of tile : 0 8 Black
+promotion colours of tile : 1 8 Black
+promotion colours of tile : 2 8 Black
+promotion colours of tile : 3 8 Black
+promotion colours of tile : 4 8 Black
+promotion colours of tile : 5 8 Black
+promotion colours of tile : 6 8 Black
+promotion colours of tile : 7 8 Black
+promotion colours of tile : 8 8 Black
+
+Tiles water :
+water : 0 3
+water : 1 3
+water : 2 3
+water : 3 3
+water : 4 3
+water : 5 3
+water : 6 3
+water : 7 3
+water : 8 3
+water : 0 4
+water : 1 4
+water : 2 4
+water : 3 4
+water : 4 4
+water : 5 4
+water : 6 4
+water : 7 4
+water : 8 4
+water : 0 5
+water : 1 5
+water : 2 5
+water : 3 5
+water : 4 5
+water : 5 5
+water : 6 5
+water : 7 5
+water : 8 5
+
+Pieces :
+piece : class pieces.Bishop ;Black Bishop; 1 0 Black true 320
+piece : class pieces.Bishop ;Black Bishop; 2 0 Black true 320
+piece : class pieces.King ;Black king; 4 0 Black true 10000
+piece : class pieces.Bishop ;Black Bishop; 6 0 Black true 320
+piece : class pieces.Bishop ;Black Bishop; 7 0 Black true 320
+piece : class pieces.LandCarrier ;b Land Carrier; 1 1 Black true 450
+piece : class pieces.Queen ;White Queen; 4 1 Black true 900
+piece : class pieces.LandCarrier ;b Land Carrier; 7 1 Black true 450
+piece : class pieces.Pawn ;Black Pawn; 0 2 Black true 100 2
+piece : class pieces.Pawn ;Black Pawn; 1 2 Black true 100 2
+piece : class pieces.Pawn ;Black Pawn; 2 2 Black true 100 2
+piece : class pieces.Pawn ;Black Pawn; 3 2 Black true 100 2
+piece : class pieces.Pawn ;Black Pawn; 4 2 Black true 100 2
+piece : class pieces.Pawn ;Black Pawn; 5 2 Black true 100 2
+piece : class pieces.Pawn ;Black Pawn; 6 2 Black true 100 2
+piece : class pieces.Pawn ;Black Pawn; 7 2 Black true 100 2
+piece : class pieces.Pawn ;Black Pawn; 8 2 Black true 100 2
+piece : class pieces.PoweUps.Lifebuoy ;ability; 4 4 Neutral true 0
+piece : class pieces.Pawn ;White Pawn; 0 6 White true 100 0
+piece : class pieces.Pawn ;White Pawn; 1 6 White true 100 0
+piece : class pieces.Pawn ;White Pawn; 2 6 White true 100 0
+piece : class pieces.Pawn ;White Pawn; 3 6 White true 100 0
+piece : class pieces.Pawn ;White Pawn; 4 6 White true 100 0
+piece : class pieces.Pawn ;White Pawn; 5 6 White true 100 0
+piece : class pieces.Pawn ;White Pawn; 6 6 White true 100 0
+piece : class pieces.Pawn ;White Pawn; 7 6 White true 100 0
+piece : class pieces.Pawn ;White Pawn; 8 6 White true 100 0
+piece : class pieces.LandCarrier ;w Land Carrier; 1 7 White true 450
+piece : class pieces.Queen ;White Queen; 4 7 White true 900
+piece : class pieces.LandCarrier ;w Land Carrier; 7 7 White true 450
+piece : class pieces.Bishop ;White Bishop; 1 8 White true 320
+piece : class pieces.Bishop ;White Bishop; 2 8 White true 320
+piece : class pieces.King ;White king; 4 8 White true 10000
+piece : class pieces.Bishop ;White Bishop; 6 8 White true 320
+piece : class pieces.Bishop ;White Bishop; 7 8 White true 320
+
+Players :
+Player :  ;Bílý; White 600 PowerUps :
+Player :  ;Černý; Black 600 PowerUps :
+
+current player : White
