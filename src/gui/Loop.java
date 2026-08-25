@@ -51,8 +51,10 @@ public class Loop extends JPanel {
     private int lastMoveToY = -1;
 
     private Image currentPreviewImage;
-    private Image defaultNoPieceImage;  // Obrázek, když je pole prázdné
-    private Image defaultUnknownPieceImage; // Obrázek pro neznámou/nedefinovanou figuru
+    private Image defaultNoPieceImage = safeLoadImage("files\\images\\icon.png");
+    private Image defaultUnknownPieceImage =safeLoadImage("files\\images\\icon.pngl");
+
+
 
     public Loop(MainFrame frame) {
         this.frame = frame;
@@ -63,6 +65,7 @@ public class Loop extends JPanel {
         // ------------------------------------------------------------
         int w = frame.getWidth();
         int h = frame.getHeight();
+
 
         rotateLeftButton = new JButton("\u21BA Doleva");
         rotateRightButton = new JButton("\u21BB Doprava");
@@ -85,6 +88,8 @@ public class Loop extends JPanel {
         add(rotateRightButton);
         add(rotateAroundButton);
 
+
+
         // ------------------------------------------------------------
         // Myš — pohyb figurek (drag & drop i click & click)
         // ------------------------------------------------------------
@@ -101,6 +106,7 @@ public class Loop extends JPanel {
 
                 int gridX = (int) Math.floor((double) (e.getX() - offsetX) / tileSize);
                 int gridY = (int) Math.floor((double) (e.getY() - offsetY) / tileSize);
+
 
                 // Kontrola kliknutí mimo šachovnici
                 if (gridX < 0 || gridX >= board.getWidth() || gridY < 0 || gridY >= board.getHeight()) {
@@ -184,8 +190,12 @@ public class Loop extends JPanel {
                 }
             }
 
-
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                updateHoverPreview(e.getX(), e.getY());
+            }
         };
+
 
         addMouseListener(inputHandler);
         addMouseMotionListener(inputHandler);
@@ -226,6 +236,14 @@ public class Loop extends JPanel {
         }
 
         repaint();
+    }
+    private Image safeLoadImage(String path) {
+        java.io.File file = new java.io.File(path);
+        if (!file.exists()) {
+            System.err.println("Obrázek nenalezen: " + file.getAbsolutePath());
+            return null;
+        }
+        return new ImageIcon(path).getImage();
     }
 
     private Image loadPreviewForPiece(Piece piece) {
@@ -857,6 +875,10 @@ playSound = true;
             int textXRight = offsetX + (cols * tileSize) + 8;
             g2d.drawString(label, textXRight, textY);
         }
+
+
+
+
         if (currentPreviewImage != null) {
             int cardWidth = UI.toPercent(15, getWidth());
             int cardHeight = UI.toPercent(30, getHeight());
@@ -867,6 +889,7 @@ playSound = true;
 
             g2d.drawImage(currentPreviewImage, cardX, cardY, cardWidth, cardHeight, this);
         }
+
     }
 
     private void drawPieceAt(Graphics2D g2d, Piece piece, int posX, int posY, int tileSize) {
