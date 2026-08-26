@@ -230,7 +230,7 @@ public class ChessBoard {
     }
 
      public boolean saveGameHistorySnapshot(String gameHistoryFilePath,Player currentPlayer,int movesWithoutCapture){
-         System.out.println(gameHistoryFilePath);
+         //System.out.println(gameHistoryFilePath);
 
          try {
              File myObj = new File(gameHistoryFilePath);
@@ -245,8 +245,13 @@ public class ChessBoard {
          }
 
          try {
-             FileWriter myWriter = new FileWriter(gameHistoryFilePath);
+             FileWriter myWriter = new FileWriter(gameHistoryFilePath, true);
              StringBuilder sb = new StringBuilder();
+
+             sb.append("\n========================================\n");
+             sb.append("GAME HISTORY SNAPSHOT\n");
+             sb.append("========================================\n");
+
 
              if (DebugConfiguration.savePosition) System.out.println("\nWidth : " + board.length + " Height: " + board[0].length);
              sb.append("Width : ").append(board.length).append(" Height: ").append(board[0].length).append("\n");
