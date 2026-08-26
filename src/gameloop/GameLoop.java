@@ -30,10 +30,19 @@ public class GameLoop {
 
     private boolean lastMoveCausedDrowning = false;
     /** Inicializuje šachovnici a hráče — buď ze savu, nebo od nuly. Bez vstupu, bez smyčky. */
+    private int movesWithoutCapture = 0;
+    private boolean drawByRepetition = false;
+    private boolean drawByNoCapture = false;
+
+    private static final int NO_CAPTURE_MOVE_LIMIT = 70;
+
+    private String gameHistoryFilePath; // uloží se JEDNOU, na začátku, pak se pořád jen přepisuje stejný soubor
+    private String mapName;             // potřebujeme si zapamatovat název mapy pro název souboru
 
 
     public void initGame(String fileName) {
         ArrayList<Player> loadedPlayers = new ArrayList<>();
+        this.mapName = fileName;
 
         if (new File("files\\positions\\" + fileName + ".chess").exists()) {
             this.chessBoard = ChessBoard.loadPosition(fileName, loadedPlayers);
@@ -117,32 +126,64 @@ public class GameLoop {
 
     /** Klasický tah (4 souřadnice). Vrací true, pokud se povedl, a přepne hráče. */
     public boolean tryMove(int startX, int startY, int endX, int endY) {
+        int piecesBefore = chessBoard.getPieces().size();
         boolean moved = chessBoard.movePiece(startX, startY, endX, endY, currentPlayer);
         if (moved) {
-            lastMoveCausedDrowning = chessBoard.waterInterAction();
-            switchPlayer++;
-            currentPlayer = players.get(switchPlayer % players.size());
+            applyPostMoveRules(piecesBefore);
+
         }
         return moved;
     }
 
     /** Tah s rotací (3 parametry) — podle původní logiky. */
     public boolean tryMove(int startX, int startY, int rotate) {
+        int piecesBefore = chessBoard.getPieces().size();
         boolean moved = chessBoard.movePiece(startX, startY, rotate, currentPlayer);
         if (moved) {
-            lastMoveCausedDrowning = chessBoard.waterInterAction();
-            switchPlayer++;
-            currentPlayer = players.get(switchPlayer % players.size());
+            applyPostMoveRules(piecesBefore);
+
         }
         return moved;
     }
+
+    private void applyPostMoveRules(int piecesBefore) {
+        int piecesAfter = chessBoard.getPieces().size();
+        boolean captured = piecesAfter < piecesBefore;
+
+        lastMoveCausedDrowning = chessBoard.waterInterAction();
+
+        // Utopení pěšce se počítá stejně jako braní — deska se "vyprázdnila",
+        // takže nejde o "mrtvý" tah bez pokroku.
+        if (captured || lastMoveCausedDrowning) {
+            movesWithoutCapture = 0;
+        } else {
+            movesWithoutCapture++;
+        }
+
+        drawByNoCapture = movesWithoutCapture >= NO_CAPTURE_MOVE_LIMIT;
+
+        switchPlayer++;
+        currentPlayer = players.get(switchPlayer % players.size());
+
+        drawByRepetition = chessBoard.recordPositionAndCheckRepetition(currentPlayer.getColor());
+    }
+
 
     public boolean didLastMoveCauseDrowning() {
         return lastMoveCausedDrowning;
     }
 
+    public boolean isDrawByRepetition() {
+        return drawByRepetition;
+    }
+
+    public boolean isDrawByNoCapture() {
+        return drawByNoCapture;
+    }
+
+
     public boolean isGameOver() {
-        return chessBoard.countHeads() <= 1;
+        return chessBoard.countHeads() <= 1 || drawByRepetition || drawByNoCapture;
     }
 
     public ChessBoard getChessBoard() { return chessBoard; }
@@ -178,6 +219,30 @@ public class GameLoop {
 
             if (isGameOver()) break;
         }
+    }
+    public boolean saveGame() {
+        // Cestu spočítáme jen POPRVÉ — při dalších voláních (po každém tahu)
+        // se použije ta samá, uložená cesta, takže se pořád píše do STEJNÉHO souboru.
+        if (gameHistoryFilePath == null) {
+            gameHistoryFilePath = buildGameHistoryFilePath();
+        }
+
+        chessBoard.saveGameHistorySnapshot(gameHistoryFilePath, currentPlayer, movesWithoutCapture);
+        return true;
+    }
+
+    private String buildGameHistoryFilePath() {
+        File historyDir = new File("files\\gameHistory");
+
+        // Složka na začátku hry možná ještě neexistuje
+        if (!historyDir.exists()) {
+            historyDir.mkdirs();
+        }
+
+        File[] existingFiles = historyDir.listFiles();
+        int count = (existingFiles != null) ? existingFiles.length : 0;
+
+        return "files\\gameHistory\\" + count + "_" + mapName + ".chess";
     }
 
 

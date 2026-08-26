@@ -175,9 +175,6 @@ public class Main/*extends Application */{
 
 /*TODO
 
-0.
-obrázek pohybu po najetí na figuru
-souřadnice na gui mapě
 1.
 pravidlo 3* stejná pozice = remíza //bonus save hry
 pravidlo po 70 tazích bez sežrání = remíza

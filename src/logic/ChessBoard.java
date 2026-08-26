@@ -8,6 +8,7 @@ import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 
@@ -22,6 +23,8 @@ public class ChessBoard {
     private ArrayList<Player> players;
     private PromotionChooser promotionChooser = null;
 
+    private HashMap<String, Integer> positionCounts = new HashMap<>();
+
     //region capsulation
 
     public int getWidth() {
@@ -35,7 +38,23 @@ public class ChessBoard {
         if (!inBoard(x, y, x, y)) return null;
         return board[x][y];
     }
-
+    public ArrayList<Piece> getPieces() {
+        // Pokud ještě nemáte samostatný seznam figurek,
+        // můžete ho vygenerovat z pole board[][]:
+        ArrayList<Piece> piecesList = new ArrayList<>();
+        if (board != null) {
+            for (int r = 0; r < board.length; r++) {
+                for (int c = 0; c < board[r].length; c++) {
+                    Piece p = board[r][c];
+                    // Přidáme jen pokud figurka není null a neobsahuje duplicity u více-políčkových figurek
+                    if (p != null && !piecesList.contains(p)) {
+                        piecesList.add(p);
+                    }
+                }
+            }
+        }
+        return piecesList;
+    }
 
     public Tile[][] getTiles() {
         return tiles;
@@ -171,7 +190,141 @@ public class ChessBoard {
 
         return (count == 1) ? found : null;
     }
+    public String getPositionSignature(Colour toMove) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(toMove).append("|");
 
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board[x].length; y++) {
+                Piece p = board[x][y];
+
+                if (p == null) {
+                    sb.append(".");
+                } else {
+                    sb.append(p.getClass().getSimpleName())
+                            .append(p.getColour());
+
+                    if (p instanceof OrientedPiece) {
+                        sb.append("r").append(((OrientedPiece) p).getRotation());
+                    }
+                }
+                sb.append(";");
+            }
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Zaznamená aktuální pozici (zvýší její počítadlo v HashMapě) a vrátí true,
+     * pokud se tahle PŘESNĚ STEJNÁ pozice (včetně toho, kdo je na tahu)
+     * objevila už potřetí. O(1) místo procházení celé historie.
+     */
+    public boolean recordPositionAndCheckRepetition(Colour toMove) {
+        String signature = getPositionSignature(toMove);
+
+        int newCount = positionCounts.getOrDefault(signature, 0) + 1;
+        positionCounts.put(signature, newCount);
+
+        return newCount >= 3;
+    }
+
+     public boolean saveGameHistorySnapshot(String gameHistoryFilePath,Player currentPlayer,int movesWithoutCapture){
+         System.out.println(gameHistoryFilePath);
+
+         try {
+             File myObj = new File(gameHistoryFilePath);
+             if (myObj.createNewFile()) {
+                 System.out.println("File created: " + myObj.getName());
+             } else {
+                 System.out.println("File already exists.");
+             }
+         } catch (IOException e) {
+             System.out.println("An error occurred.");
+             e.printStackTrace();
+         }
+
+         try {
+             FileWriter myWriter = new FileWriter(gameHistoryFilePath);
+             StringBuilder sb = new StringBuilder();
+
+             if (DebugConfiguration.savePosition) System.out.println("\nWidth : " + board.length + " Height: " + board[0].length);
+             sb.append("Width : ").append(board.length).append(" Height: ").append(board[0].length).append("\n");
+
+             if (DebugConfiguration.savePosition) System.out.println("\nTiles promotion colours :");
+             sb.append("\nTiles promotion colours :\n");
+             for (int j = 0; j < tiles.length; j++) {
+                 for (int i = 0; i < tiles[j].length; i++) {
+                     if (!tiles[i][j].getPromotionColours().isEmpty()) {
+                         if (DebugConfiguration.savePosition) System.out.print("promotion colours of tile : " + i + " " + j);
+                         sb.append("promotion colours of tile : ").append(i).append(" ").append(j);
+
+                         for (Colour colour : tiles[i][j].getPromotionColours()) {
+                             if (DebugConfiguration.savePosition) System.out.print(" " + colour.name());
+                             sb.append(" ").append(colour.name());
+                         }
+                         if (DebugConfiguration.savePosition) System.out.println();
+                         sb.append("\n");
+                     }
+                 }
+             }
+
+             if (DebugConfiguration.savePosition) System.out.println("\nTiles water :");
+             sb.append("\nTiles water :\n");
+             for (int j = 0; j < tiles.length; j++) {
+                 for (int i = 0; i < tiles[j].length; i++) {
+                     if (tiles[i][j].getWater()) {
+                         if (DebugConfiguration.savePosition) System.out.println("water : " + i + " " + j + "  ");
+                         sb.append("water : ").append(i).append(" ").append(j).append("\n");
+                     }
+                 }
+             }
+
+             if (enPassantTarget != null) {
+                 if (DebugConfiguration.savePosition) System.out.println("\nenPassant : " + enPassantTarget[0] + " " + enPassantTarget[1]);
+                 sb.append("\nenPassant : ").append(enPassantTarget[0]).append(" ").append(enPassantTarget[1]).append("\n");
+             }
+
+             if (DebugConfiguration.savePosition) System.out.println("\nPieces :");
+             sb.append("\nPieces :\n");
+             for (int j = 0; j < board.length; j++) {
+                 for (int i = 0; i < board[j].length; i++) {
+                     if (board[i][j] != null) {
+                         String pieceStr = "piece : "+board[i][j].getClass() +" "+ board[i][j].myToString2();
+                         if (board[i][j] instanceof OrientedPiece) {
+                             pieceStr += " " + ((OrientedPiece) board[i][j]).getRotation();
+                         }
+                         if (DebugConfiguration.savePosition) System.out.println(pieceStr);
+                         sb.append(pieceStr).append("\n");
+                     }
+                 }
+             }
+
+             if (DebugConfiguration.savePosition) System.out.println("\nPlayers :");
+             sb.append("\nPlayers :\n");
+             for (Player player : players) {
+                 String playerStr = player.myToString() + " PowerUps :";
+                 for (PowerUpName powerUp : player.getPowerUps()) {
+                     playerStr += " " + powerUp.name();
+                 }
+                 if (DebugConfiguration.savePosition) System.out.println(playerStr);
+                 sb.append(playerStr).append("\n");
+             }
+
+             String currentStr = "\ncurrent player : " + currentPlayer.getColor();
+             if (DebugConfiguration.savePosition) System.out.println(currentStr);
+             sb.append(currentStr).append("\n");
+
+             myWriter.write(sb.toString());
+             myWriter.close();
+             System.out.println("\nSuccessfully wrote to the file.");
+         } catch (IOException e) {
+             System.out.println("An error occurred.");
+             e.printStackTrace();
+         }
+
+        return true;
+     }
 
 
     //  Vrátí všechny možné surové tahy na desce bez kontextu podmínek

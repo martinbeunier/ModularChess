@@ -175,6 +175,7 @@ public class Loop extends JPanel {
                         if (moved) {
                             registerLastMove(startGridX, startGridY, gridX, gridY);
                             updateThreatWarnings();
+                            gameLoop.saveGame();
                             checkGameOver();
 
                         } else {
@@ -226,6 +227,7 @@ public class Loop extends JPanel {
                             if (moved) {
                                 registerLastMove(startGridX, startGridY, targetGridX, targetGridY);
                                 updateThreatWarnings();
+                                gameLoop.saveGame();
                                 checkGameOver();
                             }
                         }
@@ -388,25 +390,33 @@ public class Loop extends JPanel {
         repaint();
     }
 
-    private void checkGameOver() {
+    private void checkGameOver() {  //TODO vypnout zvuk po 70 pozicích
         if (gameLoop.isGameOver()) {
-            Colour winner = gameLoop.getChessBoard().getSurvivingHeadColour();
             String message;
 
-            if (winner == Colour.White) {
-                message = "Hra skončila!\nVítěz: Bílý";
-            } else if (winner == Colour.Black) {
-                message = "Hra skončila!\nVítěz: Černý";
+            if (gameLoop.isDrawByRepetition()) {
+                message = "Hra skončila!\nRemíza — stejná pozice nastala potřetí.";
+
+            } else if (gameLoop.isDrawByNoCapture()) {
+                message = "Hra skončila!\nRemíza — 70 tahů bez sežrání figurky.";
+
             } else {
-                // winner == null -> zbylo 0 hlav (oba Headi zničeni najednou) nebo nejednoznačný stav
-                message = "Hra skončila!\nRemíza — oba Headi byli zničeni.";
+                Colour winner = gameLoop.getChessBoard().getSurvivingHeadColour();
+
+                if (winner == Colour.White) {
+                    message = "Hra skončila!\nVítěz: Bílý";
+                } else if (winner == Colour.Black) {
+                    message = "Hra skončila!\nVítěz: Černý";
+                } else {
+                    message = "Hra skončila!\nRemíza — oba Headi byli zničeni.";
+                }
             }
 
             JOptionPane.showMessageDialog(this, message, "Konec hry", JOptionPane.INFORMATION_MESSAGE);
             frame.showScene("MAPSELECT");
-
         }
     }
+
 
     /**
      * Po každém tahu (i rotaci) zjistí, jestli je nějaká Head figurka ohrožená
@@ -486,6 +496,7 @@ playSound = true;
         gameLoop.getChessBoard().setPromotionChooser(this::showPromotionDialog);
         resetSelection();
         updateThreatWarnings();
+        gameLoop.saveGame();
         repaint();
     }
 

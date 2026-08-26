@@ -11,7 +11,7 @@ public class UIconfiguration {
     public static Color waterColorLight;
 
 
-    public static final String THREAT_SOUND_PATH = "files\\sounds\\threat_warning1.wav";
+    public static final String THREAT_SOUND_PATH = "files\\sounds\\threat_warning2.wav";
     public static float soundEfectsVolume = 0.7f; // 0.0 - 1.0
 
     public static final String MOVE_SOUND_PATH = "files\\sounds\\move.wav";
