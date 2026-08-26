@@ -20,7 +20,7 @@ public class UIconfiguration {
 
     private UIconfiguration()
     {
-       int boardColours = 1;
+       int boardColours = 2;
         switch(boardColours)
         {
             case 0: //clasic
