@@ -175,9 +175,7 @@ public class Main/*extends Application */{
 
 /*TODO
 
-1.
-pravidlo 3* stejná pozice = remíza //bonus save hry
-pravidlo po 70 tazích bez sežrání = remíza
+
 2.
 funkční výběr map a botů
 přidat výběr barvy
@@ -186,6 +184,7 @@ udělat otočení mapy
 udělat bota
 4.
 settings soubor
+escape menu ve hře
 5.
 pieceology + grafika figur
 

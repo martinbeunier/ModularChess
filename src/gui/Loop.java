@@ -53,13 +53,14 @@ public class Loop extends JPanel {
 
     private Image currentPreviewImage;
     private Image defaultNoPieceImage = safeLoadImage("files\\images\\icon.png");
-    private Image defaultUnknownPieceImage =safeLoadImage("files\\images\\icon.pngl");
+    private Image defaultUnknownPieceImage =safeLoadImage("files\\images\\img19.jpg");
 
 
 
     public Loop(MainFrame frame) {
         this.frame = frame;
         this.setLayout(null);
+        this.setBackground(new Color(26, 28, 37));
 
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "backTo"            ); //TODO vyskakovací menu
         getActionMap().put("backTo", new AbstractAction()
@@ -112,13 +113,39 @@ public class Loop extends JPanel {
         int h = frame.getHeight();
 
 
-        rotateLeftButton = new JButton("\u21BA Doleva");
-        rotateRightButton = new JButton("\u21BB Doprava");
-        rotateAroundButton = new JButton("\u27F2 Otocit (180)");
+        rotateLeftButton = new JButton(
+                "<html><div style='text-align:center'>" +
+                        "<font color='black' size='12'>&#8630;</font><br>" +
+                        "<font color='black' size='4'>Left</font>" +
+                        "</div></html>"
+        );
 
-        rotateLeftButton.setBounds(UI.toPercent(85, w), UI.toPercent(38, h), UI.toPercent(12, w), UI.toPercent(6, h));
-        rotateRightButton.setBounds(UI.toPercent(85, w), UI.toPercent(46, h), UI.toPercent(12, w), UI.toPercent(6, h));
-        rotateAroundButton.setBounds(UI.toPercent(85, w), UI.toPercent(54, h), UI.toPercent(12, w), UI.toPercent(6, h));
+        rotateRightButton = new JButton(
+                "<html><div style='text-align:center'>" +
+                        "<font size='12'>&#8631;</font><br>" +
+                        "<font size='4'>Right</font>" +
+                        "</div></html>"
+        );
+
+        rotateAroundButton = new JButton(
+                "<html><div style='text-align:center'>" +
+                        "<font size='12'>&#8645;</font><br>" +
+                        "<font size='4'>Backwards</font>" +
+                        "</div></html>"
+        );
+
+        rotateLeftButton.setHorizontalAlignment(SwingConstants.CENTER);
+        rotateRightButton.setHorizontalAlignment(SwingConstants.CENTER);
+        rotateAroundButton.setHorizontalAlignment(SwingConstants.CENTER);
+
+
+      //  rotateLeftButton.setFont(new Font("Noto Sans", Font.BOLD, 16));
+       // rotateRightButton.setFont(new Font("Noto Sans", Font.BOLD, 16));
+        //rotateAroundButton.setFont(new Font("Noto Sans", Font.BOLD, 16));
+
+        rotateLeftButton.setBounds(UI.toPercent(71, w), UI.toPercent(65, h), UI.toPercent(7, w), UI.toPercent(12, h));
+        rotateRightButton.setBounds(UI.toPercent(87, w), UI.toPercent(65, h), UI.toPercent(7, w), UI.toPercent(12, h));
+        rotateAroundButton.setBounds(UI.toPercent(79, w), UI.toPercent(65, h), UI.toPercent(7, w), UI.toPercent(12, h));
 
         // Na začátku nic vybráno -> všechna tlačítka neaktivní
         rotateLeftButton.setEnabled(false);
@@ -390,7 +417,7 @@ public class Loop extends JPanel {
         repaint();
     }
 
-    private void checkGameOver() {  //TODO vypnout zvuk po 70 pozicích
+    private void checkGameOver() {
         if (gameLoop.isGameOver()) {
             String message;
 
@@ -563,14 +590,15 @@ playSound = true;
     }
 
 
-    private int getOffsetX(int tileSize) { //TODO změnit odsazení šachovnice
+    private int getOffsetX(int tileSize) {
         if (gameLoop == null || gameLoop.getChessBoard() == null) return 0;
 
         // Vycentruje šachovnici v prostoru od 0 do 90 % šířky okna (zbylých 10 % vpravo zůstane pro tlačítka)
-        int availableWidth = (int) (getWidth() * 1.00);
+       // int availableWidth = (int) (getWidth() * 0.7);
         int boardWidth = gameLoop.getChessBoard().getWidth() * tileSize;
 
-        return Math.max(40, (availableWidth - boardWidth) / 2);
+        //return Math.max(40, (availableWidth - boardWidth) / 2);
+        return (int)UI.toPercent(30,boardWidth);
     }
     private int getOffsetY(int tileSize) {
         if (gameLoop == null || gameLoop.getChessBoard() == null) return 0;
@@ -893,12 +921,17 @@ playSound = true;
         // =========================================================
         // VYKRESLENÍ SOUŘADNIC PO OBVODU ŠACHOVNICE
         // =========================================================
-        g2d.setColor(Color.BLACK); // Barva textu souřadnic
-        g2d.setFont(new Font("Arial", Font.BOLD, Math.max(10, tileSize / 4)));
+        g2d.setColor(Color.yellow); // Barva textu souřadnic
+        g2d.setFont(new Font("Arial", Font.BOLD, Math.max(24, tileSize / 4)));
 
         FontMetrics fm = g2d.getFontMetrics();
 
+        g2d.drawString("X", offsetX , offsetY - 5);
+        g2d.drawString("Y", offsetX - 20, offsetY + 15);
         // 1. Horizontální souřadnice (sloupce 0..cols-1)
+
+        g2d.setFont(new Font("Arial", Font.BOLD, Math.max(10, tileSize / 4)));
+
         for (int x = 0; x < cols; x++) {
             String label = String.valueOf(x);
             int textWidth = fm.stringWidth(label);
@@ -936,11 +969,11 @@ playSound = true;
 
 
         if (currentPreviewImage != null) {
-            int cardWidth = UI.toPercent(15, getWidth());
-            int cardHeight = UI.toPercent(30, getHeight());
+            int cardWidth = UI.toPercent(25, getWidth());
+            int cardHeight = UI.toPercent(50, getHeight());
 
             // Pozice v pravém horním rohu (X: 82 % šířky, Y: 4 % výšky)
-            int cardX = UI.toPercent(82, getWidth());
+            int cardX = UI.toPercent(70, getWidth());
             int cardY = UI.toPercent(4, getHeight());
 
             g2d.drawImage(currentPreviewImage, cardX, cardY, cardWidth, cardHeight, this);

@@ -22,6 +22,7 @@ public class MainFrame extends JFrame {
         this.height = screen.height;
 
 
+
         layout = new CardLayout();
         cards = new JPanel(layout);
 
