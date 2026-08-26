@@ -8,6 +8,7 @@ import pieces.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -59,6 +60,50 @@ public class Loop extends JPanel {
     public Loop(MainFrame frame) {
         this.frame = frame;
         this.setLayout(null);
+
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "backTo"            ); //TODO vyskakovací menu
+        getActionMap().put("backTo", new AbstractAction()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               // frame.showScene("MENU");
+            }
+        });
+
+
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("LEFT"), "left"            );
+        getActionMap().put("left", new AbstractAction()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                attemptRotate(3);
+            }
+        });
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("RIGHT"), "right"            );
+        getActionMap().put("right", new AbstractAction()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                attemptRotate(1);
+            }
+        });
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("UP"), "up"            );
+        getActionMap().put("up", new AbstractAction()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                attemptRotate(2);
+            }
+        });
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("DOWN"), "down"            );
+        getActionMap().put("down", new AbstractAction()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                attemptRotate(2);
+            }
+        });
+
 
         // ------------------------------------------------------------
         // Tlačítka pro rotaci (šipky vedle šachovnice)

@@ -156,9 +156,9 @@ public class MapSelect extends JPanel {
 
             // Vytažení textových hodnot
             String map = selectedMapModel.getActionCommand();
-            //map = "map1 fighter defense";
+            map = "map1 fighter defense";
             //map = "standard";
-            map = "WaterFight";
+            //map = "WaterFight";
 
             String bot = selectedBotModel.getActionCommand();
 
