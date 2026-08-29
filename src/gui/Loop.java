@@ -13,6 +13,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
+import com.github.weisj.jsvg.SVGDocument;
+import com.github.weisj.jsvg.parser.SVGLoader;
+import com.github.weisj.jsvg.view.ViewBox;
+
 public class Loop extends JPanel {
     private MainFrame frame;
     private String selectedMap;
@@ -982,25 +986,63 @@ playSound = true;
     }
 
     private void drawPieceAt(Graphics2D g2d, Piece piece, int posX, int posY, int tileSize) {
-        int padding = tileSize / 8;
-        int drawX = posX + padding;
-        int drawY = posY + padding;
-        int drawWidth = tileSize - (2 * padding);
-        int drawHeight = tileSize - (2 * padding);
 
-        g2d.setColor(piece.getColour() == Colour.White ? Color.WHITE : Color.BLACK);
-        g2d.fillOval(drawX, drawY, drawWidth, drawHeight);
+        // --- 1. VRSTVA DOLE: Vykreslení těla figurky (SVG nebo Kolečko) ---
+        boolean svgDrawn = false;
 
-        g2d.setColor(Color.GRAY);
-        g2d.drawOval(drawX, drawY, drawWidth, drawHeight);
+        String colorPrefix = (piece.getColour() == Colour.White) ? "white" : "black";
+        String pieceType = piece.getClass().getSimpleName().toLowerCase();
+        String imagePath = "files/images/skins/" + colorPrefix + pieceType + ".svg";
 
+        try {
+            java.io.File imgFile = new java.io.File(imagePath);
+            if (imgFile.exists()) {
+                com.github.weisj.jsvg.parser.SVGLoader loader = new com.github.weisj.jsvg.parser.SVGLoader();
+                com.github.weisj.jsvg.SVGDocument svgDocument = loader.load(imgFile.toURI().toURL());
+                if (svgDocument != null) {
+
+
+                    double scaleFactor = 2.3;
+
+
+                   int offsetX = (int)(tileSize * 0.036 * scaleFactor);
+                   int offsetY = (int) (tileSize  * 0.036 * scaleFactor);
+
+                    int svgSize = (int) (tileSize * scaleFactor);
+                    int svgX = posX - (svgSize - tileSize) / 2 + offsetX;
+                    int svgY = posY - (svgSize - tileSize) / 2 + offsetY;
+
+                    svgDocument.render(null, g2d, new com.github.weisj.jsvg.view.ViewBox(svgX, svgY, svgSize, svgSize));
+                    svgDrawn = true;
+                }
+            }
+        } catch (Exception e) {
+            svgDrawn = false;
+        }
+
+        // Pokud se SVG NENAČETLO, nakreslí se záložní kolečko
+        if (!svgDrawn) {
+            int padding = tileSize / 8;
+            int drawX = posX + padding;
+            int drawY = posY + padding;
+            int drawWidth = tileSize - (2 * padding);
+            int drawHeight = tileSize - (2 * padding);
+
+            g2d.setColor(piece.getColour() == Colour.White ? Color.WHITE : Color.BLACK);
+            g2d.fillOval(drawX, drawY, drawWidth, drawHeight);
+
+            g2d.setColor(Color.GRAY);
+            g2d.drawOval(drawX, drawY, drawWidth, drawHeight);
+        }
+
+        // --- 2. VRSTVA UPROSTŘED: Červená směrová čárka ---
         if (piece instanceof OrientedPiece) {
             OrientedPiece orientedPiece = (OrientedPiece) piece;
             int rotation = orientedPiece.getRotation();
 
-            int centerX = drawX + drawWidth / 2;
-            int centerY = drawY + drawHeight / 2;
-            int pointerLength = drawWidth / 2;
+            int centerX = posX + tileSize / 2;
+            int centerY = posY + tileSize / 2;
+            int pointerLength = (tileSize - (tileSize / 3)) / 2;
 
             double angleRad = Math.toRadians((rotation * 90) - 90);
 
@@ -1013,21 +1055,26 @@ playSound = true;
             g2d.setStroke(new BasicStroke(1));
         }
 
-        String className = piece.getClass().getSimpleName();
-        String symbol = className.substring(0, 1).toUpperCase();
+        // --- 3. VRSTVA NAHOŘE: Text (pouze bez SVG) ---
+        if (!svgDrawn) {
+            String className = piece.getClass().getSimpleName();
+            String symbol = (className.length() >= 4) ? className.substring(0, 4).toUpperCase() : className;
 
-        g2d.setColor(piece.getColour() == Colour.White ? Color.BLACK : Color.WHITE);
-        g2d.setFont(new Font("Arial", Font.BOLD, tileSize / 3));
+            g2d.setColor(piece.getColour() == Colour.White ? Color.BLACK : Color.WHITE);
+            g2d.setFont(new Font("Arial", Font.BOLD, tileSize / 4));
 
-        FontMetrics fm = g2d.getFontMetrics();
-        int textX = posX + (tileSize - fm.stringWidth(symbol)) / 2;
-        int textY = posY + (tileSize + fm.getAscent() - fm.getDescent()) / 2;
+            FontMetrics fm = g2d.getFontMetrics();
+            int textX = posX + (tileSize - fm.stringWidth(symbol)) / 2;
+            int textY = posY + (tileSize + fm.getAscent() - fm.getDescent()) / 2;
 
-        g2d.drawString(symbol, textX, textY);
-
-
+            g2d.drawString(symbol, textX, textY);
+        }
     }
 
 
-
 }
+
+
+
+
+
