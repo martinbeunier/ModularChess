@@ -18,7 +18,7 @@ public class DebugConfiguration {
     public static boolean validCastleMoves = false;
     public static boolean validCarrierMoves = false;
     public static boolean validRotateMoves = false;
-    public static boolean validTorpedoMoves = true;
+    public static boolean validTorpedoMoves = false;
     public static boolean validLinebreakerMoves = false;
 
     public static boolean savePosition = false;

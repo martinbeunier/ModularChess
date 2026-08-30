@@ -6,6 +6,7 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MapSelect extends JPanel {
 
@@ -141,6 +142,67 @@ public class MapSelect extends JPanel {
         radioPanel.add(bot1Button);
 
         // --------------------------------------------------
+        // Výběr barvy
+        // --------------------------------------------------
+        JPanel radioPanelColour = new JPanel();
+
+        radioPanelColour.setLayout(null);
+
+        ButtonGroup groupColour = new ButtonGroup();
+
+        radioPanelColour.setBounds(
+                UI.toPercent(40, w),
+                UI.toPercent(50, h),
+                UI.toPercent(30, w),
+                UI.toPercent(15, h)
+        );
+
+
+        JRadioButton whiteButton =
+                new JRadioButton("White");
+
+        whiteButton.setBounds(
+                0,
+                0,
+                UI.toPercent(5, w),
+                UI.toPercent(3, h)
+        );
+
+        whiteButton.setActionCommand("White");
+        groupColour.add(whiteButton);
+        radioPanelColour.add(whiteButton);
+
+        JRadioButton randomButton =
+                new JRadioButton("Random");
+
+
+        randomButton.setBounds(
+                UI.toPercent(7, w),
+                0,
+                UI.toPercent(5, w),
+                UI.toPercent(3, h)
+        );
+
+        randomButton.setActionCommand("Random");
+        groupColour.add(randomButton);
+        radioPanelColour.add(randomButton);
+
+        JRadioButton blackButton =
+                new JRadioButton("Black");
+
+        blackButton.setBounds(
+                UI.toPercent(14, w),
+                0,
+                UI.toPercent(5, w),
+                UI.toPercent(3, h)
+        );
+
+        blackButton.setActionCommand("Black");
+        groupColour.add(blackButton);
+        radioPanelColour.add(blackButton);
+
+        randomButton.setSelected(true);
+        // --------------------------------------------------
         // PŘIDÁNÍ KOMPONENT
         // --------------------------------------------------
 
@@ -148,6 +210,7 @@ public class MapSelect extends JPanel {
         add(scrollPane);
         add(searchField);
         add(radioPanel);
+        add(radioPanelColour);
 
         // --------------------------------------------------
         // PRVNÍ VYKRESLENÍ MAP
@@ -191,6 +254,8 @@ public class MapSelect extends JPanel {
             ButtonModel selectedBotModel =
                     group.getSelection();
 
+            ButtonModel selectedColourModel = groupColour.getSelection();
+
             // ----------------------------------------------
             // KONTROLA MAPY
             // ----------------------------------------------
@@ -228,9 +293,12 @@ public class MapSelect extends JPanel {
 
             String bot =
                     selectedBotModel.getActionCommand();
+            String colour
+                    = selectedColourModel.getActionCommand();
 
             System.out.println("Selected map: " + map);
             System.out.println("Selected opponent: " + bot);
+            System.out.println("Selected colour: " + colour);
 
             // ----------------------------------------------
             // PŘEDÁNÍ DO LOOP
@@ -240,6 +308,14 @@ public class MapSelect extends JPanel {
 
             loop.setSelectedMap(map);
             loop.setSelectedOpponent(bot);
+
+            if(colour.equals("random")) {
+                Random random = new Random();
+
+                if(random.nextInt(0,1) == 0    ){colour = "Black";}else{colour = "White";}
+            }
+
+            loop.setSelectedColour(colour);
 
             loop.startGame();
 

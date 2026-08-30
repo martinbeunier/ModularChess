@@ -25,6 +25,7 @@ public class Loop extends JPanel {
     private MainFrame frame;
     private String selectedMap;
     private String selectedOpponent;
+    private String selectedColour;
     private GameLoop gameLoop;
 
     // Držení stavu pro Drag & Drop i Click & Click
@@ -523,6 +524,10 @@ playSound = true;
 
     public void setSelectedOpponent(String selectedOpponent) {
         this.selectedOpponent = selectedOpponent;
+    }
+
+    public void setSelectedColour(String selectedColour) {
+        this.selectedColour = selectedColour;
     }
 
     public void startGame() {
