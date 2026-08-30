@@ -11,7 +11,11 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import com.github.weisj.jsvg.SVGDocument;
 import com.github.weisj.jsvg.parser.SVGLoader;
@@ -59,7 +63,8 @@ public class Loop extends JPanel {
     private Image defaultNoPieceImage = safeLoadImage("files\\images\\icon.png");
     private Image defaultUnknownPieceImage =safeLoadImage("files\\images\\img19.jpg");
 
-
+    // Cache pro uložení již načtených SVG obrázků v paměti RAM
+    private final Map<String, BufferedImage> imageCache = new HashMap<>();
 
     public Loop(MainFrame frame) {
         this.frame = frame;
@@ -327,7 +332,7 @@ public class Loop extends JPanel {
     private Image loadPreviewForPiece(Piece piece) {
         // Načte obrázek podle násobení násobené třídy figury (např. "card_pawn.png", "card_linebreaker.png")
         String className = piece.getClass().getSimpleName().toLowerCase();
-        String path = "files/images/cards/card_" + className + ".png";
+        String path = "files/images/" + className + ".png";
 
         java.io.File file = new java.io.File(path);
         if (file.exists()) {
@@ -608,10 +613,22 @@ playSound = true;
         if (gameLoop == null || gameLoop.getChessBoard() == null) return 0;
         return (getHeight() - (gameLoop.getChessBoard().getHeight() * tileSize)) / 2;
     }
+    public void printMemoryUsage() {
+        Runtime runtime = Runtime.getRuntime();
+
+        // Vše v megabajtech (MB)
+        long totalMemory = runtime.totalMemory() / (1024 * 1024);
+        long freeMemory = runtime.freeMemory() / (1024 * 1024);
+        long usedMemory = totalMemory - freeMemory;
+
+        System.out.println("Využitá RAM: " + usedMemory + " MB / Celkem alokováno: " + totalMemory + " MB");
+    }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+        printMemoryUsage();
 
         if (gameLoop == null) return;
 
@@ -985,42 +1002,90 @@ playSound = true;
 
     }
 
+    private double getScaleByClass(String className){
+        double scale = 1;
+        switch (className){
+            case "pawn":
+                scale = 2.3;
+                break;
+
+            case "airplane":
+                scale = 2;
+                break;
+        }
+
+
+        return scale;
+    }
+
     private void drawPieceAt(Graphics2D g2d, Piece piece, int posX, int posY, int tileSize) {
 
-        // --- 1. VRSTVA DOLE: Vykreslení těla figurky (SVG nebo Kolečko) ---
+        // --- 1. VRSTVA DOLE: Vykreslení těla figurky (obrázek z Cache nebo Kolečko) ---
         boolean svgDrawn = false;
+
+        // Nastavení vyhlazování pro hlavní plátno
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
         String colorPrefix = (piece.getColour() == Colour.White) ? "white" : "black";
         String pieceType = piece.getClass().getSimpleName().toLowerCase();
         String imagePath = "files/images/skins/" + colorPrefix + pieceType + ".svg";
 
-        try {
-            java.io.File imgFile = new java.io.File(imagePath);
-            if (imgFile.exists()) {
-                com.github.weisj.jsvg.parser.SVGLoader loader = new com.github.weisj.jsvg.parser.SVGLoader();
-                com.github.weisj.jsvg.SVGDocument svgDocument = loader.load(imgFile.toURI().toURL());
-                if (svgDocument != null) {
+        double baseScale = 1.0;
+        double finalScale = baseScale * getScaleByClass(pieceType);
+        int svgSize = (int) Math.round(tileSize * finalScale);
 
+        // Unikátní klíč pro cache zahrnuje i velikost políčka (pokud se okno nezmění, použije se cache)
+        String cacheKey = imagePath + "_" + svgSize;
 
-                    double scaleFactor = 2.3;
+        // 1. Zkusíme vytáhnout HOTOVÝ BufferedImage z paměti
+        BufferedImage cachedImg = imageCache.get(cacheKey);
 
+        // 2. Pokud v paměti ještě NENÍ, načteme SVG a jednou ho vykreslíme do BufferedImage
+        if (cachedImg == null && svgSize > 0) {
+            try {
+                java.io.File imgFile = new java.io.File(imagePath);
+                if (imgFile.exists()) {
+                    SVGLoader loader = new SVGLoader();
+                    SVGDocument svgDocument = loader.load(imgFile.toURI().toURL());
 
-                   int offsetX = (int)(tileSize * 0.036 * scaleFactor);
-                   int offsetY = (int) (tileSize  * 0.036 * scaleFactor);
+                    if (svgDocument != null) {
+                        int qualityMultiplier = 2; // Super-sampling pro vyhlazení
+                        int renderSize = svgSize * qualityMultiplier;
 
-                    int svgSize = (int) (tileSize * scaleFactor);
-                    int svgX = posX - (svgSize - tileSize) / 2 + offsetX;
-                    int svgY = posY - (svgSize - tileSize) / 2 + offsetY;
+                        BufferedImage newImg = new BufferedImage(
+                                renderSize, renderSize, BufferedImage.TYPE_INT_ARGB
+                        );
 
-                    svgDocument.render(null, g2d, new com.github.weisj.jsvg.view.ViewBox(svgX, svgY, svgSize, svgSize));
-                    svgDrawn = true;
+                        Graphics2D gImg = newImg.createGraphics();
+                        gImg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                        gImg.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                        gImg.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+
+                        // Vykreslení SVG do plátna
+                        svgDocument.render(null, gImg, new ViewBox(0, 0, renderSize, renderSize));
+                        gImg.dispose();
+
+                        // Uložení HOTOVÉHO vyhlazeného obrázku do cache
+                        cachedImg = newImg;
+                        imageCache.put(cacheKey, cachedImg);
+                    }
                 }
+            } catch (Exception e) {
+                cachedImg = null;
             }
-        } catch (Exception e) {
-            svgDrawn = false;
         }
 
-        // Pokud se SVG NENAČETLO, nakreslí se záložní kolečko
+        // 3. Bleskové vykreslení hotového obrázku z paměti RAM
+        if (cachedImg != null) {
+            int svgX = posX - (svgSize - tileSize) / 2;
+            int svgY = posY - (svgSize - tileSize) / 2;
+
+            g2d.drawImage(cachedImg, svgX, svgY, svgSize, svgSize, null);
+            svgDrawn = true;
+        }
+
+        // Fallback kolečko v případě, že soubor neexistuje
         if (!svgDrawn) {
             int padding = tileSize / 8;
             int drawX = posX + padding;
@@ -1061,7 +1126,7 @@ playSound = true;
             String symbol = (className.length() >= 4) ? className.substring(0, 4).toUpperCase() : className;
 
             g2d.setColor(piece.getColour() == Colour.White ? Color.BLACK : Color.WHITE);
-            g2d.setFont(new Font("Arial", Font.BOLD, tileSize / 4));
+            g2d.setFont(new Font("Arial", Font.BOLD, tileSize / 3));
 
             FontMetrics fm = g2d.getFontMetrics();
             int textX = posX + (tileSize - fm.stringWidth(symbol)) / 2;

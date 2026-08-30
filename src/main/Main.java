@@ -179,6 +179,7 @@ public class Main/*extends Application */{
 2.
 funkční výběr map a botů
 přidat výběr barvy
+otestovat torpedo
 3.
 udělat otočení mapy
 udělat bota
@@ -189,6 +190,7 @@ escape menu ve hře
 pieceology + grafika figur
 
 nepodstatné :
+kreslení šipek pravým tlačítkem
 map editor
 piece editor
 záznamy her
