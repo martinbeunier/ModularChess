@@ -613,7 +613,7 @@ playSound = true;
         if (gameLoop == null || gameLoop.getChessBoard() == null) return 0;
         return (getHeight() - (gameLoop.getChessBoard().getHeight() * tileSize)) / 2;
     }
-    public void printMemoryUsage() {
+    public void printMemoryUsage() { //TODO dát do jiné třídy
         Runtime runtime = Runtime.getRuntime();
 
         // Vše v megabajtech (MB)
@@ -621,7 +621,7 @@ playSound = true;
         long freeMemory = runtime.freeMemory() / (1024 * 1024);
         long usedMemory = totalMemory - freeMemory;
 
-        System.out.println("Využitá RAM: " + usedMemory + " MB / Celkem alokováno: " + totalMemory + " MB");
+   //     System.out.println("Využitá RAM: " + usedMemory + " MB / Celkem alokováno: " + totalMemory + " MB");
     }
 
     @Override
@@ -1012,6 +1012,11 @@ playSound = true;
             case "airplane":
                 scale = 2;
                 break;
+
+            case "fighter":
+                scale = 1.5;
+                break;
+
         }
 
 
@@ -1126,7 +1131,7 @@ playSound = true;
             String symbol = (className.length() >= 4) ? className.substring(0, 4).toUpperCase() : className;
 
             g2d.setColor(piece.getColour() == Colour.White ? Color.BLACK : Color.WHITE);
-            g2d.setFont(new Font("Arial", Font.BOLD, tileSize / 3));
+            g2d.setFont(new Font("Arial", Font.BOLD, tileSize / 4));
 
             FontMetrics fm = g2d.getFontMetrics();
             int textX = posX + (tileSize - fm.stringWidth(symbol)) / 2;

@@ -99,7 +99,12 @@ public class Main/*extends Application */{
         Queen wqueen = new Queen("White Queen",4,7,Colour.White);
         Queen bqueen = new Queen("White Queen",4,1,Colour.Black);
 
+        Torpedo wtorpedo = new Torpedo("w Torpedo",3,8,Colour.White,0);
+        Torpedo btorpedo = new Torpedo("b Torpedo",3,0,Colour.Black,2);
+
         Lifebuoy lifebuoy = new Lifebuoy("ability",4,4);
+
+
 
 //konec inicializace figur
 
@@ -137,6 +142,9 @@ public class Main/*extends Application */{
         chessBoard.addPiece(wqueen);
         chessBoard.addPiece(bqueen);
 
+        chessBoard.addPiece(wtorpedo);
+        chessBoard.addPiece(btorpedo);
+
         chessBoard.addPiece(lifebuoy);
 
 
@@ -161,7 +169,7 @@ public class Main/*extends Application */{
         chessBoard.movePiece(4,4,4,0,player1);
         chessBoard.printBoard();
 
-        chessBoard.savePosition("WaterFight",player1);
+        chessBoard.savePosition("test",player1);
 
 
         break;
@@ -175,11 +183,10 @@ public class Main/*extends Application */{
 
 /*TODO
 
-
 2.
 funkční výběr map a botů
 přidat výběr barvy
-otestovat torpedo
+
 3.
 udělat otočení mapy
 udělat bota

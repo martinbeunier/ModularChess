@@ -1219,10 +1219,10 @@ if (firstTime == false)
                         Piece piece = board[targetX][targetY];
 
                         if (piece != null) {
-                            System.out.println(
+                            if(DebugConfiguration.validCarrierMoves){System.out.println(
                                     "KOLIZE na " + targetX + " " + targetY +
                                             " s " + piece.getName()
-                            );
+                            );}
                             valid = false;
                             break;
                         }
@@ -1248,18 +1248,18 @@ if (firstTime == false)
             int endY = startY + m.getY();
 
 
-            if (standardValidations(startX, startY, endX, endY, player)) {
-                if (noBlocadeLine(startX, startY, endX, endY)) {
+           if(inBoard(endX, endY, endX, endY)) {
+               if (noBlocadeLine(startX, startY, endX, endY)) {
 
-                        if (!m.getRequiresFirstMove() || board[startX][startY].getFirstMove()) {
-                            validMoves.add(m);
-                            if (DebugConfiguration.validTorpedoMoves) System.out.println("x : " + endX + " y : " + endY);
-                        }
+                   if (!m.getRequiresFirstMove() || board[startX][startY].getFirstMove()) {
+                       validMoves.add(m);
+                       if (DebugConfiguration.validTorpedoMoves) System.out.println("x : " + endX + " y : " + endY);
+                   }
 
-                }
+               }
 
+           }
 
-            }
         }
 
 
@@ -1450,21 +1450,19 @@ for (MoveType m : moves) {
             int targetX = startX + move.getX();
             int targetY = startY + move.getY();
 
-
-            if (enPassantTarget != null &&
-                    board[endX][endY] instanceof Pawn &&
-                    endX == enPassantTarget[0]) {
-                board[enPassantTarget[0]][enPassantTarget[1]] = null;
-            }
-
-
             if (targetX == endX && targetY == endY) {
+
+                // Uložíme si referenci na pohybující se figurku PŘED tím, než board[startX][startY] přepíšeme na null.
+                Piece movingPiece = board[startX][startY];
+
                 addPowerUp(endX, endY, player);
-                board[endX][endY] = board[startX][startY];
+                board[endX][endY] = movingPiece;
                 board[endX][endY].setFirstMove(false);
                 board[startX][startY] = null;
 
-                if (enPassantTarget != null &&
+                // En passant smí provést JEDINĚ pěšec — proto instanceof Pawn navíc ke geometrickým podmínkám.
+                if (movingPiece instanceof Pawn &&
+                        enPassantTarget != null &&
                         endX == enPassantTarget[0] &&
                         startY == enPassantTarget[1]) {
                     board[enPassantTarget[0]][enPassantTarget[1]] = null;
@@ -1478,7 +1476,6 @@ for (MoveType m : moves) {
                 }
 
                 promotion(endX,endY);
-
 
                 return true;
             }
@@ -1563,55 +1560,40 @@ return false;
 
     }
 
-    public boolean executeTorpedoMoves(int startX,int startY,int endX, int endY ,Player player , ArrayList<MoveType> validCastleMoves){
-        for (MoveType move : validCastleMoves)
-        {
+    public boolean executeTorpedoMoves(int startX,int startY,int endX, int endY ,Player player , ArrayList<MoveType> validTorpedoMoves){
+        for (MoveType move : validTorpedoMoves) {
             int targetX = startX + move.getX();
             int targetY = startY + move.getY();
 
-
-            int stepX = startX;
-            int stepY = startY;
-
-
             if (targetX == endX && targetY == endY) {
 
+                // Krok posunu v každém směru: -1, 0 nebo +1 (stejný princip jako emptyLine()/switchRook())
+                int stepX = Integer.signum(endX - startX);
+                int stepY = Integer.signum(endY - startY);
+
+                // Zničíme VŠECHNY figurky na políčkách MEZI start a cíl (obě krajní pole zatím necháváme)
+                int x = startX + stepX;
+                int y = startY + stepY;
+
+                while (x != endX || y != endY) {
+                    addPowerUp(x, y, player);
+                    board[x][y] = null;
+                    x += stepX;
+                    y += stepY;
+                }
+
+                // Přesun figurky na cílové pole (případně sebere figurku, co tam stála)
                 addPowerUp(endX, endY, player);
                 board[endX][endY] = board[startX][startY];
                 board[endX][endY].setFirstMove(false);
                 board[startX][startY] = null;
 
+                promotion(endX, endY);
 
-            }
-
-
-            do {
-
-
-
-          if (stepX > targetX) {
-              stepX = stepX + 1;
-          }
-          if (stepY > targetY) {
-              stepY = stepY + 1;
-          }
-          if (stepX < targetX) {
-              stepX = stepX - 1;
-          }
-          if (stepY < targetY) {
-              stepY = stepY - 1;
-          }
-
-                addPowerUp(stepX, stepY, player);
-             //   System.out.println(stepX + " " +  stepY );
-          board[stepX][stepY] = null;
-             } while(endX == stepX && endY == stepY);
-
-            if (targetX == endX && targetY == endY) {
                 return true;
             }
-
         }
+
         return false;
     }
 
