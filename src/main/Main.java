@@ -182,10 +182,13 @@ public class Main/*extends Application */{
     }}
 
 /*TODO
+dodělat integraci bota v Loop
+Duplicitní bug - dvojté zvuky ,okna
+Když začíná bot ,musím hrát za něho 1 krok .
+Otočit směrovou risku u hraní za černého .
+Můžu hrát za bota ,on pak hraje za mně a za sebe .
 
 
-funkční výběr map a botů
-udělat bota
 4.
 settings soubor
 escape menu ve hře

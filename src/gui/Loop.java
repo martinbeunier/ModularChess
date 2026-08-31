@@ -542,13 +542,36 @@ playSound = true;
 
     public void startGame() {
         System.out.println("Načítám hrací plochu s mapou: " + selectedMap + " a botem: " + selectedOpponent);
-        boardFlipped = "Black".equalsIgnoreCase(selectedColour); // ⚠️ uprav řetězec podle skutečné hodnoty selectedColour!
+
+        boardFlipped = "Black".equalsIgnoreCase(selectedColour); // uprav podle skutečné hodnoty selectedColour
+
         gameLoop = new GameLoop();
         gameLoop.initGame(selectedMap);
-        gameLoop.getChessBoard().setPromotionChooser(this::showPromotionDialog);
+
+        boolean vsBot = "Bot 1".equals(selectedOpponent); // uprav podle skutečného ActionCommand tlačítka bota
+        Colour botColour = boardFlipped ? Colour.White : Colour.Black;
+        gameLoop.setVsBot(vsBot, botColour);
+
+        // GameLoop teď SÁM rozhodne, kdy bot táhne — Loop se jen dozví o KAŽDÉM
+        // dokončeném tahu (lidském i botím) a zareaguje na GUI úrovni.
+        gameLoop.setMoveListener((fromX, fromY, toX, toY) -> {
+            SwingUtilities.invokeLater(() -> {
+                registerLastMove(fromX, fromY, toX, toY);
+                updateThreatWarnings();
+                gameLoop.saveGame();
+                checkGameOver();
+                repaint();
+            });
+        });
+
+        gameLoop.getChessBoard().setPromotionChooser((x, y, pieceNames) -> {
+            if (gameLoop.isVsBot() && gameLoop.getCurrentPlayer().getColor() == gameLoop.getBotColour()) {
+                return 0; // bot automaticky promuje na Queen (index 0), BEZ dialogu — bezpečné i mimo EDT
+            }
+            return showPromotionDialog(x, y, pieceNames);
+        });
+
         resetSelection();
-        updateThreatWarnings();
-        gameLoop.saveGame();
         repaint();
     }
 
@@ -1046,7 +1069,9 @@ playSound = true;
             case "helicopter":
                 scale = 2.17;
                 break;
-
+            case "knight":
+                scale = 1.8;
+                break;
         }
 
 

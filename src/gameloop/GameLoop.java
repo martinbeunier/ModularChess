@@ -40,6 +40,13 @@ public class GameLoop {
     private String mapName;             // potřebujeme si zapamatovat název mapy pro název souboru
 
 
+    private final Bot bot = new Bot();
+    private boolean vsBot = false;
+    private Colour botColour;
+    private MoveListener moveListener;
+
+
+
     public void initGame(String fileName) {
         ArrayList<Player> loadedPlayers = new ArrayList<>();
         this.mapName = fileName;
@@ -124,25 +131,40 @@ public class GameLoop {
 
     }
 
-    /** Klasický tah (4 souřadnice). Vrací true, pokud se povedl, a přepne hráče. */
     public boolean tryMove(int startX, int startY, int endX, int endY) {
         int piecesBefore = chessBoard.getPieces().size();
+
         boolean moved = chessBoard.movePiece(startX, startY, endX, endY, currentPlayer);
+
         if (moved) {
             applyPostMoveRules(piecesBefore);
 
+            if (moveListener != null) {
+                moveListener.onMoveCompleted(startX, startY, endX, endY);
+            }
+
+            maybeTriggerBotMove();
         }
+
         return moved;
     }
 
-    /** Tah s rotací (3 parametry) — podle původní logiky. */
     public boolean tryMove(int startX, int startY, int rotate) {
         int piecesBefore = chessBoard.getPieces().size();
+
         boolean moved = chessBoard.movePiece(startX, startY, rotate, currentPlayer);
+
         if (moved) {
             applyPostMoveRules(piecesBefore);
 
+            if (moveListener != null) {
+                // U rotace "from" i "to" je stejné pole (otočila se figurka na místě)
+                moveListener.onMoveCompleted(startX, startY, startX, startY);
+            }
+
+            maybeTriggerBotMove();
         }
+
         return moved;
     }
 
@@ -245,6 +267,39 @@ public class GameLoop {
         return "files\\gameHistory\\" + count + "_" + mapName + ".chess";
     }
 
+    public void setVsBot(boolean vsBot, Colour botColour) {
+        this.vsBot = vsBot;
+        this.botColour = botColour;
+    }
+
+    public void setMoveListener(MoveListener listener) {
+        this.moveListener = listener;
+    }
+
+    public boolean isVsBot() {
+        return vsBot;
+    }
+
+    public Colour getBotColour() {
+        return botColour;
+    }
+
+    private void maybeTriggerBotMove() {
+        if (!vsBot) return;
+        if (isGameOver()) return;
+        if (currentPlayer.getColor() != botColour) return;
+
+        Thread botThread = new Thread(() -> {
+            try {
+                Thread.sleep(400); // volitelná umělá prodleva, kosmetika
+            } catch (InterruptedException ignored) {}
+
+            bot.playRandomMove(this); // interně zavolá tryMove(...) -> celý koloběh se zopakuje
+        });
+
+        botThread.setDaemon(true);
+        botThread.start();
+    }
 
 }
 
