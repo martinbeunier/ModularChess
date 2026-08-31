@@ -309,10 +309,10 @@ public class MapSelect extends JPanel {
             loop.setSelectedMap(map);
             loop.setSelectedOpponent(bot);
 
-            if(colour.equals("random")) {
+            if(colour.equals("Random")) {
                 Random random = new Random();
 
-                if(random.nextInt(0,1) == 0    ){colour = "Black";}else{colour = "White";}
+                if(random.nextInt(2) == 0    ){colour = "Black";}else{colour = "White";}
             }
 
             loop.setSelectedColour(colour);

@@ -629,16 +629,7 @@ playSound = true;
         if (gameLoop == null || gameLoop.getChessBoard() == null) return 0;
         return (getHeight() - (gameLoop.getChessBoard().getHeight() * tileSize)) / 2;
     }
-    public void printMemoryUsage() { //TODO dát do jiné třídy
-        Runtime runtime = Runtime.getRuntime();
 
-        // Vše v megabajtech (MB)
-        long totalMemory = runtime.totalMemory() / (1024 * 1024);
-        long freeMemory = runtime.freeMemory() / (1024 * 1024);
-        long usedMemory = totalMemory - freeMemory;
-
-   //     System.out.println("Využitá RAM: " + usedMemory + " MB / Celkem alokováno: " + totalMemory + " MB");
-    }
     private int displayX(int x, int cols) {
         return boardFlipped ? (cols - 1 - x) : x;
     }
@@ -650,7 +641,7 @@ playSound = true;
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        printMemoryUsage();
+        UIconfiguration.printMemoryUsage();
 
         if (gameLoop == null) return;
 
@@ -840,7 +831,7 @@ playSound = true;
         // takže se automaticky aktualizuje po přesunu i po zničení Carrieru —
         // nic si nepamatujeme mezi kresleními.
         // =========================================================
-        boolean[][] carrierSquares = new boolean[cols][rows]; //TODO smyčka pro otočení šachovnice
+        boolean[][] carrierSquares = new boolean[cols][rows];
 
         for (int cx = 0; cx < cols; cx++) {
             for (int cy = 0; cy < rows; cy++) {
@@ -1051,6 +1042,9 @@ playSound = true;
 
             case "fighter":
                 scale = 1.5;
+                break;
+            case "helicopter":
+                scale = 2.17;
                 break;
 
         }

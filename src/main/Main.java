@@ -183,12 +183,8 @@ public class Main/*extends Application */{
 
 /*TODO
 
-2.
-funkční výběr map a botů
-přidat výběr barvy
 
-3.
-udělat otočení mapy
+funkční výběr map a botů
 udělat bota
 4.
 settings soubor
