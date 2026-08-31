@@ -60,6 +60,8 @@ public class Loop extends JPanel {
     private int lastMoveToX = -1;
     private int lastMoveToY = -1;
 
+    private boolean boardFlipped = false; // true = hraje se za černého, otočíme pohled na desku
+
     private Image currentPreviewImage;
     private Image defaultNoPieceImage = safeLoadImage("files\\images\\icon.png");
     private Image defaultUnknownPieceImage =safeLoadImage("files\\images\\img19.jpg");
@@ -186,9 +188,11 @@ public class Loop extends JPanel {
                 int offsetX = getOffsetX(tileSize);
                 int offsetY = getOffsetY(tileSize);
 
-                int gridX = (int) Math.floor((double) (e.getX() - offsetX) / tileSize);
-                int gridY = (int) Math.floor((double) (e.getY() - offsetY) / tileSize);
+                int clickedDisplayX = (int) Math.floor((double) (e.getX() - offsetX) / tileSize);
+                int clickedDisplayY = (int) Math.floor((double) (e.getY() - offsetY) / tileSize);
 
+                int gridX = displayX(clickedDisplayX, board.getWidth());
+                int gridY = displayY(clickedDisplayY, board.getHeight());
 
                 // Kontrola kliknutí mimo šachovnici
                 if (gridX < 0 || gridX >= board.getWidth() || gridY < 0 || gridY >= board.getHeight()) {
@@ -253,8 +257,11 @@ public class Loop extends JPanel {
                     int offsetX = getOffsetX(tileSize);
                     int offsetY = getOffsetY(tileSize);
 
-                    int targetGridX = (int) Math.floor((double) (e.getX() - offsetX) / tileSize);
-                    int targetGridY = (int) Math.floor((double) (e.getY() - offsetY) / tileSize);
+                    int releasedDisplayX = (int) Math.floor((double) (e.getX() - offsetX) / tileSize);
+                    int releasedDisplayY = (int) Math.floor((double) (e.getY() - offsetY) / tileSize);
+
+                    int targetGridX = displayX(releasedDisplayX, board.getWidth());
+                    int targetGridY = displayY(releasedDisplayY, board.getHeight());
 
                     if (targetGridX >= 0 && targetGridX < board.getWidth() &&
                             targetGridY >= 0 && targetGridY < board.getHeight()) {
@@ -297,8 +304,11 @@ public class Loop extends JPanel {
         int offsetY = getOffsetY(tileSize);
         ChessBoard board = gameLoop.getChessBoard();
 
-        int boardX = (mouseX - offsetX) / tileSize;
-        int boardY = (mouseY - offsetY) / tileSize;
+        int hoveredDisplayX = (mouseX - offsetX) / tileSize;
+        int hoveredDisplayY = (mouseY - offsetY) / tileSize;
+
+        int boardX = displayX(hoveredDisplayX, board.getWidth());
+        int boardY = displayY(hoveredDisplayY, board.getHeight());
 
         // Pokud je kurzor stále na stejném políčku, nic nepřekreslujeme
         if (boardX == lastHoverX && boardY == lastHoverY) return;
@@ -532,6 +542,7 @@ playSound = true;
 
     public void startGame() {
         System.out.println("Načítám hrací plochu s mapou: " + selectedMap + " a botem: " + selectedOpponent);
+        boardFlipped = "Black".equalsIgnoreCase(selectedColour); // ⚠️ uprav řetězec podle skutečné hodnoty selectedColour!
         gameLoop = new GameLoop();
         gameLoop.initGame(selectedMap);
         gameLoop.getChessBoard().setPromotionChooser(this::showPromotionDialog);
@@ -628,7 +639,13 @@ playSound = true;
 
    //     System.out.println("Využitá RAM: " + usedMemory + " MB / Celkem alokováno: " + totalMemory + " MB");
     }
+    private int displayX(int x, int cols) {
+        return boardFlipped ? (cols - 1 - x) : x;
+    }
 
+    private int displayY(int y, int rows) {
+        return boardFlipped ? (rows - 1 - y) : y;
+    }
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -663,8 +680,11 @@ playSound = true;
         for (int y = 0; y < rows; y++) {
             for (int x = 0; x < cols; x++) {
 
-                int posX = offsetX + (x * tileSize);
-                int posY = offsetY + (y * tileSize);
+                int screenX = displayX(x, cols);
+                int screenY = displayY(y, rows);
+
+                int posX = offsetX + (screenX * tileSize);
+                int posY = offsetY + (screenY * tileSize);
 
                 // Tile[][] je [x][y]
                 Tile tile = null;
@@ -820,7 +840,7 @@ playSound = true;
         // takže se automaticky aktualizuje po přesunu i po zničení Carrieru —
         // nic si nepamatujeme mezi kresleními.
         // =========================================================
-        boolean[][] carrierSquares = new boolean[cols][rows];
+        boolean[][] carrierSquares = new boolean[cols][rows]; //TODO smyčka pro otočení šachovnice
 
         for (int cx = 0; cx < cols; cx++) {
             for (int cy = 0; cy < rows; cy++) {
@@ -845,8 +865,13 @@ playSound = true;
         for (int cx = 0; cx < cols; cx++) {
             for (int cy = 0; cy < rows; cy++) {
                 if (carrierSquares[cx][cy]) {
-                    int posX = offsetX + cx * tileSize;
-                    int posY = offsetY + cy * tileSize;
+
+
+                    int screenX = displayX(cx, cols);
+                    int screenY = displayY(cy, rows);
+
+                    int posX = offsetX + screenX * tileSize;
+                    int posY = offsetY + screenY * tileSize;
 
                     g2d.fillRect(
                             posX,
@@ -866,10 +891,13 @@ playSound = true;
                 int tx = target[0];
                 int ty = target[1];
 
-                int posX = offsetX + (tx * tileSize);
-                int posY = offsetY + (ty * tileSize);
+                int screenX = displayX(tx, cols);
+                int screenY = displayY(ty, rows);
 
-                boolean isCapture = board.getPiece(tx, ty) != null;
+                int posX = offsetX + (screenX * tileSize);
+                int posY = offsetY + (screenY * tileSize);
+
+                boolean isCapture = board.getPiece(tx, ty) != null; // pořád tx,ty (raw) — beze změny
 
                 if (isCapture) {
                     // pole s nepřátelskou figurkou -> zvýrazníme prstencem (braní)
@@ -908,7 +936,16 @@ playSound = true;
         for (int px = 0; px < cols; px++) {
             for (int py = 0; py < rows; py++) {
 
-                Piece piece = board.getPiece(px, py);
+                Piece piece = board.getPiece(px, py); // raw — beze změny
+
+                if (piece == null) continue;
+                if (isDragging && piece == selectedPiece) continue;
+
+                int screenX = displayX(px, cols);
+                int screenY = displayY(py, rows);
+
+                int posX = offsetX + (screenX * tileSize);
+                int posY = offsetY + (screenY * tileSize);
 
                 if (piece == null) continue;
 
@@ -918,8 +955,6 @@ playSound = true;
                     continue;
                 }
 
-                int posX = offsetX + (px * tileSize);
-                int posY = offsetY + (py * tileSize);
 
                 drawPieceAt(
                         g2d,
@@ -962,14 +997,12 @@ playSound = true;
             String label = String.valueOf(x);
             int textWidth = fm.stringWidth(label);
 
-            // Střed políčka na osách X
-            int textX = offsetX + (x * tileSize) + (tileSize - textWidth) / 2;
+            int screenX = displayX(x, cols);
+            int textX = offsetX + (screenX * tileSize) + (tileSize - textWidth) / 2;
 
-            // Nahoře nad šachovnicí
             int textYTop = offsetY - 6;
             g2d.drawString(label, textX, textYTop);
 
-            // Dole pod šachovnicí
             int textYBottom = offsetY + (rows * tileSize) + fm.getAscent() + 2;
             g2d.drawString(label, textX, textYBottom);
         }
@@ -979,14 +1012,12 @@ playSound = true;
             String label = String.valueOf(y);
             int textHeight = fm.getAscent();
 
-            // Střed políčka na osách Y
-            int textY = offsetY + (y * tileSize) + (tileSize + textHeight) / 2 - 2;
+            int screenY = displayY(y, rows);
+            int textY = offsetY + (screenY * tileSize) + (tileSize + textHeight) / 2 - 2;
 
-            // Vlevo vedle šachovnice
             int textXLeft = offsetX - fm.stringWidth(label) - 8;
             g2d.drawString(label, textXLeft, textY);
 
-            // Vpravo vedle šachovnice
             int textXRight = offsetX + (cols * tileSize) + 8;
             g2d.drawString(label, textXRight, textY);
         }
