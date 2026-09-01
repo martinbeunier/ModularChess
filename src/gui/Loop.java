@@ -1058,6 +1058,21 @@ public class Loop extends JPanel {
             case "knight":
                 scale = 1.8;
                 break;
+
+            case "bishop":
+                scale = 1.5;
+                break;
+            case "king":
+                scale = 1.80;
+                break;
+            case "queen":
+                scale = 1.70;
+                break;
+
+            case "rook":
+                scale = 1.76;
+                break;
+
         }
 
 

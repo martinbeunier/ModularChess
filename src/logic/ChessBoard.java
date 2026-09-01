@@ -22,6 +22,7 @@ public class ChessBoard {
     int[] enPassantTarget = null;
     private ArrayList<Player> players;
     private PromotionChooser promotionChooser = null;
+    private int snapShotCount ;
 
     private HashMap<String, Integer> positionCounts = new HashMap<>();
 
@@ -248,8 +249,9 @@ public class ChessBoard {
              FileWriter myWriter = new FileWriter(gameHistoryFilePath, true);
              StringBuilder sb = new StringBuilder();
 
+             snapShotCount++;
              sb.append("\n========================================\n");
-             sb.append("GAME HISTORY SNAPSHOT\n");
+             sb.append("GAME HISTORY SNAPSHOT "+snapShotCount+"\n");
              sb.append("========================================\n");
 
 

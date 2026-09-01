@@ -198,7 +198,8 @@ piece editor
 záznamy her
 
 
-
+//překreslit pawna
+//překreslit letadlo
 
 
 */

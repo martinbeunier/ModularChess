@@ -34,7 +34,7 @@ public class GameLoop {
     private boolean drawByRepetition = false;
     private boolean drawByNoCapture = false;
 
-    private static final int NO_CAPTURE_MOVE_LIMIT = 70;
+    private static final int NO_CAPTURE_MOVE_LIMIT = 70 ;
 
     private String gameHistoryFilePath; // uloží se JEDNOU, na začátku, pak se pořád jen přepisuje stejný soubor
     private String mapName;             // potřebujeme si zapamatovat název mapy pro název souboru
@@ -176,13 +176,17 @@ public class GameLoop {
 
         // Utopení pěšce se počítá stejně jako braní — deska se "vyprázdnila",
         // takže nejde o "mrtvý" tah bez pokroku.
+
+
         if (captured || lastMoveCausedDrowning) {
             movesWithoutCapture = 0;
         } else {
             movesWithoutCapture++;
         }
 
-        drawByNoCapture = movesWithoutCapture >= NO_CAPTURE_MOVE_LIMIT;
+
+
+        drawByNoCapture = movesWithoutCapture  >= NO_CAPTURE_MOVE_LIMIT * players.size();
 
         switchPlayer++;
         currentPlayer = players.get(switchPlayer % players.size());
