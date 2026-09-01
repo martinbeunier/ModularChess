@@ -182,14 +182,8 @@ public class Main/*extends Application */{
     }}
 
 /*TODO
-dodělat integraci bota v Loop
 
-
-
-V prvním tahu bíleho nejsou zvuky .
-Když začíná bot ,musím hrát za něho 1 krok .
-Můžu hrát za bota ,on pak hraje za mně a za sebe .
-
+chytřejší bot
 
 4.
 settings soubor

@@ -84,4 +84,12 @@ public class Bot {
 
         return null;
     }
+    /**
+     * Náhodně vybere jednu z dostupných promoční figurek.
+     * @param pieceNames jména dostupných možností (viz PromotionChooser)
+     * @return náhodný index v poli pieceNames
+     */
+    public int chooseRandomPromotion(String[] pieceNames) {
+        return random.nextInt(pieceNames.length);
+    }
 }

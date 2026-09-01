@@ -1741,9 +1741,12 @@ return false;
 
                     // Připravíme si jména figurek pro nabídku (GUI i konzole je použijí stejně)
                     String[] names = new String[options.size()];
+                    int[] values = new int[options.size()];
+
                     for (int i = 0; i < options.size(); i++) {
                         Piece p = options.get(i).create(0, 0, board[endX][endY].getColour());
                         names[i] = p.getName();
+                        values[i] = p.getValue();
                     }
 
                     int choice;

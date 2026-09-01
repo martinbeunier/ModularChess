@@ -1,5 +1,6 @@
 package gui;
 
+import gameloop.Bot;
 import gameloop.GameLoop;
 import logic.*;
 import logic.Tile;
@@ -69,6 +70,7 @@ public class Loop extends JPanel {
     // Cache pro uložení již načtených SVG obrázků v paměti RAM
     private final Map<String, BufferedImage> imageCache = new HashMap<>();
 
+    private final Bot bot = new Bot();
 
     public Loop(MainFrame frame) {
         this.frame = frame;
@@ -543,7 +545,7 @@ public class Loop extends JPanel {
 
         gameLoop.getChessBoard().setPromotionChooser((x, y, pieceNames) -> {
             if (gameLoop.isVsBot() && gameLoop.getCurrentPlayer().getColor() == gameLoop.getBotColour()) {
-                return 0;
+                return bot.chooseRandomPromotion(pieceNames);
             }
             return showPromotionDialog(x, y, pieceNames);
         });
