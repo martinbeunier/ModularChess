@@ -2,6 +2,7 @@ package gameloop;
 
 import logic.ChessBoard;
 import logic.Colour;
+import logic.MoveType;
 import logic.Player;
 import pieces.Piece;
 
@@ -45,27 +46,42 @@ public class Bot {
             }
         }
 
-        // Zamícháme pořadí, ať bot netáhne pořád tou samou (první nalezenou) figurkou
         Collections.shuffle(myPiecePositions, random);
 
         for (int[] pos : myPiecePositions) {
             int px = pos[0];
             int py = pos[1];
 
-            ArrayList<int[]> targets = board.getPossibleTargets(px, py, currentPlayer);
-            if (targets.isEmpty()) continue;
+            // Posbíráme VŠECHNY možnosti téhle figurky — klasické tahy i rotace — dohromady
+            List<int[]> options = new ArrayList<>(); // {typ, a, b}  typ: 0 = pohyb (a,b = cílové x,y), 1 = rotace (a = delta)
 
-            Collections.shuffle(targets, random);
+            for (int[] target : board.getPossibleTargets(px, py, currentPlayer)) {
+                options.add(new int[]{0, target[0], target[1]});
+            }
 
-            for (int[] target : targets) {
-                boolean moved = gameLoop.tryMove(px, py, target[0], target[1]);
-                if (moved) {
-                    return new int[]{px, py, target[0], target[1]};
+            ArrayList<MoveType> rawRotates = board.getRotateMoves(px, py);
+            ArrayList<MoveType> validRotates = board.validRotateMoves(px, py, rawRotates);
+            for (MoveType m : validRotates) {
+                int delta = ((m.getRotate() % 4) + 4) % 4;
+                options.add(new int[]{1, delta, 0});
+            }
+
+            if (options.isEmpty()) continue;
+
+            Collections.shuffle(options, random);
+
+            for (int[] option : options) {
+                boolean moved;
+                if (option[0] == 0) {
+                    moved = gameLoop.tryMove(px, py, option[1], option[2]);
+                    if (moved) return new int[]{px, py, option[1], option[2]};
+                } else {
+                    moved = gameLoop.tryMove(px, py, option[1]);
+                    if (moved) return new int[]{px, py, px, py}; // rotace = "from" i "to" stejné pole
                 }
-                // Ve velmi vzácném edge-case by tah přesto neprošel — zkusíme další cíl
             }
         }
 
-        return null; // bot nemá žádný platný tah
+        return null;
     }
 }

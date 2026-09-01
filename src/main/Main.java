@@ -183,9 +183,11 @@ public class Main/*extends Application */{
 
 /*TODO
 dodělat integraci bota v Loop
-Duplicitní bug - dvojté zvuky ,okna
+
+
+
+V prvním tahu bíleho nejsou zvuky .
 Když začíná bot ,musím hrát za něho 1 krok .
-Otočit směrovou risku u hraní za černého .
 Můžu hrát za bota ,on pak hraje za mně a za sebe .
 
 

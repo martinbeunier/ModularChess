@@ -270,7 +270,9 @@ public class GameLoop {
     public void setVsBot(boolean vsBot, Colour botColour) {
         this.vsBot = vsBot;
         this.botColour = botColour;
+        maybeTriggerBotMove(); // pokryje případ, kdy bot táhne jako první
     }
+
 
     public void setMoveListener(MoveListener listener) {
         this.moveListener = listener;

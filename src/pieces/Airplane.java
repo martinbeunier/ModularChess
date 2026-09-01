@@ -18,16 +18,17 @@ addMove(new MoveType(3));
 
         );
 
+        addPromotionPiece((px, py, c) ->
+                new Fighter("Fighter", px, py, c, (rotation + 2) % 4)
+
+        );
 
         addPromotionPiece((px, py, pc) ->
                 new Helicopter("Helicopter", px, py, pc)
         );
 
 
-        addPromotionPiece((px, py, c) ->
-                new Fighter("Fighter", px, py, c, (rotation + 2) % 4)
 
-        );
 
                 addMove(rotateMove(new MoveType(1,-1, MoveBehaviour.BOTH, MoveClass.LEAP),rotation));
                 addMove(rotateMove(new MoveType(2,-1, MoveBehaviour.BOTH, MoveClass.LEAP),rotation));

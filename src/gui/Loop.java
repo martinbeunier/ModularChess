@@ -69,6 +69,7 @@ public class Loop extends JPanel {
     // Cache pro uložení již načtených SVG obrázků v paměti RAM
     private final Map<String, BufferedImage> imageCache = new HashMap<>();
 
+
     public Loop(MainFrame frame) {
         this.frame = frame;
         this.setLayout(null);
@@ -181,6 +182,10 @@ public class Loop extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (gameLoop == null) return;
+                if (gameLoop.isVsBot() && gameLoop.getCurrentPlayer().getColor() == gameLoop.getBotColour()) {
+                    return; // je na tahu bot — ignorujeme klik hráče
+                }
+
                 ChessBoard board = gameLoop.getChessBoard();
                 if (board == null) return;
 
@@ -213,13 +218,7 @@ public class Loop extends JPanel {
                     if (selectedPiece != null && (gridX != startGridX || gridY != startGridY)) {
                         boolean moved = gameLoop.tryMove(startGridX, startGridY, gridX, gridY);
                         resetSelection();
-                        if (moved) {
-                            registerLastMove(startGridX, startGridY, gridX, gridY);
-                            updateThreatWarnings();
-                            gameLoop.saveGame();
-                            checkGameOver();
-
-                        } else {
+                        if (!moved) {
                             // Pokud tah neprošel, ale klikli jsme na jinou vlastní figurku, vybereme ji
                             if (clickedPiece != null && clickedPiece.getColour() == gameLoop.getCurrentPlayer().getColor()) {
                                 selectPieceAt(clickedPiece, gridX, gridY, e.getX(), e.getY());
@@ -267,13 +266,7 @@ public class Loop extends JPanel {
                             targetGridY >= 0 && targetGridY < board.getHeight()) {
 
                         if (targetGridX != startGridX || targetGridY != startGridY) {
-                            boolean moved = gameLoop.tryMove(startGridX, startGridY, targetGridX, targetGridY);
-                            if (moved) {
-                                registerLastMove(startGridX, startGridY, targetGridX, targetGridY);
-                                updateThreatWarnings();
-                                gameLoop.saveGame();
-                                checkGameOver();
-                            }
+                            gameLoop.tryMove(startGridX, startGridY, targetGridX, targetGridY);
                         }
                     }
                     resetSelection();
@@ -430,8 +423,6 @@ public class Loop extends JPanel {
             selectedPiece = gameLoop.getChessBoard().getPiece(startGridX, startGridY);
             updateRotationButtons();
             updatePossibleMoves();
-            updateThreatWarnings();
-            checkGameOver();
         }
 
         repaint();
@@ -481,13 +472,10 @@ public class Loop extends JPanel {
 
         boolean anyThreatFound = false;
 
-        // Hra je (zatím) navržená pro dvě barvy — Bílý a Černý
         for (Colour colour : new Colour[]{Colour.White, Colour.Black}) {
             ArrayList<int[]> heads = board.getHeadPositions(colour);
-
             for (int[] head : heads) {
                 ArrayList<int[]> attackers = board.getAttackersOfSquare(head[0], head[1], colour);
-
                 if (!attackers.isEmpty()) {
                     threatenedHeadSquares.add(head);
                     attackingPieceSquares.addAll(attackers);
@@ -496,23 +484,18 @@ public class Loop extends JPanel {
             }
         }
 
-if(playSound == true) {
-    if (anyThreatFound) {
-        SoundPlayer.playWav(UIconfiguration.THREAT_SOUND_PATH, UIconfiguration.soundEfectsVolume);
-        if (gameLoop.didLastMoveCauseDrowning()) {
-            SoundPlayer.playWav("files\\sounds\\waterSound.wav", UIconfiguration.soundEfectsVolume);
-        }
-    } else {
-        if (gameLoop.didLastMoveCauseDrowning()) {
-            SoundPlayer.playWav("files\\sounds\\waterSound.wav", UIconfiguration.soundEfectsVolume);
+        if (anyThreatFound) {
+            SoundPlayer.playWav(UIconfiguration.THREAT_SOUND_PATH, UIconfiguration.soundEfectsVolume);
+            if (gameLoop.didLastMoveCauseDrowning()) {
+                SoundPlayer.playWav("files\\sounds\\waterSound.wav", UIconfiguration.soundEfectsVolume);
+            }
         } else {
-            SoundPlayer.playWav(UIconfiguration.MOVE_SOUND_PATH, UIconfiguration.soundEfectsVolume);
+            if (gameLoop.didLastMoveCauseDrowning()) {
+                SoundPlayer.playWav("files\\sounds\\waterSound.wav", UIconfiguration.soundEfectsVolume);
+            } else {
+                SoundPlayer.playWav(UIconfiguration.MOVE_SOUND_PATH, UIconfiguration.soundEfectsVolume);
+            }
         }
-    }
-}
-playSound = true;
-
-
     }
     private void registerLastMove(int fromX, int fromY, int toX, int toY) {
         this.lastMoveFromX = fromX;
@@ -526,7 +509,6 @@ playSound = true;
         lastMoveToX = -1;
         lastMoveToY = -1;
     }
-
 
     public void setSelectedMap(String selectedMap) {
         this.selectedMap = selectedMap;
@@ -543,17 +525,12 @@ playSound = true;
     public void startGame() {
         System.out.println("Načítám hrací plochu s mapou: " + selectedMap + " a botem: " + selectedOpponent);
 
-        boardFlipped = "Black".equalsIgnoreCase(selectedColour); // uprav podle skutečné hodnoty selectedColour
+        boardFlipped = "Black".equalsIgnoreCase(selectedColour);
 
         gameLoop = new GameLoop();
         gameLoop.initGame(selectedMap);
 
-        boolean vsBot = "Bot 1".equals(selectedOpponent); // uprav podle skutečného ActionCommand tlačítka bota
-        Colour botColour = boardFlipped ? Colour.White : Colour.Black;
-        gameLoop.setVsBot(vsBot, botColour);
-
-        // GameLoop teď SÁM rozhodne, kdy bot táhne — Loop se jen dozví o KAŽDÉM
-        // dokončeném tahu (lidském i botím) a zareaguje na GUI úrovni.
+        // ⚠️ Listener a promotionChooser MUSÍ být zaregistrované PŘED setVsBot(...)
         gameLoop.setMoveListener((fromX, fromY, toX, toY) -> {
             SwingUtilities.invokeLater(() -> {
                 registerLastMove(fromX, fromY, toX, toY);
@@ -566,10 +543,14 @@ playSound = true;
 
         gameLoop.getChessBoard().setPromotionChooser((x, y, pieceNames) -> {
             if (gameLoop.isVsBot() && gameLoop.getCurrentPlayer().getColor() == gameLoop.getBotColour()) {
-                return 0; // bot automaticky promuje na Queen (index 0), BEZ dialogu — bezpečné i mimo EDT
+                return 0;
             }
             return showPromotionDialog(x, y, pieceNames);
         });
+
+        boolean vsBot = "Bot 1".equals(selectedOpponent);
+        Colour botColour = boardFlipped ? Colour.White : Colour.Black;
+        gameLoop.setVsBot(vsBot, botColour); // teď bezpečné — případný okamžitý start bota už má kam hlásit výsledek
 
         resetSelection();
         repaint();
@@ -1160,7 +1141,7 @@ playSound = true;
             g2d.drawOval(drawX, drawY, drawWidth, drawHeight);
         }
 
-        // --- 2. VRSTVA UPROSTŘED: Červená směrová čárka ---
+// --- 2. VRSTVA UPROSTŘED: Červená směrová čárka ---
         if (piece instanceof OrientedPiece) {
             OrientedPiece orientedPiece = (OrientedPiece) piece;
             int rotation = orientedPiece.getRotation();
@@ -1170,6 +1151,11 @@ playSound = true;
             int pointerLength = (tileSize - (tileSize / 3)) / 2;
 
             double angleRad = Math.toRadians((rotation * 90) - 90);
+
+            // Při pohledu za černého je celá šachovnice otočená o 180°
+            if (boardFlipped) {
+                angleRad += Math.PI;
+            }
 
             int targetX = centerX + (int) (Math.cos(angleRad) * pointerLength);
             int targetY = centerY + (int) (Math.sin(angleRad) * pointerLength);
