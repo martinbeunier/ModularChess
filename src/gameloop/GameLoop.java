@@ -40,7 +40,7 @@ public class GameLoop {
     private String mapName;             // potřebujeme si zapamatovat název mapy pro název souboru
 
 
-    private final Bot bot = new Bot();
+    private Bot bot; // konkrétní implementace se nastaví přes setVsBot
     private boolean vsBot = false;
     private Colour botColour;
     private MoveListener moveListener;
@@ -267,10 +267,11 @@ public class GameLoop {
         return "files\\gameHistory\\" + count + "_" + mapName + ".chess";
     }
 
-    public void setVsBot(boolean vsBot, Colour botColour) {
+    public void setVsBot(boolean vsBot, Colour botColour, Bot bot) {
         this.vsBot = vsBot;
         this.botColour = botColour;
-        maybeTriggerBotMove(); // pokryje případ, kdy bot táhne jako první
+        this.bot = bot;
+        maybeTriggerBotMove();
     }
 
 
@@ -287,21 +288,23 @@ public class GameLoop {
     }
 
     private void maybeTriggerBotMove() {
-        if (!vsBot) return;
+        if (!vsBot || bot == null) return;
         if (isGameOver()) return;
         if (currentPlayer.getColor() != botColour) return;
 
         Thread botThread = new Thread(() -> {
             try {
-                Thread.sleep(400); // volitelná umělá prodleva, kosmetika
+                Thread.sleep(400);
             } catch (InterruptedException ignored) {}
 
-            bot.playRandomMove(this); // interně zavolá tryMove(...) -> celý koloběh se zopakuje
+            bot.chooseAndPlayMove(this);
         });
 
         botThread.setDaemon(true);
         botThread.start();
     }
-
+    public Bot getBot() {
+        return bot;
+    }
 }
 

@@ -135,11 +135,26 @@ public class MapSelect extends JPanel {
 
         bot1Button.setActionCommand("Bot 1");
 
+        JRadioButton bot2Button =
+                new JRadioButton("Bot 2");
+
+        bot2Button.setBounds(
+                0,
+                UI.toPercent(6, h),
+                UI.toPercent(15, w),
+                UI.toPercent(3, h)
+        );
+
+        bot2Button.setActionCommand("Bot 2");
+
+
         group.add(selfButton);
         group.add(bot1Button);
+        group.add(bot2Button);
 
         radioPanel.add(selfButton);
         radioPanel.add(bot1Button);
+        radioPanel.add(bot2Button);
 
         // --------------------------------------------------
         // Výběr barvy

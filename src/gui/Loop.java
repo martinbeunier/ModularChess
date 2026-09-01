@@ -1,6 +1,7 @@
 package gui;
 
 import gameloop.Bot;
+import gameloop.BotFactory;
 import gameloop.GameLoop;
 import logic.*;
 import logic.Tile;
@@ -70,7 +71,7 @@ public class Loop extends JPanel {
     // Cache pro uložení již načtených SVG obrázků v paměti RAM
     private final Map<String, BufferedImage> imageCache = new HashMap<>();
 
-    private final Bot bot = new Bot();
+    //private final Bot bot = new Bot();
 
     public Loop(MainFrame frame) {
         this.frame = frame;
@@ -532,7 +533,6 @@ public class Loop extends JPanel {
         gameLoop = new GameLoop();
         gameLoop.initGame(selectedMap);
 
-        // ⚠️ Listener a promotionChooser MUSÍ být zaregistrované PŘED setVsBot(...)
         gameLoop.setMoveListener((fromX, fromY, toX, toY) -> {
             SwingUtilities.invokeLater(() -> {
                 registerLastMove(fromX, fromY, toX, toY);
@@ -544,15 +544,18 @@ public class Loop extends JPanel {
         });
 
         gameLoop.getChessBoard().setPromotionChooser((x, y, pieceNames) -> {
-            if (gameLoop.isVsBot() && gameLoop.getCurrentPlayer().getColor() == gameLoop.getBotColour()) {
-                return bot.chooseRandomPromotion(pieceNames);
+            Bot currentBot = gameLoop.getBot();
+            if (gameLoop.isVsBot() && currentBot != null
+                    && gameLoop.getCurrentPlayer().getColor() == gameLoop.getBotColour()) {
+                return currentBot.choosePromotion(pieceNames);
             }
             return showPromotionDialog(x, y, pieceNames);
         });
 
-        boolean vsBot = "Bot 1".equals(selectedOpponent);
+        Bot bot = BotFactory.createBot(selectedOpponent); // null, pokud "Against yourself"
+        boolean vsBot = (bot != null);
         Colour botColour = boardFlipped ? Colour.White : Colour.Black;
-        gameLoop.setVsBot(vsBot, botColour); // teď bezpečné — případný okamžitý start bota už má kam hlásit výsledek
+        gameLoop.setVsBot(vsBot, botColour, bot);
 
         resetSelection();
         repaint();
