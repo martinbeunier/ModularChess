@@ -16,7 +16,7 @@ public class BotFactory {
             case "Bot 2":
                 return new gameloop.GreedyBot();
             case "Bot 3":
-                return new gameloop.MinimaxBot();
+                return new gameloop.TacticalBot();
             default:
                 return null; // "Against yourself" nebo neznámá hodnota -> žádný bot
         }
