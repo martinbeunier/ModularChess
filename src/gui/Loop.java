@@ -1062,6 +1062,9 @@ public class Loop extends JPanel {
             case "bishop":
                 scale = 1.5;
                 break;
+            case "arcibishop":
+                scale = 1.4;
+                break;
             case "king":
                 scale = 1.80;
                 break;
@@ -1071,6 +1074,20 @@ public class Loop extends JPanel {
 
             case "rook":
                 scale = 1.76;
+                break;
+            case "linebreakerrook":
+                scale = 1.76;
+                break;
+
+            case "landcarrier":
+                scale = 2.9;
+                break;
+
+            case "torpedo":
+                scale = 1.25;
+                break;
+            case "lifebuoy":
+                scale = 1.85;
                 break;
 
         }
@@ -1088,7 +1105,14 @@ public class Loop extends JPanel {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-        String colorPrefix = (piece.getColour() == Colour.White) ? "white" : "black";
+
+
+        String colorPrefix ="";
+        switch(piece.getColour()){
+            case Colour.White : colorPrefix = "white"; break;
+            case Colour.Black : colorPrefix = "black"; break;
+        }
+
         String pieceType = piece.getClass().getSimpleName().toLowerCase();
         String imagePath = "files/images/skins/" + colorPrefix + pieceType + ".svg";
 
