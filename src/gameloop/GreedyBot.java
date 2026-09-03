@@ -15,7 +15,7 @@ import java.util.Random;
  * Vždy preferuje nejcennější dostupné braní. Mezi rovnocennými možnostmi
  * (žádné braní k dispozici) si vybírá náhodně.
  */
-public class GreedyBot implements Bot {
+public class GreedyBot implements Bot {       //   1/10
     private final Random random = new Random();
 
     private static final int TYPE_MOVE = 0;

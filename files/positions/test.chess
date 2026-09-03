@@ -53,7 +53,7 @@ Pieces :
 piece : class pieces.Bishop ;Black Bishop; 1 0 Black true 320
 piece : class pieces.Bishop ;Black Bishop; 2 0 Black true 320
 piece : class pieces.Torpedo ;b Torpedo; 3 0 Black true 200 2
-piece : class pieces.King ;Black king; 4 0 Black true 10000
+piece : class pieces.Emperor ;Black Emperor; 4 0 Black true 10000
 piece : class pieces.Bishop ;Black Bishop; 6 0 Black true 320
 piece : class pieces.Bishop ;Black Bishop; 7 0 Black true 320
 piece : class pieces.LandCarrier ;b Land Carrier; 1 1 Black true 450
@@ -68,7 +68,9 @@ piece : class pieces.Pawn ;Black Pawn; 5 2 Black true 100 2
 piece : class pieces.Pawn ;Black Pawn; 6 2 Black true 100 2
 piece : class pieces.Pawn ;Black Pawn; 7 2 Black true 100 2
 piece : class pieces.Pawn ;Black Pawn; 8 2 Black true 100 2
+piece : class pieces.PoweUps.OverClocker ;OverClocker; 1 4 Neutral true 0
 piece : class pieces.PoweUps.Lifebuoy ;ability; 4 4 Neutral true 0
+piece : class pieces.Blocade ;blocade; 7 4 Blockade true 0
 piece : class pieces.Pawn ;White Pawn; 0 6 White true 100 0
 piece : class pieces.Pawn ;White Pawn; 1 6 White true 100 0
 piece : class pieces.Pawn ;White Pawn; 2 6 White true 100 0
@@ -84,7 +86,7 @@ piece : class pieces.LandCarrier ;w Land Carrier; 7 7 White true 450
 piece : class pieces.Bishop ;White Bishop; 1 8 White true 320
 piece : class pieces.Bishop ;White Bishop; 2 8 White true 320
 piece : class pieces.Torpedo ;w Torpedo; 3 8 White true 200 0
-piece : class pieces.King ;White king; 4 8 White true 10000
+piece : class pieces.Emperor ;White Emperor; 4 8 White true 10000
 piece : class pieces.Bishop ;White Bishop; 6 8 White true 320
 piece : class pieces.Bishop ;White Bishop; 7 8 White true 320
 

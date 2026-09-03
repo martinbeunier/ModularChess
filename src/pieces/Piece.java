@@ -4,7 +4,7 @@ import logic.*;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
-public class Piece {
+public class Piece implements Cloneable  {
 
     private String name;
     private int x;
@@ -45,7 +45,15 @@ public class Piece {
 
     }
 
-
+    @Override
+    public Piece clone() {
+        try {
+            return (Piece) super.clone();
+        } catch (CloneNotSupportedException e) {
+            // Nemělo by nikdy nastat, Piece implementuje Cloneable
+            throw new RuntimeException(e);
+        }
+    }
 
     public void addMove(MoveType m) {
         moves.add(m);

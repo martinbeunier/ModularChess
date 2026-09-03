@@ -20,7 +20,7 @@ import java.util.Random;
  *  3) Lehce penalizuje okamžité vrácení svého vlastního posledního tahu,
  *     ať se zbytečně netočí tam a zpátky.
  */
-public class TacticalBot implements Bot {
+public class TacticalBot implements Bot {  // 2/10 Bold Man
     private final Random random = new Random();
 
     private static final int TYPE_MOVE = 0;

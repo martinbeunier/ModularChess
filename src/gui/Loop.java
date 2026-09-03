@@ -65,8 +65,8 @@ public class Loop extends JPanel {
     private boolean boardFlipped = false; // true = hraje se za černého, otočíme pohled na desku
 
     private Image currentPreviewImage;
-    private Image defaultNoPieceImage = safeLoadImage("files\\images\\icon.png");
-    private Image defaultUnknownPieceImage =safeLoadImage("files\\images\\img19.jpg");
+    private Image defaultNoPieceImage = safeLoadImage("files\\images\\movehint\\img19.jpg");
+    private Image defaultUnknownPieceImage =safeLoadImage( "files\\images\\movehint\\icon.png");
 
     // Cache pro uložení již načtených SVG obrázků v paměti RAM
     private final Map<String, BufferedImage> imageCache = new HashMap<>();
@@ -339,7 +339,7 @@ public class Loop extends JPanel {
     private Image loadPreviewForPiece(Piece piece) {
         // Načte obrázek podle násobení násobené třídy figury (např. "card_pawn.png", "card_linebreaker.png")
         String className = piece.getClass().getSimpleName().toLowerCase();
-        String path = "files/images/" + className + ".png";
+        String path = "files/images/movehint/" + className + ".png";
 
         java.io.File file = new java.io.File(path);
         if (file.exists()) {
@@ -1068,6 +1068,10 @@ public class Loop extends JPanel {
             case "king":
                 scale = 1.80;
                 break;
+            case "emperor":
+                scale = 1.80;
+                break;
+
             case "queen":
                 scale = 1.70;
                 break;
@@ -1086,9 +1090,19 @@ public class Loop extends JPanel {
             case "torpedo":
                 scale = 1.25;
                 break;
+
+
             case "lifebuoy":
                 scale = 1.85;
                 break;
+            case "overclocker":
+                scale = 1.25;
+                break;
+            case "blocade":
+                scale = 2.35;
+                break;
+
+
 
         }
 

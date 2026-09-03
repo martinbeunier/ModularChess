@@ -87,8 +87,8 @@ public class Main/*extends Application */{
         Bishop bbishop3 = new Bishop("Black Bishop",6,0,Colour.Black);
         Bishop bbishop4 = new Bishop("Black Bishop",7,0,Colour.Black);
 
-        King wking = new King("White king",4,8,Colour.White,2);
-        King bking = new King("Black king",4,0,Colour.Black,0);
+       Emperor wemperor = new Emperor("White Emperor",4,8,Colour.White);
+        Emperor bemperor = new Emperor("Black Emperor",4,0,Colour.Black);
 
         LandCarrier wlandCarrier1 = new LandCarrier("w Land Carrier",1,7,Colour.White);
         LandCarrier wlandCarrier2 = new LandCarrier("w Land Carrier",7,7,Colour.White);
@@ -103,6 +103,9 @@ public class Main/*extends Application */{
         Torpedo btorpedo = new Torpedo("b Torpedo",3,0,Colour.Black,2);
 
         Lifebuoy lifebuoy = new Lifebuoy("ability",4,4);
+        OverClocker overClocker = new OverClocker("OverClocker",1,4);
+
+        Blocade blocade = new Blocade("blocade",7,4);
 
 
 
@@ -131,8 +134,8 @@ public class Main/*extends Application */{
         chessBoard.addPiece(bbishop3);
         chessBoard.addPiece(bbishop4);
 
-        chessBoard.addPiece(wking);
-        chessBoard.addPiece(bking);
+        chessBoard.addPiece(wemperor);
+        chessBoard.addPiece(bemperor);
 
         chessBoard.addPiece(wlandCarrier1);
         chessBoard.addPiece(wlandCarrier2);
@@ -146,6 +149,8 @@ public class Main/*extends Application */{
         chessBoard.addPiece(btorpedo);
 
         chessBoard.addPiece(lifebuoy);
+        chessBoard.addPiece(overClocker);
+        chessBoard.addPiece(blocade);
 
 
 
@@ -183,6 +188,8 @@ public class Main/*extends Application */{
 
 /*TODO
 
+
+udělat ,ať se líp načítají obrázky movehint
 chytřejší bot
 
 4.
@@ -200,7 +207,7 @@ záznamy her
 
 //překreslit pawna
 //překreslit letadlo
-
+//zobrazit počet materiálu .
 
 */
 

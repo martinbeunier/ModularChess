@@ -28,6 +28,79 @@ public class ChessBoard {
 
     //region capsulation
 
+    // Copy konstruktor pro simulace
+    public ChessBoard(ChessBoard other) {
+        int width = other.getWidth();
+        int height = other.getHeight();
+
+        this.board = new Piece[width][height];
+        this.tiles = new Tile[width][height];
+        this.players = new ArrayList<>(other.players);
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                this.board[x][y] = other.board[x][y]; // Zkopíruje odkaz na figurku
+                this.tiles[x][y] = new Tile();
+            }
+        }
+    }
+    public ChessBoard clone() {
+        int width = board.length;
+        int height = board[0].length;
+
+        ChessBoard copy = new ChessBoard(width, height);
+
+        // Figurky — každou zvlášť naklonujeme (Piece.clone())
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                if (board[x][y] != null) {
+                    copy.board[x][y] = board[x][y].clone();
+                }
+            }
+        }
+
+        // Dlaždice — Tile nemá vlastní clone(), poskládáme to přes veřejné API
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                copy.tiles[x][y].setWater(tiles[x][y].getWater());
+                for (Colour c : tiles[x][y].getPromotionColours()) {
+                    copy.tiles[x][y].addPromotionColour(c);
+                }
+            }
+        }
+
+        // enPassant
+        if (enPassantTarget != null) {
+            copy.enPassantTarget = new int[]{enPassantTarget[0], enPassantTarget[1]};
+        }
+
+        // Hráči — MUSÍ to být samostatné objekty (Player.clone()), jinak by
+        // simulace (např. addPowerUp() při obsazení power-up políčka) znečistila
+        // skutečnou hru sdílenou referencí.
+        copy.players = new ArrayList<>();
+        for (Player p : players) {
+            copy.players.add(p.clone());
+        }
+
+        // Historie pozic (pravidlo opakování) — kopírujeme obsah, nesdílíme mapu
+        copy.positionCounts = new HashMap<>(this.positionCounts);
+
+        // promotionChooser NEkopírujeme — simulace nesmí otevírat dialogy ani
+        // volat bota rekurzivně. Dáme jednoduchý automatický chooser (vždy první
+        // možnost), ať promotion() při simulaci nikdy nespadne na null referenci
+        // ani se neptalo přes konzoli.
+        copy.promotionChooser = (x, y, names) -> 0;
+
+        return copy;
+    }
+
+    // Metoda pro simulaci pohybu přímo na kopii desky bez setterů
+    public void simulateMove(int startX, int startY, int targetX, int targetY) {
+        Piece c = this.board[startX][startY];
+        this.board[startX][startY] = null;
+        this.board[targetX][targetY] = c;
+    }
+
     public int getWidth() {
         return board[0].length;
     }
@@ -61,6 +134,10 @@ public class ChessBoard {
 
     public Tile[][] getTiles() {
         return tiles;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
     }
 
     public void setPromotionChooser(PromotionChooser chooser) {

@@ -15,6 +15,25 @@ public class Player {
         this.powerUps = new HashSet<>();
     }
 
+    @Override
+    public Player clone() {
+        Player copy = new Player(this.getName(), this.getColor(), this.getElo());
+
+        for (PowerUpName p : this.getPowerUps()) {
+            copy.addPowerUp(p);
+        }
+
+        return copy;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getElo() {
+        return elo;
+    }
+
     public Colour getColor() {
         return colour;
     }

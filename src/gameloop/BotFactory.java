@@ -12,9 +12,9 @@ public class BotFactory {
 
         switch (opponentName) {
             case "Bot 1":
-                return new gameloop.RandomBot();
+                return new gameloop.SimulationBot();
             case "Bot 2":
-                return new gameloop.GreedyBot();
+                return new gameloop.MinimaxBot();
             case "Bot 3":
                 return new gameloop.TacticalBot();
             default:
