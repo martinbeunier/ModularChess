@@ -5,7 +5,7 @@ public class King extends Head {
     private int rotation;
 
     public King(String name, int x, int y, Colour colour,int rotation) {
-        super(name, x, y, colour ,10000);
+        super(name, x, y, colour ,100000);
         this.rotation = rotation;
 
         addMove(new MoveType(1,1, MoveBehaviour.BOTH,MoveClass.LEAP));

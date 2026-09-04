@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="jsvg-2.1.0">
+  <library name="pdfbox-3.0.7">
     <CLASSES>
-      <root url="jar://$PROJECT_DIR$/.idea/libraries/jsvg-2.1.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/.idea/libraries/pdfbox-3.0.7.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

@@ -124,7 +124,7 @@ public class MapSelect extends JPanel {
         selfButton.setActionCommand("Against yourself");
 
         JRadioButton bot1Button =
-                new JRadioButton("Bot 1");
+                new JRadioButton("Bold man bot : Dificulty 1/10");
 
         bot1Button.setBounds(
                 0,
@@ -132,11 +132,10 @@ public class MapSelect extends JPanel {
                 UI.toPercent(15, w),
                 UI.toPercent(3, h)
         );
-
         bot1Button.setActionCommand("Bot 1");
 
         JRadioButton bot2Button =
-                new JRadioButton("Bot 2");
+                new JRadioButton("Greedy bot : Dificulty 2/10");
 
         bot2Button.setBounds(
                 0,
@@ -148,7 +147,7 @@ public class MapSelect extends JPanel {
         bot2Button.setActionCommand("Bot 2");
 
         JRadioButton bot3Button =
-                new JRadioButton("Bot 3");
+                new JRadioButton("Trapper bot : Dificulty 6/10");
 
         bot3Button.setBounds(
                 0,

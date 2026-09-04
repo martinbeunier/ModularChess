@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="jsvg-2.1.0" level="project" />
+    <orderEntry type="library" name="pdfbox-3.0.7" level="project" />
   </component>
 </module>

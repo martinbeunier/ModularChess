@@ -2,6 +2,7 @@
   <library name="lib">
     <CLASSES>
       <root url="file://$PROJECT_DIR$/../openjfx-26.0.1_windows-x64_bin-sdk/javafx-sdk-26.0.1/lib" />
+      <root url="jar://$USER_HOME$/Downloads/pdfbox-3.0.7.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

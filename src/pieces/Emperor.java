@@ -9,7 +9,7 @@ public class Emperor extends Head {
     private int rotation;
 
     public Emperor(String name, int x, int y, Colour colour) {
-        super(name, x, y, colour ,10000);
+        super(name, x, y, colour ,100000);
 
         //king moves
         addMove(new MoveType(1,1, MoveBehaviour.BOTH, MoveClass.LEAP));

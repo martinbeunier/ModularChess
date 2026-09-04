@@ -11,11 +11,11 @@ public class BotFactory {
         if (opponentName == null) return null;
 
         switch (opponentName) {
-            case "Bot 1":
-                return new gameloop.AlphaBetaBot();
+            case "Bot 3":
+                return new gameloop.StrongBot();
             case "Bot 2":
                 return new gameloop.MinimaxBot();
-            case "Bot 3":
+            case "Bot 1":
                 return new gameloop.TacticalBot();
             default:
                 return null; // "Against yourself" nebo neznámá hodnota -> žádný bot

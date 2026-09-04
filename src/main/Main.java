@@ -188,8 +188,7 @@ public class Main/*extends Application */{
 
 /*TODO
 
-ověřit ,co je check
-chytřejší bot
+
 
 4.
 settings soubor
@@ -203,7 +202,8 @@ map editor
 piece editor
 záznamy her
 
-
+//udělat tutorial mapu
+//překreslit blocade
 //překreslit pawna
 //překreslit letadlo
 
