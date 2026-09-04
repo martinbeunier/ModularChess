@@ -188,8 +188,7 @@ public class Main/*extends Application */{
 
 /*TODO
 
-
-udělat ,ať se líp načítají obrázky movehint
+ověřit ,co je check
 chytřejší bot
 
 4.
@@ -207,7 +206,6 @@ záznamy her
 
 //překreslit pawna
 //překreslit letadlo
-//zobrazit počet materiálu .
 
 */
 

@@ -23,6 +23,7 @@ import com.github.weisj.jsvg.SVGDocument;
 import com.github.weisj.jsvg.parser.SVGLoader;
 import com.github.weisj.jsvg.view.ViewBox;
 
+
 public class Loop extends JPanel {
     private MainFrame frame;
     private String selectedMap;
@@ -39,6 +40,10 @@ public class Loop extends JPanel {
     private boolean isDragging = false;
     private boolean playSound = false;
 
+
+    private JLabel title ;
+    private JLabel score1;
+    private JLabel score2;
 
     // Tlačítka pro rotaci — aktivní jen když je vybraná figurka, která umí rotovat daným směrem
     private JButton rotateLeftButton;
@@ -65,7 +70,7 @@ public class Loop extends JPanel {
     private boolean boardFlipped = false; // true = hraje se za černého, otočíme pohled na desku
 
     private Image currentPreviewImage;
-    private Image defaultNoPieceImage = safeLoadImage("files\\images\\movehint\\img19.jpg");
+    private Image defaultNoPieceImage = safeLoadImage("files\\images\\movehint\\void.png");
     private Image defaultUnknownPieceImage =safeLoadImage( "files\\images\\movehint\\icon.png");
 
     // Cache pro uložení již načtených SVG obrázků v paměti RAM
@@ -78,6 +83,22 @@ public class Loop extends JPanel {
         this.setLayout(null);
         this.setBackground(new Color(26, 28, 37));
 
+
+        int w = frame.getWidth();
+        int h = frame.getHeight();
+
+        this.title = new JLabel("");
+        this.title.setFont(new Font("SansSerif", Font.BOLD,UI.toPercent(5, h)));
+        this.title.setBounds(UI.toPercent(70, w), UI.toPercent(50, h), UI.toPercent(24, w), UI.toPercent(10, h));
+
+        this.score1 = new JLabel("Score");
+        this.score1.setFont(new Font("SansSerif", Font.BOLD,UI.toPercent(5, h)));
+        this.score1.setBounds(UI.toPercent(2, w), UI.toPercent(5, h), UI.toPercent(24, w), UI.toPercent(10, h));
+
+        this.score2  = new JLabel("Score");
+        this.score2.setFont(new Font("SansSerif", Font.BOLD,UI.toPercent(5, h)));
+        this.score2.setBounds(UI.toPercent(2, w), UI.toPercent(80, h), UI.toPercent(24, w), UI.toPercent(10, h));
+
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "backTo"            ); //TODO vyskakovací menu
         getActionMap().put("backTo", new AbstractAction()
         {
@@ -86,6 +107,7 @@ public class Loop extends JPanel {
                // frame.showScene("MENU");
             }
         });
+
 
 
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("LEFT"), "left"            );
@@ -125,8 +147,6 @@ public class Loop extends JPanel {
         // ------------------------------------------------------------
         // Tlačítka pro rotaci (šipky vedle šachovnice)
         // ------------------------------------------------------------
-        int w = frame.getWidth();
-        int h = frame.getHeight();
 
 
         rotateLeftButton = new JButton(
@@ -175,6 +195,9 @@ public class Loop extends JPanel {
         add(rotateLeftButton);
         add(rotateRightButton);
         add(rotateAroundButton);
+        add(title);
+        add(score1);
+        add(score2);
 
 
 
@@ -312,13 +335,20 @@ public class Loop extends JPanel {
         lastHoverX = boardX;
         lastHoverY = boardY;
 
+
+
         if (boardX >= 0 && boardX < board.getWidth() && boardY >= 0 && boardY < board.getHeight()) {
             Piece piece = board.getPiece(boardX, boardY);
 
             if (piece != null) {
                 Image piecePreview = loadPreviewForPiece(piece);
+                this.title.setText(loadPieceName(piece));
+                this.title.setHorizontalAlignment(SwingConstants.CENTER);
+
                 currentPreviewImage = (piecePreview != null) ? piecePreview : defaultUnknownPieceImage;
             } else {
+
+                this.title.setText("");
                 currentPreviewImage = defaultNoPieceImage;
             }
         } else {
@@ -347,6 +377,34 @@ public class Loop extends JPanel {
         }
 
         return null; // Pokud soubor neexistuje, použije se defaultUnknownPieceImage
+    }
+
+    private String loadPieceName(Piece piece) {
+
+        String finalName = "";
+                String name  = piece.getClass().getSimpleName();
+
+              finalName = name.substring(0,1)  ;
+
+        System.out.println(finalName);
+        for(int i = 1; i < name.length(); i++) {
+            char c = name.charAt(i);
+
+            if (Character.isUpperCase(c)) {
+               // c = Character.toLowerCase(c);
+                finalName += " ";
+            }
+
+            finalName += c;
+
+        }
+
+        return  "<html>" +
+                "<font color='orange' size='12'>"+
+                finalName +
+                "</font></div></html>" ;
+
+
     }
     private void selectPieceAt(Piece piece, int gridX, int gridY, int mouseX, int mouseY) {
         selectedPiece = piece;
@@ -1036,6 +1094,42 @@ public class Loop extends JPanel {
             g2d.drawImage(currentPreviewImage, cardX, cardY, cardWidth, cardHeight, this);
         }
 
+
+        loadScore();
+
+
+
+    }
+
+    public void loadScore() {
+        if(boardFlipped){
+            score1.setText( "<html><div style='text-align:left'>" +
+                    "<font color='orange' size='6'>"+
+                    "Enemy material : <br>"+
+                    gameLoop.getChessBoard().countMaterial(Colour.White)/100 +
+                    "</font>" +
+                    "</div></html>") ;
+            score2.setText( "<html><div style='text-align:left'>" +
+                    "<font color='orange' size='6'>"+
+                    "Your material : <br>"+
+                    gameLoop.getChessBoard().countMaterial(Colour.Black)/100 +
+                    "</font>" +
+                    "</div></html>") ;
+        }else {
+            score1.setText("<html><div style='text-align:left'>" +
+                    "<font color='orange' size='6'>" +
+                    "Enemy material : <br>"+
+                    gameLoop.getChessBoard().countMaterial(Colour.Black)/100 +
+
+                    "</font>" +
+                    "</div></html>");
+            score2.setText("<html><div style='text-align:left'>" +
+                    "<font color='orange' size='6'>" +
+                    "Your material : <br>"+
+                    gameLoop.getChessBoard().countMaterial(Colour.White)/100  +
+                    "</font>" +
+                    "</div></html>");
+        }
     }
 
     private double getScaleByClass(String className){

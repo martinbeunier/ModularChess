@@ -12,16 +12,18 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * Bot, který skutečně "vidí dopředu" — pro každý svůj kandidátní tah zkusí
- * simulaci na KOPII desky (ChessBoard.clone()), předpoví soupeřovu nejlepší
- * odpověď, a teprve pak se rozhodne. Simulace nikdy nezasáhne skutečnou hru.
- *
- * SEARCH_DEPTH = 2 znamená: náš tah + soupeřova nejlepší odpověď na něj.
- * Vyšší hloubka = chytřejší, ale výrazně pomalejší (roste exponenciálně).
+ * Vylepšená verze MinimaxBota:
+ *  - Alpha-beta prořezávání — stejný výsledek jako čistý minimax, ale
+ *    prořeže větve, které nemůžou ovlivnit finální rozhodnutí, takže jde
+ *    prohledat VĚTŠÍ hloubku za podobný čas.
+ *  - Evaluace navíc počítá MOBILITU (počet reálně dostupných tahů), aby
+ *    tiché pozice bez braní/ohrožení krále přestaly být dokonale vyrovnané
+ *    (a bot přestal bloudit náhodně, jako to dělal Greedy/TacticalBot).
  */
-public class MinimaxBot implements Bot {    // 3/10
-    private static final int SEARCH_DEPTH = 2;
-    private static final int HEAD_THREAT_PENALTY = 3000;
+public class AlphaBetaBot implements Bot {              // 2/10
+    private static final int SEARCH_DEPTH = 2; // díky prořezávání zvládneme jít hlouběji než MinimaxBot
+    private static final int HEAD_THREAT_PENALTY = 5000;
+    private static final int MOBILITY_WEIGHT = 2; // váha jednoho dostupného tahu v ohodnocení
 
     private final Random random = new Random();
 
@@ -51,13 +53,15 @@ public class MinimaxBot implements Bot {    // 3/10
 
         int bestScore = Integer.MIN_VALUE;
         List<Move> bestMoves = new ArrayList<>();
+        int alpha = Integer.MIN_VALUE;
+        int beta = Integer.MAX_VALUE;
 
         for (Move m : rootMoves) {
             ChessBoard childBoard = realBoard.clone();
             Player childMover = findPlayerByColour(childBoard, myColour);
             applyMove(childBoard, childMover, m);
 
-            int score = minimax(childBoard, otherColour(myColour), myColour, SEARCH_DEPTH - 1);
+            int score = alphaBeta(childBoard, otherColour(myColour), myColour, SEARCH_DEPTH - 1, alpha, beta);
 
             if (score > bestScore) {
                 bestScore = score;
@@ -66,11 +70,13 @@ public class MinimaxBot implements Bot {    // 3/10
             } else if (score == bestScore) {
                 bestMoves.add(m);
             }
+
+            if (score > alpha) alpha = score;
         }
 
         Collections.shuffle(bestMoves, random);
 
-        // Teprve TEĎ hrajeme SKUTEČNÝ tah, na SKUTEČNÉ hře (přes gameLoop, ne clone)
+        // Teprve TEĎ hrajeme SKUTEČNÝ tah na SKUTEČNÉ hře (přes gameLoop, ne clone)
         for (Move m : bestMoves) {
             boolean moved;
             if (m.type == Move.TYPE_MOVE) {
@@ -86,11 +92,12 @@ public class MinimaxBot implements Bot {    // 3/10
     }
 
     /**
-     * Rekurzivní minimax: na úrovni "myColour" hledáme MAXIMUM (náš nejlepší tah),
-     * na úrovni soupeře hledáme MINIMUM (soupeř hraje nejlíp pro sebe, tedy
-     * nejhůř pro nás).
+     * Minimax s alpha-beta prořezáváním. alpha = nejlepší garantované skóre
+     * pro maximalizujícího hráče (nás), beta = nejlepší garantované skóre
+     * pro minimalizujícího (soupeře). Jakmile alpha >= beta, zbytek téhle
+     * větve už nemůže ovlivnit finální rozhodnutí, takže ji přeskočíme.
      */
-    private int minimax(ChessBoard board, Colour colourToMove, Colour myColour, int depth) {
+    private int alphaBeta(ChessBoard board, Colour colourToMove, Colour myColour, int depth, int alpha, int beta) {
         if (depth == 0 || board.countHeads() <= 1) {
             return evaluatePosition(board, myColour);
         }
@@ -100,33 +107,44 @@ public class MinimaxBot implements Bot {    // 3/10
 
         List<Move> moves = collectAllMoves(board, mover, colourToMove);
         if (moves.isEmpty()) {
-            return evaluatePosition(board, myColour); // žádný tah -> bereme aktuální stav
+            return evaluatePosition(board, myColour);
         }
 
         boolean maximizing = (colourToMove == myColour);
-        int best = maximizing ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 
-        for (Move m : moves) {
-            ChessBoard childBoard = board.clone();
-            Player childMover = findPlayerByColour(childBoard, colourToMove);
-            applyMove(childBoard, childMover, m);
+        if (maximizing) {
+            int best = Integer.MIN_VALUE;
+            for (Move m : moves) {
+                ChessBoard childBoard = board.clone();
+                Player childMover = findPlayerByColour(childBoard, colourToMove);
+                applyMove(childBoard, childMover, m);
 
-            int score = minimax(childBoard, otherColour(colourToMove), myColour, depth - 1);
-
-            if (maximizing) {
+                int score = alphaBeta(childBoard, otherColour(colourToMove), myColour, depth - 1, alpha, beta);
                 if (score > best) best = score;
-            } else {
-                if (score < best) best = score;
+                if (best > alpha) alpha = best;
+                if (alpha >= beta) break; // prořezání — soupeř by tuhle větev nikdy nedovolil
             }
-        }
+            return best;
+        } else {
+            int best = Integer.MAX_VALUE;
+            for (Move m : moves) {
+                ChessBoard childBoard = board.clone();
+                Player childMover = findPlayerByColour(childBoard, colourToMove);
+                applyMove(childBoard, childMover, m);
 
-        return best;
+                int score = alphaBeta(childBoard, otherColour(colourToMove), myColour, depth - 1, alpha, beta);
+                if (score < best) best = score;
+                if (best < beta) beta = best;
+                if (alpha >= beta) break; // prořezání
+            }
+            return best;
+        }
     }
 
     /**
-     * Statické ohodnocení pozice z pohledu "myColour":
-     * součet hodnot vlastních figurek mínus soupeřových, plus penalizace/bonus
-     * podle toho, čí Head je zrovna ohrožená.
+     * Materiál + ohrožení Head (stejně jako MinimaxBot) + MOBILITA — počet
+     * reálně dostupných tahů pro obě strany. Tiché pozice bez braní/ohrožení
+     * tak přestávají být dokonale vyrovnané a bot přestává bloudit náhodně.
      */
     private int evaluatePosition(ChessBoard board, Colour myColour) {
         int score = 0;
@@ -150,6 +168,16 @@ public class MinimaxBot implements Bot {    // 3/10
             if (!board.getAttackersOfSquare(head[0], head[1], enemyColour).isEmpty()) {
                 score += HEAD_THREAT_PENALTY;
             }
+        }
+
+        Player myPlayer = findPlayerByColour(board, myColour);
+        Player enemyPlayer = findPlayerByColour(board, enemyColour);
+
+        if (myPlayer != null) {
+            score += collectAllMoves(board, myPlayer, myColour).size() * MOBILITY_WEIGHT;
+        }
+        if (enemyPlayer != null) {
+            score -= collectAllMoves(board, enemyPlayer, enemyColour).size() * MOBILITY_WEIGHT;
         }
 
         return score;

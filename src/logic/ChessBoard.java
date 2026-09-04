@@ -44,6 +44,32 @@ public class ChessBoard {
             }
         }
     }
+
+
+    public int countMaterial(Colour colour){
+
+        int sum = 0;
+
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board[x].length; y++) {
+               if(board[x][y] != null)
+               {
+                   if(isPiece(x,y))
+                   {
+                       if(board[x][y].getColour().equals(colour))
+                       {
+
+                         if (!(board[x][y] instanceof Head)) {
+                           sum = sum + board[x][y].getValue();
+                         }
+                       }
+                   }
+               }
+            }
+        }
+
+        return sum;
+    }
     public ChessBoard clone() {
         int width = board.length;
         int height = board[0].length;
@@ -225,11 +251,77 @@ public class ChessBoard {
      * které mohou právě teď platně táhnout na pole [targetX, targetY].
      * Používá se ke zjištění, kdo útočí na danou Head figurku.
      */
+// 1) Přidej NOVOU metodu do ChessBoard.java (vedle getPossibleTargets) —
+//    je to skoro identická kopie, jen na konci navíc filtruje podle MoveBehaviour:
+
+    public ArrayList<int[]> getAttackTargets(int startX, int startY, Player player) {
+        ArrayList<int[]> targets = new ArrayList<>();
+
+        if (inBoard(startX, startY, startX, startY) == false) return targets;
+        if (isPiece(startX, startY) == false) return targets;
+        if (isEnemyPiece(startX, startY, player) == true) return targets;
+
+        ArrayList<MoveType> clasicalMoves = getMovesByClass(startX, startY, MoveClass.LEAP);
+        ArrayList<MoveType> bigMoves = getMovesByClass(startX, startY, MoveClass.BIG);
+        ArrayList<MoveType> castleMoves = getMovesByClass(startX, startY, MoveClass.CASTLE);
+        ArrayList<MoveType> carierMoves = getMovesByClass(startX, startY, MoveClass.CARRIER);
+        ArrayList<MoveType> torpedoMoves = getMovesByClass(startX, startY, MoveClass.TORPEDO);
+
+        ArrayList<MoveType> generatedMoves = getGeneratedMovesByClass(startX, startY, MoveClass.REPEAT);
+        ArrayList<MoveType> linebreakerMoves = getGeneratedMovesByClass(startX, startY, MoveClass.LINEBREAKER);
+
+        ArrayList<MoveType> validClasicalMoves = validateLeapMoves(startX, startY, clasicalMoves, player);
+        ArrayList<MoveType> validBigMoves = validateBigMoves(startX, startY, bigMoves, player);
+        ArrayList<MoveType> validCastleMoves = validateCastleMoves(startX, startY, castleMoves, player);
+        ArrayList<MoveType> validTorpedoMoves = validateTorpedoMoves(startX, startY, torpedoMoves, player);
+        ArrayList<MoveType> validCarierMoves = validateCarrierMoves(startX, startY, carierMoves, player);
+        ArrayList<MoveType> validGeneratedMoves = validateGeneratedMoves(startX, startY, generatedMoves, player);
+        ArrayList<MoveType> validLinebreakerMoves = validateLinebreakerMoves(startX, startY, linebreakerMoves, player);
+
+        ArrayList<MoveType> allValidMoves = new ArrayList<>();
+        allValidMoves.addAll(validClasicalMoves);
+        allValidMoves.addAll(validGeneratedMoves);
+        allValidMoves.addAll(validBigMoves);
+        allValidMoves.addAll(validCastleMoves);
+        allValidMoves.addAll(validCarierMoves);
+        allValidMoves.addAll(validTorpedoMoves);
+        allValidMoves.addAll(validLinebreakerMoves);
+
+        for (MoveType m : allValidMoves) {
+            // Jen SKUTEČNÉ braní (TAKE/BOTH) se počítá jako útok — čistě
+            // pohybové tahy (MOVE), jako má typicky Carrier, ne.
+            if (m.getBehaviour() != MoveBehaviour.TAKE && m.getBehaviour() != MoveBehaviour.BOTH) {
+                continue;
+            }
+
+            int tx = startX + m.getX();
+            int ty = startY + m.getY();
+
+            if (!inBoard(startX, startY, tx, ty)) continue;
+
+            boolean alreadyThere = false;
+            for (int[] t : targets) {
+                if (t[0] == tx && t[1] == ty) {
+                    alreadyThere = true;
+                    break;
+                }
+            }
+            if (!alreadyThere) {
+                targets.add(new int[]{tx, ty});
+            }
+        }
+
+        return targets;
+    }
+
+
+// 2) Uprav getAttackersOfSquare(...) — nahraď getPossibleTargets(...) za getAttackTargets(...):
+
     public ArrayList<int[]> getAttackersOfSquare(int targetX, int targetY, Colour targetColour) {
         ArrayList<int[]> attackers = new ArrayList<>();
 
         for (Player enemyPlayer : players) {
-            if (enemyPlayer.getColor() == targetColour) continue; // to je "naše" barva, ne útočník
+            if (enemyPlayer.getColor() == targetColour) continue;
 
             for (int x = 0; x < board.length; x++) {
                 for (int y = 0; y < board[x].length; y++) {
@@ -237,7 +329,7 @@ public class ChessBoard {
                     if (piece == null) continue;
                     if (piece.getColour() != enemyPlayer.getColor()) continue;
 
-                    ArrayList<int[]> targets = getPossibleTargets(x, y, enemyPlayer);
+                    ArrayList<int[]> targets = getAttackTargets(x, y, enemyPlayer); // ZMĚNA: bylo getPossibleTargets
                     for (int[] t : targets) {
                         if (t[0] == targetX && t[1] == targetY) {
                             attackers.add(new int[]{x, y});

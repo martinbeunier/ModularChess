@@ -1,0 +1,38 @@
+[Event "Play vs Bot"]
+[Site "Chess.com"]
+[Date "2026.09.03"]
+[Round "-"]
+[White "sophbun1"]
+[Black "Martin-BOT"]
+[Result "1/2-1/2"]
+[CurrentPosition "R7/7R/2k5/P3PP2/P1PP4/2BB4/8/Q4K2 b - - 6 61"]
+[Timezone "UTC"]
+[ECO "A00"]
+[ECOUrl "https://www.chess.com/openings/Anderssen-Opening-1...e5"]
+[UTCDate "2026.09.03"]
+[UTCTime "20:00:50"]
+[WhiteElo "1008"]
+[BlackElo "250"]
+[TimeControl "?"]
+[Termination "Game drawn by stalemate"]
+[StartTime "20:00:50"]
+[EndDate "2026.09.03"]
+[EndTime "20:14:31"]
+[Link "https://www.chess.com/analysis/game/computer/2068350098/review?move=0"]
+[WhiteUrl "https://images.chesscomfiles.com/uploads/v1/user/188455255.0d894201.50x50o.f9d0e2e005a6.png"]
+[WhiteCountry "40"]
+[WhiteTitle ""]
+[BlackUrl "https://images.chesscomfiles.com/uploads/v1/user/66746160.e1f80ccd.50x50o.8736a99052e0.png"]
+[BlackCountry "28"]
+[BlackTitle ""]
+
+1. a3 e5 2. a4 a5 3. b3 Ne7 4. h4 Ng8 5. h5 Qf6 6. Nf3 Qf5 7. Nc3 Be7 8. Ne4 Nf6
+9. Nxf6+ Qxf6 10. Bb2 Qh6 11. Ng5 f5 12. Bxe5 Nc6 13. Bxc7 Qxg5 14. Bf4 d6 15.
+Bxg5 h6 16. Be3 Kf7 17. Rb1 Ra6 18. Ra1 Bf6 19. Ra3 Re8 20. Rg1 Nd4 21. Bxd4 Be6
+22. Bxf6 Kg8 23. Bc3 Kf8 24. Rh1 Re7 25. Bb2 Re8 26. b4 Ra7 27. bxa5 Rb8 28. d3
+Bd5 29. c3 Bxg2 30. Bxg2 g5 31. hxg6 Raa8 32. Rxh6 Kg8 33. Bd5+ Kg7 34. Rh1 Rc8
+35. Bxb7 Rc7 36. Bxa8 d5 37. Bxd5 Rd7 38. Be6 Kf6 39. Bxd7 Kxg6 40. Rb3 Kf7 41.
+Bxf5 Kf6 42. Bg4 Kg6 43. Rf1 Kh6 44. e4 Kg7 45. f4 Kh6 46. Ke2 Kg7 47. Qb1 Kf7
+48. Bf5 Ke8 49. e5 Kd8 50. Ke1 Ke8 51. Qa1 Kf8 52. d4 Kg7 53. c4 Kg8 54. Rb8+
+Kg7 55. Ra8 Kf7 56. Bc3 Kg7 57. Bd3 Kf7 58. f5 Ke7 59. Rh1 Kd7 60. Kf1 Kc6 61.
+Rh7 1/2-1/2
