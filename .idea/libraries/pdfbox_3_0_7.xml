@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="pdfbox-3.0.7">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/.idea/libraries/pdfbox-3.0.7.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

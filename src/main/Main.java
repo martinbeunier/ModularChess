@@ -171,7 +171,6 @@ public class Main/*extends Application */{
         chessBoard.printBoard();
 //konec inicializace šachovnice
 
-        chessBoard.movePiece(4,4,4,0,player1);
         chessBoard.printBoard();
 
         chessBoard.savePosition("test",player1);
@@ -194,7 +193,9 @@ pieceology
 settings soubor
 escape menu ve hře
 5.
-
+Nakreslit k powerupům /spíš text co dělá jako move hint
+opravit mapa obdelníkový exploit
+6.
 
 nepodstatné :
 kreslení šipek pravým tlačítkem

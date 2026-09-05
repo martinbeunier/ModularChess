@@ -2,6 +2,9 @@ package gui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.IOException;
+
 import main.Main;
 import static java.awt.SystemColor.menu;
 
@@ -35,6 +38,52 @@ public class MenuPanel extends JPanel {
 
         JButton pieceologyButton = new JButton("Pieceology");
         pieceologyButton.setBounds(UI.toPercent(50, w), UI.toPercent(40, h), UI.toPercent(10, w), UI.toPercent(10, h));
+        pieceologyButton.addActionListener(e -> {
+            File file = new File("files/Pieceology.pdf");
+
+            if (!file.exists()) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Soubor manual.pdf nebyl nalezen.",
+                        "Chyba",
+                        JOptionPane.ERROR_MESSAGE
+                );
+                return;
+            }
+
+            // Kontrola, zda systém podporuje třídu Desktop
+            if (Desktop.isDesktopSupported()) {
+                Desktop desktop = Desktop.getDesktop();
+                if (desktop.isSupported(Desktop.Action.OPEN)) {
+                    try {
+                        // Otevře PDF ve výchozím prohlížeči v OS (Adobe Reader, Chrome, Edge atd.)
+                        desktop.open(file);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                        JOptionPane.showMessageDialog(
+                                this,
+                                "Nepodařilo se otevřít soubor v externí aplikaci.",
+                                "Chyba",
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Otevírání souborů není na tomto systému podporováno.",
+                            "Chyba",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            } else {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Funkce Desktop není na tomto systému dostupná.",
+                        "Chyba",
+                        JOptionPane.ERROR_MESSAGE
+                );
+            }
+        });
 
         JButton gameHistoryButton = new JButton("Game History");
         gameHistoryButton.setBounds(UI.toPercent(40, w), UI.toPercent(40, h), UI.toPercent(10, w), UI.toPercent(10, h));
