@@ -16,12 +16,11 @@ public class MainFrame extends JFrame {
     private int width;
     private int height;
 
+
     public MainFrame() {
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         this.width = screen.width;
         this.height = screen.height;
-
-
 
         layout = new CardLayout();
         cards = new JPanel(layout);
@@ -35,7 +34,17 @@ public class MainFrame extends JFrame {
 
         add(cards);
 
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+        if(UIconfiguration.winddowMode == 0) {
+            setExtendedState(JFrame.MAXIMIZED_BOTH); //full screen
+        }else {
+
+            setUndecorated(true); // Real full screen
+            GraphicsEnvironment.getLocalGraphicsEnvironment()
+                    .getDefaultScreenDevice()
+                    .setFullScreenWindow(this);
+        }
+
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         setVisible(true);

@@ -148,25 +148,27 @@ public class Loop extends JPanel {
         // Tlačítka pro rotaci (šipky vedle šachovnice)
         // ------------------------------------------------------------
 
+        int arrowSize = UI.toPercent(3.5, h); // cca 38 px při 1080p
+        int textSize = UI.toPercent(1.3, h);  // cca 14 px při 1080p
 
         rotateLeftButton = new JButton(
                 "<html><div style='text-align:center'>" +
-                        "<font color='black' size='12'>&#8630;</font><br>" +
-                        "<font color='black' size='4'>Left</font>" +
+                        "<span style='font-size: " + arrowSize + "px;'>&#8630;</span><br>" +
+                        "<span style='font-size: " + textSize + "px;'>Left</span>" +
                         "</div></html>"
         );
 
         rotateRightButton = new JButton(
                 "<html><div style='text-align:center'>" +
-                        "<font size='12'>&#8631;</font><br>" +
-                        "<font size='4'>Right</font>" +
+                        "<span style='font-size: " + arrowSize + "px;'>&#8631;</span><br>" +
+                        "<span style='font-size: " + textSize + "px;'>Right</span>" +
                         "</div></html>"
         );
 
         rotateAroundButton = new JButton(
                 "<html><div style='text-align:center'>" +
-                        "<font size='12'>&#8645;</font><br>" +
-                        "<font size='4'>Backwards</font>" +
+                        "<span style='font-size: " + arrowSize + "px;'>&#8645;</span><br>" +
+                        "<span style='font-size: " + textSize + "px;'>Backwards</span>" +
                         "</div></html>"
         );
 
@@ -399,11 +401,13 @@ public class Loop extends JPanel {
 
         }
 
-        return  "<html>" +
-                "<font color='orange' size='12'>"+
-                finalName +
-                "</font></div></html>" ;
 
+        int fontSize = UI.toPercent(4, getHeight());
+
+        return "<html>" +
+                "<div style='color: orange; font-size: " + fontSize + "px;'>" +
+                finalName +
+                "</div></html>";
 
     }
     private void selectPieceAt(Piece piece, int gridX, int gridY, int mouseX, int mouseY) {
@@ -685,13 +689,13 @@ public class Loop extends JPanel {
     private int getOffsetX(int tileSize) {
         if (gameLoop == null || gameLoop.getChessBoard() == null) return 0;
 
-        // Vycentruje šachovnici v prostoru od 0 do 90 % šířky okna (zbylých 10 % vpravo zůstane pro tlačítka)
-       // int availableWidth = (int) (getWidth() * 0.7);
         int boardWidth = gameLoop.getChessBoard().getWidth() * tileSize;
 
-        //return Math.max(40, (availableWidth - boardWidth) / 2);
-        return (int)UI.toPercent(30,boardWidth);
+        // Vycentruje šachovnici v prostoru do 70 % šířky obrazovky (zbylých 30 % vpravo je pro tlačítka)
+        int availableWidth = (int) (getWidth() * 0.8);
+        return Math.max(30, (availableWidth - boardWidth) / 2);
     }
+
     private int getOffsetY(int tileSize) {
         if (gameLoop == null || gameLoop.getChessBoard() == null) return 0;
         return (getHeight() - (gameLoop.getChessBoard().getHeight() * tileSize)) / 2;
@@ -1102,33 +1106,25 @@ public class Loop extends JPanel {
     }
 
     public void loadScore() {
-        if(boardFlipped){
-            score1.setText( "<html><div style='text-align:left'>" +
-                    "<font color='orange' size='6'>"+
-                    "Enemy material : <br>"+
-                    gameLoop.getChessBoard().countMaterial(Colour.White)/100 +
-                    "</font>" +
-                    "</div></html>") ;
-            score2.setText( "<html><div style='text-align:left'>" +
-                    "<font color='orange' size='6'>"+
-                    "Your material : <br>"+
-                    gameLoop.getChessBoard().countMaterial(Colour.Black)/100 +
-                    "</font>" +
-                    "</div></html>") ;
-        }else {
-            score1.setText("<html><div style='text-align:left'>" +
-                    "<font color='orange' size='6'>" +
-                    "Enemy material : <br>"+
-                    gameLoop.getChessBoard().countMaterial(Colour.Black)/100 +
 
-                    "</font>" +
-                    "</div></html>");
-            score2.setText("<html><div style='text-align:left'>" +
-                    "<font color='orange' size='6'>" +
-                    "Your material : <br>"+
-                    gameLoop.getChessBoard().countMaterial(Colour.White)/100  +
-                    "</font>" +
-                    "</div></html>");
+        // Dynamická velikost písma (např. ~2.5 % výšky obrazovky -> pro 1080p je to cca 27px)
+        int fontSize = UI.toPercent(1.3, getWidth());
+        Font scoreFont = new Font("SansSerif", Font.BOLD, Math.max(12, fontSize));
+
+        score1.setFont(scoreFont);
+        score2.setFont(scoreFont);
+
+        // V HTML použijeme barvu a zarovnání, ale velikost řídí setFont()
+        if (boardFlipped) {
+            score1.setText("<html><font color='orange'>Enemy material:<br>" +
+                    (gameLoop.getChessBoard().countMaterial(Colour.White) / 100) + "</font></html>");
+            score2.setText("<html><font color='orange'>Your material:<br>" +
+                    (gameLoop.getChessBoard().countMaterial(Colour.Black) / 100) + "</font></html>");
+        } else {
+            score1.setText("<html><font color='orange'>Enemy material:<br>" +
+                    (gameLoop.getChessBoard().countMaterial(Colour.Black) / 100) + "</font></html>");
+            score2.setText("<html><font color='orange'>Your material:<br>" +
+                    (gameLoop.getChessBoard().countMaterial(Colour.White) / 100) + "</font></html>");
         }
     }
 
@@ -1193,7 +1189,7 @@ public class Loop extends JPanel {
                 scale = 1.25;
                 break;
             case "blocade":
-                scale = 2.35;
+               scale = 1.0;// scale = 2.35;
                 break;
 
 

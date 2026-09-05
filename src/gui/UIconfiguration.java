@@ -16,6 +16,8 @@ public class UIconfiguration {
 
     public static final String MOVE_SOUND_PATH = "files\\sounds\\move.wav";
 
+    public static final int winddowMode = 0;
+
 
 
     private UIconfiguration()

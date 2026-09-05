@@ -189,12 +189,12 @@ public class Main/*extends Application */{
 /*TODO
 
 
-
+pieceology
 4.
 settings soubor
 escape menu ve hře
 5.
-pieceology + grafika figur
+
 
 nepodstatné :
 kreslení šipek pravým tlačítkem
@@ -203,7 +203,6 @@ piece editor
 záznamy her
 
 //udělat tutorial mapu
-//překreslit blocade
 //překreslit pawna
 //překreslit letadlo
 
