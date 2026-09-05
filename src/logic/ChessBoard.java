@@ -2065,7 +2065,7 @@ return drowned;
 
 
             try {
-                File myObj = new File("files\\positions\\" + filename + ".chess");
+                File myObj = new File("src\\files\\positions\\" + filename + ".chess");
                 if (myObj.createNewFile()) {
                     System.out.println("File created: " + myObj.getName());
                 } else {
@@ -2077,7 +2077,7 @@ return drowned;
             }
 
             try {
-                FileWriter myWriter = new FileWriter("files\\positions\\" + filename + ".chess");
+                FileWriter myWriter = new FileWriter("src\\files\\positions\\" + filename + ".chess");
                 StringBuilder sb = new StringBuilder();
 
                 if (DebugConfiguration.savePosition) System.out.println("\nWidth : " + board.length + " Height: " + board[0].length);
@@ -2160,7 +2160,7 @@ return drowned;
         ChessBoard chessBoard = null;
 
         try {
-            BufferedReader br = new BufferedReader(new FileReader("files\\positions\\" + filename + ".chess"));
+            BufferedReader br = new BufferedReader(new FileReader("src\\files\\positions\\" + filename + ".chess"));
             String line;
 
             while ((line = br.readLine()) != null) {

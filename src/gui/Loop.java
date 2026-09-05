@@ -72,14 +72,14 @@ public class Loop extends JPanel {
     private boolean boardFlipped = false; // true = hraje se za černého, otočíme pohled na desku
 
     private Image currentPreviewImage;
-    private Image defaultNoPieceImage = safeLoadImage("files\\images\\movehint\\void.png");
-    private Image defaultUnknownPieceImage =safeLoadImage( "files\\images\\movehint\\icon.png");
+    private Image defaultNoPieceImage = safeLoadImage("src\\files\\images\\movehint\\void.png");
+    private Image defaultUnknownPieceImage =safeLoadImage( "src\\files\\images\\movehint\\icon.png");
 
     // Cache pro uložení již načtených SVG obrázků v paměti RAM
     private final Map<String, BufferedImage> imageCache = new HashMap<>();
 
     private void openPdf() {
-        File file = new File("files/Pieceology.pdf");
+        File file = new File("src\\files/Pieceology.pdf");
 
         if (!file.exists()) {
             JOptionPane.showMessageDialog(
@@ -445,7 +445,7 @@ public class Loop extends JPanel {
     private Image loadPreviewForPiece(Piece piece) {
         // Načte obrázek podle násobení násobené třídy figury (např. "card_pawn.png", "card_linebreaker.png")
         String className = piece.getClass().getSimpleName().toLowerCase();
-        String path = "files/images/movehint/" + className + ".png";
+        String path = "src/files/images/movehint/" + className + ".png";
 
         java.io.File file = new java.io.File(path);
         if (file.exists()) {
@@ -626,11 +626,11 @@ public class Loop extends JPanel {
         if (anyThreatFound) {
             SoundPlayer.playWav(UIconfiguration.THREAT_SOUND_PATH, UIconfiguration.soundEfectsVolume);
             if (gameLoop.didLastMoveCauseDrowning()) {
-                SoundPlayer.playWav("files\\sounds\\waterSound.wav", UIconfiguration.soundEfectsVolume);
+                SoundPlayer.playWav("src\\files\\sounds\\waterSound.wav", UIconfiguration.soundEfectsVolume);
             }
         } else {
             if (gameLoop.didLastMoveCauseDrowning()) {
-                SoundPlayer.playWav("files\\sounds\\waterSound.wav", UIconfiguration.soundEfectsVolume);
+                SoundPlayer.playWav("src\\files\\sounds\\waterSound.wav", UIconfiguration.soundEfectsVolume);
             } else {
                 SoundPlayer.playWav(UIconfiguration.MOVE_SOUND_PATH, UIconfiguration.soundEfectsVolume);
             }
@@ -1292,7 +1292,7 @@ public class Loop extends JPanel {
         }
 
         String pieceType = piece.getClass().getSimpleName().toLowerCase();
-        String imagePath = "files/images/skins/" + colorPrefix + pieceType + ".svg";
+        String imagePath = "src/files/images/skins/" + colorPrefix + pieceType + ".svg";
 
         double baseScale = 1.0;
         double finalScale = baseScale * getScaleByClass(pieceType);

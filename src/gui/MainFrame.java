@@ -72,7 +72,7 @@ public class MainFrame extends JFrame {
         revalidate();
         repaint();
 
-        Image img = new ImageIcon("files\\images\\icon.png").getImage();
+        Image img = new ImageIcon("src\\files\\images\\icon.png").getImage();
         Image scaled = img.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         setIconImage(scaled);
 

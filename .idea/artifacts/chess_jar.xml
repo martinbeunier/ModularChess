@@ -1,0 +1,21 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="chess:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/chess_jar</output-path>
+    <root id="archive" name="chess.jar">
+      <element id="module-output" name="chess" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/.idea/libraries/jsvg-2.1.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/pdfbox-3.0.7.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../openjfx-26.0.1_windows-x64_bin-sdk/javafx-sdk-26.0.1/lib/javafx-swt.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../openjfx-26.0.1_windows-x64_bin-sdk/javafx-sdk-26.0.1/lib/javafx.web.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../openjfx-26.0.1_windows-x64_bin-sdk/javafx-sdk-26.0.1/lib/javafx.base.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../openjfx-26.0.1_windows-x64_bin-sdk/javafx-sdk-26.0.1/lib/javafx.fxml.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../openjfx-26.0.1_windows-x64_bin-sdk/javafx-sdk-26.0.1/lib/javafx.media.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../openjfx-26.0.1_windows-x64_bin-sdk/javafx-sdk-26.0.1/lib/javafx.swing.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../openjfx-26.0.1_windows-x64_bin-sdk/javafx-sdk-26.0.1/lib/jdk.jsobject.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../openjfx-26.0.1_windows-x64_bin-sdk/javafx-sdk-26.0.1/lib/javafx.controls.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../openjfx-26.0.1_windows-x64_bin-sdk/javafx-sdk-26.0.1/lib/javafx.graphics.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../openjfx-26.0.1_windows-x64_bin-sdk/javafx-sdk-26.0.1/lib/jfx.incubator.input.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../openjfx-26.0.1_windows-x64_bin-sdk/javafx-sdk-26.0.1/lib/jfx.incubator.richtext.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

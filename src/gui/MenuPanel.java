@@ -39,7 +39,7 @@ public class MenuPanel extends JPanel {
         JButton pieceologyButton = new JButton("Pieceology");
         pieceologyButton.setBounds(UI.toPercent(50, w), UI.toPercent(40, h), UI.toPercent(10, w), UI.toPercent(10, h));
         pieceologyButton.addActionListener(e -> {
-            File file = new File("files/Pieceology.pdf");
+            File file = new File("src/files/Pieceology.pdf");
 
             if (!file.exists()) {
                 JOptionPane.showMessageDialog(

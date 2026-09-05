@@ -51,7 +51,7 @@ public class GameLoop {
         ArrayList<Player> loadedPlayers = new ArrayList<>();
         this.mapName = fileName;
 
-        if (new File("files\\positions\\" + fileName + ".chess").exists()) {
+        if (new File("src\\files\\positions\\" + fileName + ".chess").exists()) {
             this.chessBoard = ChessBoard.loadPosition(fileName, loadedPlayers);
             players = new ArrayList<>(loadedPlayers.subList(0, loadedPlayers.size() - 1));
             currentPlayer = loadedPlayers.get(loadedPlayers.size() - 1);
@@ -258,7 +258,7 @@ public class GameLoop {
     }
 
     private String buildGameHistoryFilePath() {
-        File historyDir = new File("files\\gameHistory");
+        File historyDir = new File("src\\files\\gameHistory");
 
         // Složka na začátku hry možná ještě neexistuje
         if (!historyDir.exists()) {
@@ -268,7 +268,7 @@ public class GameLoop {
         File[] existingFiles = historyDir.listFiles();
         int count = (existingFiles != null) ? existingFiles.length : 0;
 
-        return "files\\gameHistory\\" + count + "_" + mapName + ".chess";
+        return "src\\files\\gameHistory\\" + count + "_" + mapName + ".chess";
     }
 
     public void setVsBot(boolean vsBot, Colour botColour, Bot bot) {
