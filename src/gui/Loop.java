@@ -14,6 +14,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import java.util.HashMap;
@@ -76,7 +78,36 @@ public class Loop extends JPanel {
     // Cache pro uložení již načtených SVG obrázků v paměti RAM
     private final Map<String, BufferedImage> imageCache = new HashMap<>();
 
-    //private final Bot bot = new Bot();
+    private void openPdf() {
+        File file = new File("files/Pieceology.pdf");
+
+        if (!file.exists()) {
+            JOptionPane.showMessageDialog(
+                    frame, // Opraveno z 'this' na 'frame'
+                    "Soubor Pieceology.pdf nebyl nalezen na cestě: " + file.getAbsolutePath(),
+                    "Chyba",
+                    JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            if (desktop.isSupported(Desktop.Action.OPEN)) {
+                try {
+                    desktop.open(file);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                    JOptionPane.showMessageDialog(
+                            frame, // Opraveno z 'this' na 'frame'
+                            "Nepodařilo se otevřít soubor v externí aplikaci.",
+                            "Chyba",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        }
+    }
 
     public Loop(MainFrame frame) {
         this.frame = frame;
@@ -99,12 +130,55 @@ public class Loop extends JPanel {
         this.score2.setFont(new Font("SansSerif", Font.BOLD,UI.toPercent(5, h)));
         this.score2.setBounds(UI.toPercent(2, w), UI.toPercent(80, h), UI.toPercent(24, w), UI.toPercent(10, h));
 
-        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "backTo"            ); //TODO vyskakovací menu
-        getActionMap().put("backTo", new AbstractAction()
-        {
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "backTo");
+        getActionMap().put("backTo", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               // frame.showScene("MENU");
+                // Vytvoření možností pro vyskakovací nabídku
+                Object[] options = {"Continue", "Piecology", "Settings", "Quit Game"};
+
+                int choice = JOptionPane.showOptionDialog(
+                        null,                               // Vlastník (nebo předejte 'frame')
+                        "Escape menu",            // Zpráva
+                        "Escape menu",                         // Titulek okna
+                        JOptionPane.DEFAULT_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,                               // Vlastní ikona (volitelné)
+                        options,                            // Pole tlačítkových možností
+                        options[0]                          // Výchozí označené tlačítko (Continue)
+                );
+
+                // Reakce na vybranou možnost (vrací index tlačítka od 0)
+                switch (choice) {
+                    case 0: // Continue
+                        // Pokračovat ve hře (např. zavřít menu / unpause)
+                        break;
+                    case 1:
+ openPdf();
+                        break;
+                    case 2: // Settings
+                        // Otevřít nastavení
+                        break;
+                    case 3: // Quit Game
+                        Object[] options2 = {"Contunue", "Quit Game"};
+                        int choice2 = JOptionPane.showOptionDialog(
+                                null,
+                                "Are You sure to quit match ?",
+                                "Escape menu",
+                                JOptionPane.DEFAULT_OPTION,
+                                JOptionPane.QUESTION_MESSAGE,
+                                null,
+                                options2,
+                                options2[0]
+                        );
+                        if(choice2 == 1) {        frame.showScene("MAPSELECT");}
+
+
+                        break;
+                    default:
+                        // Hráč zavřel okno křížkem nebo klávesou Esc
+                        break;
+                }
             }
         });
 

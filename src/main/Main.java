@@ -188,10 +188,9 @@ public class Main/*extends Application */{
 /*TODO
 
 
-pieceology
+
 4.
 settings soubor
-escape menu ve hře
 5.
 Nakreslit k powerupům /spíš text co dělá jako move hint
 opravit mapa obdelníkový exploit
