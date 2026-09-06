@@ -433,11 +433,11 @@ public class ChessBoard {
              sb.append("\nTiles promotion colours :\n");
              for (int j = 0; j < tiles.length; j++) {
                  for (int i = 0; i < tiles[j].length; i++) {
-                     if (!tiles[i][j].getPromotionColours().isEmpty()) {
-                         if (DebugConfiguration.savePosition) System.out.print("promotion colours of tile : " + i + " " + j);
-                         sb.append("promotion colours of tile : ").append(i).append(" ").append(j);
+                     if (!tiles[j][i].getPromotionColours().isEmpty()) {
+                         if (DebugConfiguration.savePosition) System.out.print("promotion colours of tile : " + j + " " + i);
+                         sb.append("promotion colours of tile : ").append(j).append(" ").append(i);
 
-                         for (Colour colour : tiles[i][j].getPromotionColours()) {
+                         for (Colour colour : tiles[j][i].getPromotionColours()) {
                              if (DebugConfiguration.savePosition) System.out.print(" " + colour.name());
                              sb.append(" ").append(colour.name());
                          }
@@ -451,9 +451,9 @@ public class ChessBoard {
              sb.append("\nTiles water :\n");
              for (int j = 0; j < tiles.length; j++) {
                  for (int i = 0; i < tiles[j].length; i++) {
-                     if (tiles[i][j].getWater()) {
-                         if (DebugConfiguration.savePosition) System.out.println("water : " + i + " " + j + "  ");
-                         sb.append("water : ").append(i).append(" ").append(j).append("\n");
+                     if (tiles[j][i].getWater()) {
+                         if (DebugConfiguration.savePosition) System.out.println("water : " + j + " " + i + "  ");
+                         sb.append("water : ").append(j).append(" ").append(i).append("\n");
                      }
                  }
              }
@@ -467,10 +467,10 @@ public class ChessBoard {
              sb.append("\nPieces :\n");
              for (int j = 0; j < board.length; j++) {
                  for (int i = 0; i < board[j].length; i++) {
-                     if (board[i][j] != null) {
-                         String pieceStr = "piece : "+board[i][j].getClass() +" "+ board[i][j].myToString2();
-                         if (board[i][j] instanceof OrientedPiece) {
-                             pieceStr += " " + ((OrientedPiece) board[i][j]).getRotation();
+                     if (board[j][i] != null) {
+                         String pieceStr = "piece : " + board[j][i].getClass() + " " + board[j][i].myToString2();
+                         if (board[j][i] instanceof OrientedPiece) {
+                             pieceStr += " " + ((OrientedPiece) board[j][i]).getRotation();
                          }
                          if (DebugConfiguration.savePosition) System.out.println(pieceStr);
                          sb.append(pieceStr).append("\n");
@@ -2020,18 +2020,19 @@ return false;
 
     public int countHeads(){
         int count = 0;
-        for(int y=0;y<board.length;y++){
-            for(int x=0;x<board[y].length;x++){
-                if(board[x][y] != null){
-                    if(board[x][y] instanceof Head){
+
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board[x].length; y++) {
+                if (board[x][y] != null) {
+                    if (board[x][y] instanceof Head) {
                         count++;
                     }
                 }
             }
         }
+
         return count;
     }
-
     //endregion
 
 

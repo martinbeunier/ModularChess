@@ -70,6 +70,12 @@ public class Loop extends JPanel {
     private int lastMoveToY = -1;
 
     private boolean boardFlipped = false; // true = hraje se za černého, otočíme pohled na desku
+    private static final int MARGIN = 60;
+
+    // Nastav tak, aby (BAND_RIGHT_FRACTION - BAND_LEFT_FRACTION) >= (getHeight()-MARGIN)/getWidth()
+// pro tvé typické rozlišení okna — jinak se čtverec ořízne.
+    private static final double BAND_LEFT_FRACTION  = 0.13;
+    private static final double BAND_RIGHT_FRACTION = 0.67;
 
     private Image currentPreviewImage;
     private Image defaultNoPieceImage = safeLoadImage("src\\files\\images\\movehint\\void.png");
@@ -138,7 +144,7 @@ public class Loop extends JPanel {
                 Object[] options = {"Continue", "Piecology", "Settings", "Quit Game"};
 
                 int choice = JOptionPane.showOptionDialog(
-                        null,                               // Vlastník (nebo předejte 'frame')
+                        frame,                               // Vlastník (nebo předejte 'frame')
                         "Escape menu",            // Zpráva
                         "Escape menu",                         // Titulek okna
                         JOptionPane.DEFAULT_OPTION,
@@ -162,7 +168,7 @@ public class Loop extends JPanel {
                     case 3: // Quit Game
                         Object[] options2 = {"Contunue", "Quit Game"};
                         int choice2 = JOptionPane.showOptionDialog(
-                                null,
+                                frame,
                                 "Are You sure to quit match ?",
                                 "Escape menu",
                                 JOptionPane.DEFAULT_OPTION,
@@ -747,27 +753,29 @@ public class Loop extends JPanel {
         return result[0];
     }
 
+
+
     private int getTileSize() {
         if (gameLoop == null || gameLoop.getChessBoard() == null) return 1;
         ChessBoard board = gameLoop.getChessBoard();
         if (board.getWidth() == 0 || board.getHeight() == 0) return 1;
 
-        int margin = 60; // Rezerva pro souřadnice okolo šachovnice (px)
-        int availableWidth = Math.max(1, getWidth() - margin);
-        int availableHeight = Math.max(1, getHeight() - margin);
+        int bandWidth = (int) (getWidth() * (BAND_RIGHT_FRACTION - BAND_LEFT_FRACTION));
+
+        int availableWidth  = Math.max(1, bandWidth - MARGIN);
+        int availableHeight = Math.max(1, getHeight() - MARGIN);
 
         return Math.min(availableWidth / board.getWidth(), availableHeight / board.getHeight());
     }
-
 
     private int getOffsetX(int tileSize) {
         if (gameLoop == null || gameLoop.getChessBoard() == null) return 0;
 
         int boardWidth = gameLoop.getChessBoard().getWidth() * tileSize;
+        int bandLeft  = (int) (getWidth() * BAND_LEFT_FRACTION);
+        int bandWidth = (int) (getWidth() * (BAND_RIGHT_FRACTION - BAND_LEFT_FRACTION));
 
-        // Vycentruje šachovnici v prostoru do 70 % šířky obrazovky (zbylých 30 % vpravo je pro tlačítka)
-        int availableWidth = (int) (getWidth() * 0.8);
-        return Math.max(30, (availableWidth - boardWidth) / 2);
+        return bandLeft + (bandWidth - boardWidth) / 2;
     }
 
     private int getOffsetY(int tileSize) {
@@ -786,7 +794,7 @@ public class Loop extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        UIconfiguration.printMemoryUsage();
+    //    UIconfiguration.printMemoryUsage();
 
         if (gameLoop == null) return;
 

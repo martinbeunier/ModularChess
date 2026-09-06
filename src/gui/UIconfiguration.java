@@ -64,6 +64,7 @@ public class UIconfiguration {
         return instance;
     }
 
+/*
     public static void printMemoryUsage() {
         Runtime runtime = Runtime.getRuntime();
 
@@ -72,7 +73,8 @@ public class UIconfiguration {
         long freeMemory = runtime.freeMemory() / (1024 * 1024);
         long usedMemory = totalMemory - freeMemory;
 
-           //  System.out.println("Využitá RAM: " + usedMemory + " MB / Celkem alokováno: " + totalMemory + " MB");
-    }
+             System.out.println("Využitá RAM: " + usedMemory + " MB / Celkem alokováno: " + totalMemory + " MB");
+    }*/
+
 
 }

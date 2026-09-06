@@ -17,18 +17,16 @@ public class MainFrame extends JFrame {
 
         // 1. NEJPRVE nastavení režimu okna
         switch (UIconfiguration.winddowMode) {
-            case 0:
+            case 0:  //full windowed
                 setExtendedState(JFrame.MAXIMIZED_BOTH);
                 Dimension screen0 = Toolkit.getDefaultToolkit().getScreenSize();
                 this.width = screen0.width;
                 this.height = screen0.height;
                 break;
 
-            case 1:
+            case 1: //true full windowed
                 setUndecorated(true);
-                GraphicsEnvironment.getLocalGraphicsEnvironment()
-                        .getDefaultScreenDevice()
-                        .setFullScreenWindow(this);
+                setExtendedState(JFrame.MAXIMIZED_BOTH);
                 Dimension screen1 = Toolkit.getDefaultToolkit().getScreenSize();
                 this.width = screen1.width;
                 this.height = screen1.height;

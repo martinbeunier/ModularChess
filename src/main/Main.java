@@ -193,7 +193,7 @@ public class Main/*extends Application */{
 settings soubor
 5.
 Nakreslit k powerupům /spíš text co dělá jako move hint
-opravit mapa obdelníkový exploit
+přidat action listene pro zavření escape menu .
 6.
 
 nepodstatné :
