@@ -97,7 +97,7 @@ public class Main/*extends Application */{
         LandCarrier blandCarrier2 = new LandCarrier("b Land Carrier",7,1,Colour.Black);
 
         Queen wqueen = new Queen("White Queen",4,7,Colour.White);
-        Queen bqueen = new Queen("White Queen",4,1,Colour.Black);
+        Queen bqueen = new Queen("Black Queen",4,1,Colour.Black);
 
         Torpedo wtorpedo = new Torpedo("w Torpedo",3,8,Colour.White,0);
         Torpedo btorpedo = new Torpedo("b Torpedo",3,0,Colour.Black,2);
@@ -114,7 +114,7 @@ public class Main/*extends Application */{
 
 //inicializace šachovnice
 
-        ChessBoard chessBoard = new ChessBoard(9,9);
+        ChessBoard chessBoard = new ChessBoard(13,9);
 
         chessBoard.addPlayer(player1);
         chessBoard.addPlayer(player2);

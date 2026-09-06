@@ -128,10 +128,10 @@ public class ChessBoard {
     }
 
     public int getWidth() {
-        return board[0].length;
+        return board.length;
     }
     public int getHeight() {
-        return board.length;
+        return board[0].length;
     }
 
     public Piece getPiece(int x, int y) {
@@ -1957,57 +1957,44 @@ return false;
 
     public boolean waterInterAction()
     {
-boolean drowned = false;
+        boolean drowned = false;
 
-        boolean[][] saveSquares = new boolean[board.length][board[0].length] ;
-        for (int y=0;y<board.length;y++)
-        {
-            for(int x=0;x<board[y].length;x++)
-            {
-                if( board[x][y] instanceof  Carrier){
+        boolean[][] saveSquares = new boolean[board.length][board[0].length];
 
-                    for(OcupationSquare square  :((Carrier) board[x][y]).getOcupationSquares())
-                    {
-                        saveSquares[square.getX()+x][square.getY()+y] = true;
-                    }
-                }
-
-            }
-        }
-
-        for (int y=0;y<board.length;y++){
-            for(int x=0;x<board[y].length;x++){
-
-                if(board[x][y] != null)
-                {
-                    //místo Pawn parametr boolean drownable
-                    if (board[x][y] instanceof Pawn && tiles[x][y].getWater() == true)
-                    {
-                        if(saveSquares[x][y] == false)
-                        {
-                            for(Player player : players)
-                            {
-                                if(board[x][y] != null)
-                                {
-                                    if (player.getColor() == board[x][y].getColour()) {
-                                        if (!player.getPowerUps().contains(PowerUpName.LIFEBUOY)) {
-                                            if (drowned == false){printBoard()  ; drowned = true;}
-                                            board[x][y] = null;
-                                        }
-                                    }
-                                }
-                            }
-
-
-
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board[x].length; y++) {
+                if (board[x][y] instanceof Carrier) {
+                    for (OcupationSquare square : ((Carrier) board[x][y]).getOcupationSquares()) {
+                        int sx = x + square.getX();
+                        int sy = y + square.getY();
+                        if (inBoard(sx, sy, sx, sy)) {   // <-- klíčová oprava
+                            saveSquares[sx][sy] = true;
                         }
                     }
                 }
-
             }
         }
 
-return drowned;
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board[x].length; y++) {
+                if (board[x][y] != null) {
+                    if (board[x][y] instanceof Pawn && tiles[x][y].getWater()) {
+                        if (!saveSquares[x][y]) {
+                            for (Player player : players) {
+                                if (board[x][y] != null && player.getColor() == board[x][y].getColour()) {
+                                    if (!player.getPowerUps().contains(PowerUpName.LIFEBUOY)) {
+                                        if (!drowned) { printBoard(); drowned = true; }
+                                        board[x][y] = null;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return drowned;
     }
 
 
@@ -2032,23 +2019,16 @@ return drowned;
     }
 
     public int countHeads(){
-
         int count = 0;
-
         for(int y=0;y<board.length;y++){
             for(int x=0;x<board[y].length;x++){
                 if(board[x][y] != null){
-
                     if(board[x][y] instanceof Head){
                         count++;
                     }
                 }
-
             }
         }
-
-
-
         return count;
     }
 
@@ -2087,11 +2067,11 @@ return drowned;
                 sb.append("\nTiles promotion colours :\n");
                 for (int j = 0; j < tiles.length; j++) {
                     for (int i = 0; i < tiles[j].length; i++) {
-                        if (!tiles[i][j].getPromotionColours().isEmpty()) {
-                            if (DebugConfiguration.savePosition) System.out.print("promotion colours of tile : " + i + " " + j);
-                            sb.append("promotion colours of tile : ").append(i).append(" ").append(j);
+                        if (!tiles[j][i].getPromotionColours().isEmpty()) {
+                            if (DebugConfiguration.savePosition) System.out.print("promotion colours of tile : " + j + " " + i);
+                            sb.append("promotion colours of tile : ").append(j).append(" ").append(i);
 
-                            for (Colour colour : tiles[i][j].getPromotionColours()) {
+                            for (Colour colour : tiles[j][i].getPromotionColours()) {
                                 if (DebugConfiguration.savePosition) System.out.print(" " + colour.name());
                                 sb.append(" ").append(colour.name());
                             }
@@ -2105,9 +2085,9 @@ return drowned;
                 sb.append("\nTiles water :\n");
                 for (int j = 0; j < tiles.length; j++) {
                     for (int i = 0; i < tiles[j].length; i++) {
-                        if (tiles[i][j].getWater()) {
-                            if (DebugConfiguration.savePosition) System.out.println("water : " + i + " " + j + "  ");
-                            sb.append("water : ").append(i).append(" ").append(j).append("\n");
+                        if (tiles[j][i].getWater()) {
+                            if (DebugConfiguration.savePosition) System.out.println("water : " + j + " " + i + "  ");
+                            sb.append("water : ").append(j).append(" ").append(i).append("\n");
                         }
                     }
                 }
@@ -2121,10 +2101,10 @@ return drowned;
                 sb.append("\nPieces :\n");
                 for (int j = 0; j < board.length; j++) {
                     for (int i = 0; i < board[j].length; i++) {
-                        if (board[i][j] != null) {
-                            String pieceStr = "piece : "+board[i][j].getClass() +" "+ board[i][j].myToString2();
-                            if (board[i][j] instanceof OrientedPiece) {
-                                pieceStr += " " + ((OrientedPiece) board[i][j]).getRotation();
+                        if (board[j][i] != null) {
+                            String pieceStr = "piece : " + board[j][i].getClass() + " " + board[j][i].myToString2();
+                            if (board[j][i] instanceof OrientedPiece) {
+                                pieceStr += " " + ((OrientedPiece) board[j][i]).getRotation();
                             }
                             if (DebugConfiguration.savePosition) System.out.println(pieceStr);
                             sb.append(pieceStr).append("\n");
