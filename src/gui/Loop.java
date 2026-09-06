@@ -77,6 +77,23 @@ public class Loop extends JPanel {
     private static final double BAND_LEFT_FRACTION  = 0.13;
     private static final double BAND_RIGHT_FRACTION = 0.67;
 
+    // Anotace kreslené pravým tlačítkem (kolečka a šipky)
+    private ArrayList<int[]> highlightCircles = new ArrayList<>();      // {x, y}
+    private ArrayList<int[]> highlightArrows = new ArrayList<>();       // {fromX, fromY, toX, toY}
+
+    private boolean rightDragging = false;
+    private int rightStartGridX = -1;
+    private int rightStartGridY = -1;
+    private int rightCurrentGridX = -1;
+    private int rightCurrentGridY = -1;
+
+    private long pressTimeMillis;
+    private int pressMouseX;
+    private int pressMouseY;
+
+    private static final long DRAG_DELAY_MS = 150;       // kolik ms musí uplynout, než se to počítá jako drag
+    private static final int DRAG_DISTANCE_THRESHOLD = 20; // nebo kolik pixelů se musí pohnout, ať to je drag hned
+
     private Image currentPreviewImage;
     private Image defaultNoPieceImage = safeLoadImage("src\\files\\images\\movehint\\void.png");
     private Image defaultUnknownPieceImage =safeLoadImage( "src\\files\\images\\movehint\\icon.png");
@@ -290,9 +307,6 @@ public class Loop extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) {
                 if (gameLoop == null) return;
-                if (gameLoop.isVsBot() && gameLoop.getCurrentPlayer().getColor() == gameLoop.getBotColour()) {
-                    return; // je na tahu bot — ignorujeme klik hráče
-                }
 
                 ChessBoard board = gameLoop.getChessBoard();
                 if (board == null) return;
@@ -307,56 +321,134 @@ public class Loop extends JPanel {
                 int gridX = displayX(clickedDisplayX, board.getWidth());
                 int gridY = displayY(clickedDisplayY, board.getHeight());
 
-                // Kontrola kliknutí mimo šachovnici
+                // ----------------------------------------------------
+                // STŘEDNÍ TLAČÍTKO — smaže všechny kolečka a šipky
+                // ----------------------------------------------------
+                if (SwingUtilities.isMiddleMouseButton(e)) {
+                    highlightCircles.clear();
+                    highlightArrows.clear();
+                    repaint();
+                    return;
+                }
+
+                // ----------------------------------------------------
+                // PRAVÉ TLAČÍTKO — začátek kolečka/šipky
+                // ----------------------------------------------------
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    if (gridX < 0 || gridX >= board.getWidth() || gridY < 0 || gridY >= board.getHeight()) {
+                        return;
+                    }
+                    rightDragging = true;
+                    rightStartGridX = gridX;
+                    rightStartGridY = gridY;
+                    rightCurrentGridX = gridX;
+                    rightCurrentGridY = gridY;
+                    repaint();
+                    return;
+                }
+
+                // ----------------------------------------------------
+                // LEVÉ TLAČÍTKO — pohyb figurek (beze změny oproti původnímu kódu)
+                // ----------------------------------------------------
+                if (!SwingUtilities.isLeftMouseButton(e)) return;
+
+                if (gameLoop.isVsBot() && gameLoop.getCurrentPlayer().getColor() == gameLoop.getBotColour()) {
+                    return; // je na tahu bot — ignorujeme klik hráče
+                }
+
                 if (gridX < 0 || gridX >= board.getWidth() || gridY < 0 || gridY >= board.getHeight()) {
                     resetSelection();
                     repaint();
                     return;
                 }
 
+                Piece clickedPiece = board.getPiece(gridX, gridY);
 
-
-                // ----------------------------------------------------
-                // 2. OVLÁDÁNÍ LEVÝM TLAČÍTKEM (Drag & Drop + Click & Click)
-                // ----------------------------------------------------
-                if (SwingUtilities.isLeftMouseButton(e)) {
-                    Piece clickedPiece = board.getPiece(gridX, gridY);
-
-                    // A) Už máme vybranou figurku a klikáme na cílové pole (CLICK & CLICK)
-                    if (selectedPiece != null && (gridX != startGridX || gridY != startGridY)) {
-                        boolean moved = gameLoop.tryMove(startGridX, startGridY, gridX, gridY);
-                        resetSelection();
-                        if (!moved) {
-                            // Pokud tah neprošel, ale klikli jsme na jinou vlastní figurku, vybereme ji
-                            if (clickedPiece != null && clickedPiece.getColour() == gameLoop.getCurrentPlayer().getColor()) {
-                                selectPieceAt(clickedPiece, gridX, gridY, e.getX(), e.getY());
-                            }
+                if (selectedPiece != null && (gridX != startGridX || gridY != startGridY)) {
+                    boolean moved = gameLoop.tryMove(startGridX, startGridY, gridX, gridY);
+                    resetSelection();
+                    if (!moved) {
+                        if (clickedPiece != null && clickedPiece.getColour() == gameLoop.getCurrentPlayer().getColor()) {
+                            selectPieceAt(clickedPiece, gridX, gridY, e.getX(), e.getY());
                         }
                     }
-                    // B) První výběr figurky
-                    else if (clickedPiece != null && clickedPiece.getColour() == gameLoop.getCurrentPlayer().getColor()) {
-                        selectPieceAt(clickedPiece, gridX, gridY, e.getX(), e.getY());
-                    }
-                    // C) Kliknutí na prázdné pole bez předchozího výběru
-                    else {
-                        resetSelection();
-                    }
-                    repaint();
+                } else if (clickedPiece != null && clickedPiece.getColour() == gameLoop.getCurrentPlayer().getColor()) {
+                    selectPieceAt(clickedPiece, gridX, gridY, e.getX(), e.getY());
+                } else {
+                    resetSelection();
                 }
+                repaint();
             }
 
             @Override
             public void mouseDragged(MouseEvent e) {
+                if (rightDragging) {
+                    ChessBoard board = gameLoop.getChessBoard();
+                    if (board != null) {
+                        int tileSize = getTileSize();
+                        int offsetX = getOffsetX(tileSize);
+                        int offsetY = getOffsetY(tileSize);
+
+                        int dispX = (int) Math.floor((double) (e.getX() - offsetX) / tileSize);
+                        int dispY = (int) Math.floor((double) (e.getY() - offsetY) / tileSize);
+
+                        int gx = displayX(dispX, board.getWidth());
+                        int gy = displayY(dispY, board.getHeight());
+
+                        if (gx != rightCurrentGridX || gy != rightCurrentGridY) {
+                            rightCurrentGridX = gx;
+                            rightCurrentGridY = gy;
+                            repaint();
+                        }
+                    }
+                    return;
+                }
+
                 if (selectedPiece != null && SwingUtilities.isLeftMouseButton(e)) {
-                    isDragging = true;
-                    dragX = e.getX();
-                    dragY = e.getY();
-                    repaint();
+                    if (!isDragging) {
+                        long elapsed = System.currentTimeMillis() - pressTimeMillis;
+                        int dx = e.getX() - pressMouseX;
+                        int dy = e.getY() - pressMouseY;
+                        double distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (elapsed >= DRAG_DELAY_MS || distance >= DRAG_DISTANCE_THRESHOLD) {
+                            isDragging = true;
+                        }
+                    }
+
+                    if (isDragging) {
+                        dragX = e.getX();
+                        dragY = e.getY();
+                        repaint();
+                    }
                 }
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e) && rightDragging) {
+                    ChessBoard board = gameLoop.getChessBoard();
+                    rightDragging = false;
+
+                    if (board != null &&
+                            rightCurrentGridX >= 0 && rightCurrentGridX < board.getWidth() &&
+                            rightCurrentGridY >= 0 && rightCurrentGridY < board.getHeight()) {
+
+                        if (rightCurrentGridX == rightStartGridX && rightCurrentGridY == rightStartGridY) {
+                            toggleCircle(rightStartGridX, rightStartGridY);
+                        } else {
+                            toggleArrow(rightStartGridX, rightStartGridY, rightCurrentGridX, rightCurrentGridY);
+                        }
+                    }
+
+                    rightStartGridX = -1;
+                    rightStartGridY = -1;
+                    rightCurrentGridX = -1;
+                    rightCurrentGridY = -1;
+                    repaint();
+                    return;
+                }
+
                 // Drag & Drop se vyhodnotí pouze tehdy, pokud hráč figurku reálně přetahoval
                 if (selectedPiece != null && isDragging && SwingUtilities.isLeftMouseButton(e)) {
                     ChessBoard board = gameLoop.getChessBoard();
@@ -393,6 +485,80 @@ public class Loop extends JPanel {
         addMouseMotionListener(inputHandler);
         addMouseWheelListener(inputHandler);
     }
+    private void toggleCircle(int x, int y) {
+        for (int i = 0; i < highlightCircles.size(); i++) {
+            int[] c = highlightCircles.get(i);
+            if (c[0] == x && c[1] == y) {
+                highlightCircles.remove(i);
+                return;
+            }
+        }
+        highlightCircles.add(new int[]{x, y});
+    }
+
+    private void toggleArrow(int fromX, int fromY, int toX, int toY) {
+        for (int i = 0; i < highlightArrows.size(); i++) {
+            int[] a = highlightArrows.get(i);
+            if (a[0] == fromX && a[1] == fromY && a[2] == toX && a[3] == toY) {
+                highlightArrows.remove(i);
+                return;
+            }
+        }
+        highlightArrows.add(new int[]{fromX, fromY, toX, toY});
+    }
+
+    private void drawArrow(Graphics2D g2d, int fromX, int fromY, int toX, int toY,
+                           int cols, int rows, int tileSize, int offsetX, int offsetY,
+                           Color color) {
+
+        int fromScreenX = displayX(fromX, cols);
+        int fromScreenY = displayY(fromY, rows);
+        int toScreenX = displayX(toX, cols);
+        int toScreenY = displayY(toY, rows);
+
+        int startX = offsetX + fromScreenX * tileSize + tileSize / 2;
+        int startY = offsetY + fromScreenY * tileSize + tileSize / 2;
+        int endX = offsetX + toScreenX * tileSize + tileSize / 2;
+        int endY = offsetY + toScreenY * tileSize + tileSize / 2;
+
+        double dx = endX - startX;
+        double dy = endY - startY;
+        double length = Math.sqrt(dx * dx + dy * dy);
+        if (length == 0) return;
+
+        int arrowSize = Math.max(10, tileSize / 3); // větší hrot
+
+        // Čáru zkrátíme jen o polovinu délky hrotu, ať vede skoro až doprostřed cílového pole
+        double shorten = arrowSize * 0.5;
+        double ratio = Math.max(0, (length - shorten) / length);
+        int adjEndX = startX + (int) (dx * ratio);
+        int adjEndY = startY + (int) (dy * ratio);
+
+        g2d.setColor(color);
+        g2d.drawLine(startX, startY, adjEndX, adjEndY);
+
+        double angle = Math.atan2(adjEndY - startY, adjEndX - startX);
+
+        double wingAngle = Math.PI / 4;
+        double backAngle = Math.PI; // bod na ose šipky, za hrotem
+
+// Pravé křídlo + zadní bod
+        int x1 = adjEndX - (int) (arrowSize * Math.cos(angle - wingAngle));
+        int y1 = adjEndY - (int) (arrowSize * Math.sin(angle - wingAngle));
+        int x2 = adjEndX - (int) (arrowSize * Math.cos(angle + backAngle));
+        int y2 = adjEndY - (int) (arrowSize * Math.sin(angle + backAngle));
+
+        g2d.fillPolygon(new int[]{adjEndX, x1, x2}, new int[]{adjEndY, y1, y2}, 3);
+
+// Levé křídlo + tentýž zadní bod (zrcadlově)
+        int x3 = adjEndX - (int) (arrowSize * Math.cos(angle + wingAngle));
+        int y3 = adjEndY - (int) (arrowSize * Math.sin(angle + wingAngle));
+        int x4 = adjEndX - (int) (arrowSize * Math.cos(angle - backAngle));
+        int y4 = adjEndY - (int) (arrowSize * Math.sin(angle - backAngle));
+
+        g2d.fillPolygon(new int[]{adjEndX, x3, x4}, new int[]{adjEndY, y3, y4}, 3);
+    }
+
     // Hlídání předchozí pozice kurzoru pro zabránění zbytečnému repaintu
     private int lastHoverX = -2;
     private int lastHoverY = -2;
@@ -497,6 +663,11 @@ public class Loop extends JPanel {
         dragX = mouseX;
         dragY = mouseY;
         isDragging = false;
+
+        pressTimeMillis = System.currentTimeMillis();
+        pressMouseX = mouseX;
+        pressMouseY = mouseY;
+
         updateRotationButtons();
         updatePossibleMoves();
     }
@@ -670,6 +841,8 @@ public class Loop extends JPanel {
     public void startGame() {
         System.out.println("Načítám hrací plochu s mapou: " + selectedMap + " a botem: " + selectedOpponent);
 
+        highlightCircles.clear();
+        highlightArrows.clear();
         boardFlipped = "Black".equalsIgnoreCase(selectedColour);
 
         gameLoop = new GameLoop();
@@ -1124,6 +1297,52 @@ public class Loop extends JPanel {
             );
         }
         // =========================================================
+// 4. KOLEČKA A ŠIPKY (pravé tlačítko myši)
+// =========================================================
+        g2d.setStroke(new BasicStroke(Math.max(2, tileSize / 12)));
+
+        for (int[] c : highlightCircles) {
+            if (c[0] < 0 || c[0] >= cols || c[1] < 0 || c[1] >= rows) continue;
+
+            int screenX = displayX(c[0], cols);
+            int screenY = displayY(c[1], rows);
+            int posX = offsetX + screenX * tileSize;
+            int posY = offsetY + screenY * tileSize;
+            int pad = tileSize / 12;
+
+            g2d.setColor(new Color(255, 170, 0, 220));
+            g2d.drawOval(posX + pad, posY + pad, tileSize - 2 * pad, tileSize - 2 * pad);
+        }
+
+        for (int[] a : highlightArrows) {
+            if (a[0] < 0 || a[0] >= cols || a[1] < 0 || a[1] >= rows) continue;
+            if (a[2] < 0 || a[2] >= cols || a[3] < 0 || a[3] >= rows) continue;
+
+            drawArrow(g2d, a[0], a[1], a[2], a[3], cols, rows, tileSize, offsetX, offsetY,
+                    new Color(255, 170, 0, 220));
+        }
+
+// Náhled, dokud pravé tlačítko ještě držíme
+        if (rightDragging && rightStartGridX >= 0) {
+            if (rightCurrentGridX == rightStartGridX && rightCurrentGridY == rightStartGridY) {
+                int screenX = displayX(rightStartGridX, cols);
+                int screenY = displayY(rightStartGridY, rows);
+                int posX = offsetX + screenX * tileSize;
+                int posY = offsetY + screenY * tileSize;
+                int pad = tileSize / 12;
+
+                g2d.setColor(new Color(255, 170, 0, 130));
+                g2d.drawOval(posX + pad, posY + pad, tileSize - 2 * pad, tileSize - 2 * pad);
+            } else if (rightCurrentGridX >= 0 && rightCurrentGridX < cols
+                    && rightCurrentGridY >= 0 && rightCurrentGridY < rows) {
+                drawArrow(g2d, rightStartGridX, rightStartGridY, rightCurrentGridX, rightCurrentGridY,
+                        cols, rows, tileSize, offsetX, offsetY, new Color(255, 170, 0, 130));
+            }
+        }
+
+        g2d.setStroke(new BasicStroke(1));
+
+        // =========================================================
         // VYKRESLENÍ SOUŘADNIC PO OBVODU ŠACHOVNICE
         // =========================================================
         g2d.setColor(Color.yellow); // Barva textu souřadnic
@@ -1186,6 +1405,7 @@ public class Loop extends JPanel {
 
 
     }
+
 
     public void loadScore() {
 

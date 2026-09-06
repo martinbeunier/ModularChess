@@ -195,9 +195,10 @@ settings soubor
 Nakreslit k powerupům /spíš text co dělá jako move hint
 přidat action listene pro zavření escape menu .
 6.
+kreslení šipek pravým tlačítkem
 
 nepodstatné :
-kreslení šipek pravým tlačítkem
+
 map editor
 piece editor
 záznamy her
