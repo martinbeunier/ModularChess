@@ -193,9 +193,7 @@ public class Main/*extends Application */{
 settings soubor
 5.
 Nakreslit k powerupům /spíš text co dělá jako move hint
-přidat action listene pro zavření escape menu .
 6.
-kreslení šipek pravým tlačítkem
 
 nepodstatné :
 

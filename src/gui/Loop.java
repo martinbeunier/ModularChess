@@ -11,6 +11,7 @@ import pieces.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
@@ -157,30 +158,44 @@ public class Loop extends JPanel {
         getActionMap().put("backTo", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Vytvoření možností pro vyskakovací nabídku
                 Object[] options = {"Continue", "Piecology", "Settings", "Quit Game"};
 
-                int choice = JOptionPane.showOptionDialog(
-                        frame,                               // Vlastník (nebo předejte 'frame')
-                        "Escape menu",            // Zpráva
-                        "Escape menu",                         // Titulek okna
-                        JOptionPane.DEFAULT_OPTION,
+                JOptionPane pane = new JOptionPane(
+                        "Escape menu",
                         JOptionPane.QUESTION_MESSAGE,
-                        null,                               // Vlastní ikona (volitelné)
-                        options,                            // Pole tlačítkových možností
-                        options[0]                          // Výchozí označené tlačítko (Continue)
+                        JOptionPane.DEFAULT_OPTION,
+                        null,
+                        options,
+                        options[0]
                 );
 
-                // Reakce na vybranou možnost (vrací index tlačítka od 0)
+                JDialog dialog = pane.createDialog(frame, "Escape menu");
+
+                // Explicitní zavření dialogu na ESCAPE
+                dialog.getRootPane().registerKeyboardAction(
+                        ev -> dialog.dispose(),
+                        KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0),
+                        JComponent.WHEN_IN_FOCUSED_WINDOW
+                );
+
+                dialog.setVisible(true);
+
+                Object selectedValue = pane.getValue();
+                int choice = -1;
+                for (int i = 0; i < options.length; i++) {
+                    if (options[i].equals(selectedValue)) {
+                        choice = i;
+                        break;
+                    }
+                }
+
                 switch (choice) {
                     case 0: // Continue
-                        // Pokračovat ve hře (např. zavřít menu / unpause)
                         break;
                     case 1:
- openPdf();
+                        openPdf();
                         break;
                     case 2: // Settings
-                        // Otevřít nastavení
                         break;
                     case 3: // Quit Game
                         Object[] options2 = {"Contunue", "Quit Game"};
@@ -194,12 +209,12 @@ public class Loop extends JPanel {
                                 options2,
                                 options2[0]
                         );
-                        if(choice2 == 1) {        frame.showScene("MAPSELECT");}
-
-
+                        if (choice2 == 1) {
+                            frame.showScene("MAPSELECT");
+                        }
                         break;
                     default:
-                        // Hráč zavřel okno křížkem nebo klávesou Esc
+                        // Escape nebo zavření křížkem — bereme jako Continue
                         break;
                 }
             }
