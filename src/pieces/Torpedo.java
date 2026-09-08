@@ -19,6 +19,9 @@ public class Torpedo extends OrientedPiece {
                 new LinebreakerRook("Linebraker Rook", px, py, pc)
         );
         addPromotionPiece((px, py, pc) ->
+                new Wasp("Wasp", px, py, pc)
+        );
+        addPromotionPiece((px, py, pc) ->
                 new Queen("Queen", px, py, pc)
         );
 

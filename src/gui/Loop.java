@@ -196,6 +196,8 @@ public class Loop extends JPanel {
                         openPdf();
                         break;
                     case 2: // Settings
+                        Settings.openedInLoop = true;
+                        frame.showScene("SETTINGS");
                         break;
                     case 3: // Quit Game
                         Object[] options2 = {"Contunue", "Quit Game"};
@@ -1496,6 +1498,9 @@ public class Loop extends JPanel {
 
             case "torpedo":
                 scale = 1.25;
+                break;
+            case "wasp":
+                scale = 1.5;
                 break;
 
 

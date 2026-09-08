@@ -50,8 +50,10 @@ water : 8 4
 water : 8 5
 
 Pieces :
+piece : class pieces.Wasp ;black wasp; 0 0 Black true 800
 piece : class pieces.Pawn ;Black Pawn; 0 2 Black true 100 2
 piece : class pieces.Pawn ;White Pawn; 0 6 White true 100 0
+piece : class pieces.Wasp ;white wasp; 0 7 White true 800
 piece : class pieces.Bishop ;Black Bishop; 1 0 Black true 320
 piece : class pieces.LandCarrier ;b Land Carrier; 1 1 Black true 450
 piece : class pieces.Pawn ;Black Pawn; 1 2 Black true 100 2

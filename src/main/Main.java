@@ -102,10 +102,14 @@ public class Main/*extends Application */{
         Torpedo wtorpedo = new Torpedo("w Torpedo",3,8,Colour.White,0);
         Torpedo btorpedo = new Torpedo("b Torpedo",3,0,Colour.Black,2);
 
+        Wasp wwasp = new Wasp("white wasp",0,7,Colour.White);
+        Wasp bwasp = new Wasp("black wasp",0,0,Colour.Black);
+
         Lifebuoy lifebuoy = new Lifebuoy("ability",4,4);
         OverClocker overClocker = new OverClocker("OverClocker",1,4);
 
         Blocade blocade = new Blocade("blocade",7,4);
+
 
 
 
@@ -147,6 +151,9 @@ public class Main/*extends Application */{
 
         chessBoard.addPiece(wtorpedo);
         chessBoard.addPiece(btorpedo);
+
+        chessBoard.addPiece(wwasp);
+        chessBoard.addPiece(bwasp);
 
         chessBoard.addPiece(lifebuoy);
         chessBoard.addPiece(overClocker);
@@ -191,8 +198,10 @@ public class Main/*extends Application */{
 
 4.
 settings soubor
+
+udělat výběr na zvuk checku .
+udělat save settings pro rozlišení .
 5.
-Nakreslit k powerupům /spíš text co dělá jako move hint
 6.
 
 nepodstatné :

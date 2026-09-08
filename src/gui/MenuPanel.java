@@ -96,9 +96,16 @@ public class MenuPanel extends JPanel {
 
         JButton settingsButton = new JButton("Settings");
         settingsButton.setBounds(UI.toCenter(20, w), UI.toPercent(60, h), UI.toPercent(20, w), UI.toPercent(10, h));
+        settingsButton.addActionListener(e -> {
+            Settings.openedInLoop = false;
+            frame.showScene("SETTINGS");
+        });
+
+
 
         JButton turnOffButton = new JButton("Exit game");
         turnOffButton.setBounds(UI.toCenter(20, w), UI.toPercent(70, h), UI.toPercent(20, w), UI.toPercent(10, h));
+
 
 
 

@@ -15,8 +15,10 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+        System.out.println("DEBUG windowMode = " + UIconfiguration.windowMode);
+
         // 1. NEJPRVE nastavení režimu okna
-        switch (UIconfiguration.winddowMode) {
+        switch (UIconfiguration.windowMode) { //loadne nastavení ze souboru
             case 0:  //full windowed
                 setExtendedState(JFrame.MAXIMIZED_BOTH);
                 Dimension screen0 = Toolkit.getDefaultToolkit().getScreenSize();
@@ -48,7 +50,7 @@ public class MainFrame extends JFrame {
         setVisible(true);
 
         // 3. Pro režim okna načteme přesné rozměry plátna bez lišt Windows
-        if (UIconfiguration.winddowMode >= 2) {
+        if (UIconfiguration.windowMode >= 2) {
             this.width = getContentPane().getWidth();
             this.height = getContentPane().getHeight();
         }
@@ -62,6 +64,7 @@ public class MainFrame extends JFrame {
         cards.add(new MenuPanel(this), "MENU");
         cards.add(new PlayMenu(this), "PLAYMENU");
         cards.add(new MapSelect(this), "MAPSELECT");
+        cards.add(new Settings(this), "SETTINGS");
         cards.add(loopPanel, "LOOP");
 
         add(cards);
