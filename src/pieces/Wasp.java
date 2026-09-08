@@ -13,8 +13,6 @@ public class Wasp extends Piece{
         super(name, x, y, colour, 800);
 
 
-
-
         addMove(new MoveType(0,-1, MoveBehaviour.BOTH, MoveClass.TORPEDO));
         addMove(new MoveType(0,-2, MoveBehaviour.BOTH, MoveClass.TORPEDO));
         addMove(new MoveType(0,1, MoveBehaviour.BOTH, MoveClass.TORPEDO));

@@ -12,7 +12,9 @@ public class Settings extends JPanel {
     private MainFrame frame;
     private ButtonGroup boardColourGroup;
     private ButtonGroup waterColourGroup;
+    private ButtonGroup windowModeGroup;
     private JSlider volumeSlider;
+    private JLabel restartNoticeLabel;
 
     public Settings(MainFrame frame) {
         this.frame = frame;
@@ -30,7 +32,7 @@ public class Settings extends JPanel {
         boardRadioPanel.setLayout(null);
 
         boardRadioPanel.setBounds(
-                UI.toPercent(15, w),
+                UI.toPercent(80, w),
                 UI.toPercent(60, h),
                 UI.toPercent(30, w),
                 UI.toPercent(15, h)
@@ -39,11 +41,11 @@ public class Settings extends JPanel {
         boardColourGroup = new ButtonGroup();
 
         JRadioButton dark = new JRadioButton("dark");
-        dark.setBounds(0, 0, UI.toPercent(15, w), UI.toPercent(3, h));
+        dark.setBounds(20, 0, UI.toPercent(15, w), UI.toPercent(3, h));
         dark.setActionCommand("0");
 
         JRadioButton green = new JRadioButton("green");
-        green.setBounds(0, UI.toPercent(3, h), UI.toPercent(15, w), UI.toPercent(3, h));
+        green.setBounds(20, UI.toPercent(3, h), UI.toPercent(15, w), UI.toPercent(3, h));
         green.setActionCommand("1");
 
         boardRadioPanel.add(dark);
@@ -79,13 +81,9 @@ public class Settings extends JPanel {
         waterClassic.setBounds(0, 0, UI.toPercent(15, w), UI.toPercent(3, h));
         waterClassic.setActionCommand("0");
 
-
-
         waterRadioPanel.add(waterClassic);
 
-
         waterColourGroup.add(waterClassic);
-
 
         if (UIconfiguration.waterColours == 0) {
             waterClassic.setSelected(true);
@@ -93,10 +91,92 @@ public class Settings extends JPanel {
 
         add(waterRadioPanel);
 
+        // Režim okna / rozlišení
+        // --------------------------------------------------
+
+        JPanel windowModePanel = new JPanel();
+        windowModePanel.setLayout(null);
+
+        windowModePanel.setBounds(
+                UI.toPercent(15, w),
+                UI.toPercent(20, h),
+                UI.toPercent(15, w),
+                UI.toPercent(45, h)
+        );
+
+        windowModeGroup = new ButtonGroup();
+
+        JRadioButton mode0 = new JRadioButton("Okno na celou obrazovku (s okraji)");
+        mode0.setBounds(0, 0, UI.toPercent(15, w), UI.toPercent(6, h));
+        mode0.setActionCommand("0");
+
+        JRadioButton mode1 = new JRadioButton("Fullscreen (bez okrajů)");
+        mode1.setBounds(0, UI.toPercent(6, h), UI.toPercent(15, w), UI.toPercent(6, h));
+        mode1.setActionCommand("1");
+
+        JRadioButton mode2 = new JRadioButton("Okno 1600x900");
+        mode2.setBounds(0, UI.toPercent(12, h), UI.toPercent(15, w), UI.toPercent(6, h));
+        mode2.setActionCommand("2");
+
+        JRadioButton mode3 = new JRadioButton("Okno 1280x720");
+        mode3.setBounds(0, UI.toPercent(18, h), UI.toPercent(15, w), UI.toPercent(6, h));
+        mode3.setActionCommand("3");
+
+        JRadioButton mode4 = new JRadioButton("Okno 1920×1080");
+        mode4.setBounds(0, UI.toPercent(24, h), UI.toPercent(15, w), UI.toPercent(6, h));
+        mode4.setActionCommand("4");
+
+        JRadioButton mode5 = new JRadioButton("Okno 2560x1440");
+        mode5.setBounds(0, UI.toPercent(30, h), UI.toPercent(15, w), UI.toPercent(6, h));
+        mode5.setActionCommand("5");
+
+        JRadioButton mode6 = new JRadioButton("Okno 3840×2160");
+        mode6.setBounds(0, UI.toPercent(36, h), UI.toPercent(15, w), UI.toPercent(6, h));
+        mode6.setActionCommand("6");
+
+        windowModePanel.add(mode0);
+        windowModePanel.add(mode1);
+        windowModePanel.add(mode2);
+        windowModePanel.add(mode3);
+        windowModePanel.add(mode4);
+        windowModePanel.add(mode5);
+        windowModePanel.add(mode6);
+
+
+        windowModeGroup.add(mode0);
+        windowModeGroup.add(mode1);
+        windowModeGroup.add(mode2);
+        windowModeGroup.add(mode3);
+        windowModeGroup.add(mode4);
+        windowModeGroup.add(mode5);
+        windowModeGroup.add(mode6);
+
+        switch (UIconfiguration.windowMode) {
+            case 0: mode0.setSelected(true); break;
+            case 1: mode1.setSelected(true); break;
+            case 2: mode2.setSelected(true); break;
+            case 3: mode3.setSelected(true); break;
+            case 4: mode4.setSelected(true); break;
+            case 5: mode5.setSelected(true); break;
+            case 6: mode6.setSelected(true); break;
+        }
+
+        add(windowModePanel);
+
+        // upozornění, že režim okna se projeví až po restartu
+        restartNoticeLabel = new JLabel(" ");
+        restartNoticeLabel.setBounds(
+                UI.toPercent(15, w),
+                UI.toPercent(50, h),
+                UI.toPercent(20, w),
+                UI.toPercent(6, h)
+        );
+        restartNoticeLabel.setForeground(Color.RED);
+        add(restartNoticeLabel);
+
         // Hlasitost zvuků
         // --------------------------------------------------
 
-        // JSlider pracuje s int, takže 0.0-1.0 mapujeme na 0-100
         int currentVolumePercent = Math.round(UIconfiguration.soundEfectsVolume * 100);
 
         volumeSlider = new JSlider(JSlider.HORIZONTAL, 0, 100, currentVolumePercent);
@@ -119,7 +199,7 @@ public class Settings extends JPanel {
         JButton saveB = new JButton("save");
         saveB.setBounds(
                 UI.toCenter(20, w),
-                UI.toPercent(20, h),
+                UI.toPercent(30, h),
                 UI.toPercent(20, w),
                 UI.toPercent(10, h)
         );
@@ -135,6 +215,12 @@ public class Settings extends JPanel {
                     ? waterColourGroup.getSelection().getActionCommand()
                     : null;
 
+            String windowModeSelected = windowModeGroup.getSelection() != null
+                    ? windowModeGroup.getSelection().getActionCommand()
+                    : null;
+
+            int previousWindowMode = UIconfiguration.windowMode;
+
             if (boardSelected != null) {
                 UIconfiguration.boardColours = Integer.parseInt(boardSelected);
             }
@@ -143,27 +229,36 @@ public class Settings extends JPanel {
                 UIconfiguration.waterColours = Integer.parseInt(waterSelected);
             }
 
+            if (windowModeSelected != null) {
+                UIconfiguration.windowMode = Integer.parseInt(windowModeSelected);
+            }
+
             UIconfiguration.soundEfectsVolume = volumeSlider.getValue() / 100f;
 
             UIconfiguration.saveSettings();
             UIconfiguration.loadSettings(); // přepočítá barvy podle nových indexů
+
+            if (previousWindowMode != UIconfiguration.windowMode) {
+                restartNoticeLabel.setText("Nastavení okna se projeví až po restartu hry.");
+            } else {
+                restartNoticeLabel.setText(" ");
+            }
+
             System.out.println("Settings saved");
         });
 
-        // ESC → MENU
+        // ESC → MENU / LOOP
         getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                 .put(KeyStroke.getKeyStroke("ESCAPE"), "backTo");
 
         getActionMap().put("backTo", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(openedInLoop){
+                if (openedInLoop) {
                     frame.showScene("LOOP");
-                }else
-                {
+                } else {
                     frame.showScene("MENU");
                 }
-
             }
         });
     }

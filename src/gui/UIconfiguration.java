@@ -97,7 +97,7 @@ public class UIconfiguration {
             props.load(in);
 
             System.out.println("načteny hodnoty ze souboru");
-            windowMode = parseIntSafe(props.getProperty("windowMode"), windowMode, 0, 3);
+            windowMode = parseIntSafe(props.getProperty("windowMode"), windowMode, 0, 6);
             soundEfectsVolume = parseFloatSafe(props.getProperty("soundEfectsVolume"), soundEfectsVolume, 0f, 1f);
             boardColours = parseIntSafe(props.getProperty("boardColours"), boardColours, 0, 2);
             waterColours = parseIntSafe(props.getProperty("waterColours"), waterColours, 0, 1);

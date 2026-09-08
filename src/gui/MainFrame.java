@@ -2,6 +2,7 @@ package gui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 
 public class MainFrame extends JFrame {
 
@@ -18,7 +19,7 @@ public class MainFrame extends JFrame {
         System.out.println("DEBUG windowMode = " + UIconfiguration.windowMode);
 
         // 1. NEJPRVE nastavení režimu okna
-        switch (UIconfiguration.windowMode) { //loadne nastavení ze souboru
+        switch (UIconfiguration.windowMode) {
             case 0:  //full windowed
                 setExtendedState(JFrame.MAXIMIZED_BOTH);
                 Dimension screen0 = Toolkit.getDefaultToolkit().getScreenSize();
@@ -35,16 +36,52 @@ public class MainFrame extends JFrame {
                 break;
 
             case 2:
-                setSize(1600, 900);
+                Dimension size2 = getSafeWindowSize(1600, 900);
+                setSize(size2);
                 setLocationRelativeTo(null);
                 setResizable(false);
+                this.width = size2.width;
+                this.height = size2.height;
                 break;
+
             case 3:
-                setSize(1280, 720);
+                Dimension size3 = getSafeWindowSize(1280, 720);
+                setSize(size3);
                 setLocationRelativeTo(null);
                 setResizable(false);
+                this.width = size3.width;
+                this.height = size3.height;
+                break;
+
+            case 4:
+                Dimension size4 = getSafeWindowSize(1920, 1080);
+                setSize(size4);
+                setLocationRelativeTo(null);
+                setResizable(false);
+                this.width = size4.width;
+                this.height = size4.height;
+                break;
+
+            case 5:
+                Dimension size5 = getSafeWindowSize(2560, 1440);
+                setSize(size5);
+                setLocationRelativeTo(null);
+                setResizable(false);
+                this.width = size5.width;
+                this.height = size5.height;
+                break;
+
+            case 6:
+                Dimension size6 = getSafeWindowSize(3840, 2160);
+                setSize(size6);
+                setLocationRelativeTo(null);
+                setResizable(false);
+                this.width = size6.width;
+                this.height = size6.height;
                 break;
         }
+
+
 
         // 2. ZOBRAZÍME okno — teprve teď má okno reálnou velikost!
         setVisible(true);
@@ -77,7 +114,20 @@ public class MainFrame extends JFrame {
         Image scaled = img.getScaledInstance(32, 32, Image.SCALE_SMOOTH);
         setIconImage(scaled);
 
+        // na konec MainFrame konstruktoru, po kroku 3 (kde se width/height finálně nastaví)
+        System.out.println("DEBUG: windowMode=" + UIconfiguration.windowMode
+                + " -> width=" + this.width + ", height=" + this.height);
+
+        setupEmergencyResetShortcut();
+
         showScene("MENU");
+    }
+
+    private Dimension getSafeWindowSize(int requestedWidth, int requestedHeight) {
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        int safeWidth = Math.min(requestedWidth, screen.width);
+        int safeHeight = Math.min(requestedHeight, screen.height);
+        return new Dimension(safeWidth, safeHeight);
     }
 
     public void showScene(String name) {
@@ -97,4 +147,29 @@ public class MainFrame extends JFrame {
     public int getHeight() {
         return height;
     }
+
+    private void setupEmergencyResetShortcut() {
+        JRootPane root = getRootPane();
+
+        root.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke("ctrl shift R"), "emergencyReset");
+
+        root.getActionMap().put("emergencyReset", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Nouzový reset rozlišení aktivován.");
+
+                UIconfiguration.windowMode = 2; // bezpečná pevná velikost 1600x900
+                UIconfiguration.saveSettings();
+
+                JOptionPane.showMessageDialog(
+                        MainFrame.this,
+                        "Rozlišení bylo obnoveno na výchozí. Restartuj hru, aby se změna projevila.",
+                        "Reset rozlišení",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        });
+    }
+
 }
