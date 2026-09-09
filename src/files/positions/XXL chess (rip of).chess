@@ -33,16 +33,20 @@ promotion colours of tile : 13 7 Black
 Tiles water :
 
 Pieces :
+piece : class pieces.King ;w king; 0 0 White true 100000
 piece : class pieces.Pawn ;b pawn; 0 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 0 12 White true 100 0
+piece : class pieces.King ;w king; 1 0 White true 100000
 piece : class pieces.Pawn ;b pawn; 1 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 1 12 White true 100 0
 piece : class pieces.Pawn ;b pawn; 2 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 2 12 White true 100 0
 piece : class pieces.Pawn ;b pawn; 3 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 3 12 White true 100 0
+piece : class pieces.King ;b king; 4 0 Black true 100000
 piece : class pieces.Pawn ;b pawn; 4 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 4 12 White true 100 0
+piece : class pieces.King ;b king; 5 0 Black true 100000
 piece : class pieces.Pawn ;b pawn; 5 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 5 12 White true 100 0
 piece : class pieces.Pawn ;b pawn; 6 1 Black true 100 2
