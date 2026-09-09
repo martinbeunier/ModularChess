@@ -1,0 +1,69 @@
+Width : 14 Height: 14
+
+Tiles promotion colours :
+promotion colours of tile : 0 6 White
+promotion colours of tile : 0 7 Black
+promotion colours of tile : 1 6 White
+promotion colours of tile : 1 7 Black
+promotion colours of tile : 2 6 White
+promotion colours of tile : 2 7 Black
+promotion colours of tile : 3 6 White
+promotion colours of tile : 3 7 Black
+promotion colours of tile : 4 6 White
+promotion colours of tile : 4 7 Black
+promotion colours of tile : 5 6 White
+promotion colours of tile : 5 7 Black
+promotion colours of tile : 6 6 White
+promotion colours of tile : 6 7 Black
+promotion colours of tile : 7 6 White
+promotion colours of tile : 7 7 Black
+promotion colours of tile : 8 6 White
+promotion colours of tile : 8 7 Black
+promotion colours of tile : 9 6 White
+promotion colours of tile : 9 7 Black
+promotion colours of tile : 10 6 White
+promotion colours of tile : 10 7 Black
+promotion colours of tile : 11 6 White
+promotion colours of tile : 11 7 Black
+promotion colours of tile : 12 6 White
+promotion colours of tile : 12 7 Black
+promotion colours of tile : 13 6 White
+promotion colours of tile : 13 7 Black
+
+Tiles water :
+
+Pieces :
+piece : class pieces.Pawn ;b pawn; 0 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 0 12 White true 100 0
+piece : class pieces.Pawn ;b pawn; 1 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 1 12 White true 100 0
+piece : class pieces.Pawn ;b pawn; 2 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 2 12 White true 100 0
+piece : class pieces.Pawn ;b pawn; 3 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 3 12 White true 100 0
+piece : class pieces.Pawn ;b pawn; 4 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 4 12 White true 100 0
+piece : class pieces.Pawn ;b pawn; 5 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 5 12 White true 100 0
+piece : class pieces.Pawn ;b pawn; 6 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 6 12 White true 100 0
+piece : class pieces.Pawn ;b pawn; 7 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 7 12 White true 100 0
+piece : class pieces.Pawn ;b pawn; 8 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 8 12 White true 100 0
+piece : class pieces.Pawn ;b pawn; 9 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 9 12 White true 100 0
+piece : class pieces.Pawn ;b pawn; 10 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 10 12 White true 100 0
+piece : class pieces.Pawn ;b pawn; 11 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 11 12 White true 100 0
+piece : class pieces.Pawn ;b pawn; 12 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 12 12 White true 100 0
+piece : class pieces.Pawn ;b pawn; 13 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 13 12 White true 100 0
+
+Players :
+Player :  ;Bílý; White 600 PowerUps :
+Player :  ;Černý; Black 600 PowerUps :
+
+current player : White

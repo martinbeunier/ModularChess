@@ -70,45 +70,7 @@ public class Main/*extends Application */{
 
 //inicializace figur
 
-        ArrayList<Pawn> pawns= new ArrayList<>();
 
-        for (int i = 0; i < 9; i++) {
-            pawns.add(new Pawn("White Pawn", i, 6, Colour.White, 0));
-            pawns.add(new Pawn("Black Pawn", i, 2, Colour.Black, 2));
-        }
-
-        Bishop wbishop1 = new Bishop("White Bishop",1,8,Colour.White);
-        Bishop wbishop2 = new Bishop("White Bishop",2,8,Colour.White);
-        Bishop wbishop3 = new Bishop("White Bishop",6,8,Colour.White);
-        Bishop wbishop4 = new Bishop("White Bishop",7,8,Colour.White);
-
-        Bishop bbishop1 = new Bishop("Black Bishop",1,0,Colour.Black);
-        Bishop bbishop2 = new Bishop("Black Bishop",2,0,Colour.Black);
-        Bishop bbishop3 = new Bishop("Black Bishop",6,0,Colour.Black);
-        Bishop bbishop4 = new Bishop("Black Bishop",7,0,Colour.Black);
-
-       Emperor wemperor = new Emperor("White Emperor",4,8,Colour.White);
-        Emperor bemperor = new Emperor("Black Emperor",4,0,Colour.Black);
-
-        LandCarrier wlandCarrier1 = new LandCarrier("w Land Carrier",1,7,Colour.White);
-        LandCarrier wlandCarrier2 = new LandCarrier("w Land Carrier",7,7,Colour.White);
-
-        LandCarrier blandCarrier1 = new LandCarrier("b Land Carrier",1,1,Colour.Black);
-        LandCarrier blandCarrier2 = new LandCarrier("b Land Carrier",7,1,Colour.Black);
-
-        Queen wqueen = new Queen("White Queen",4,7,Colour.White);
-        Queen bqueen = new Queen("Black Queen",4,1,Colour.Black);
-
-        Torpedo wtorpedo = new Torpedo("w Torpedo",3,8,Colour.White,0);
-        Torpedo btorpedo = new Torpedo("b Torpedo",3,0,Colour.Black,2);
-
-        Wasp wwasp = new Wasp("white wasp",0,7,Colour.White);
-        Wasp bwasp = new Wasp("black wasp",0,0,Colour.Black);
-
-        Lifebuoy lifebuoy = new Lifebuoy("ability",4,4);
-        OverClocker overClocker = new OverClocker("OverClocker",1,4);
-
-        Blocade blocade = new Blocade("blocade",7,4);
 
 
 
@@ -118,69 +80,28 @@ public class Main/*extends Application */{
 
 //inicializace šachovnice
 
-        ChessBoard chessBoard = new ChessBoard(13,9);
+        ChessBoard chessBoard = new ChessBoard(14,14);
 
         chessBoard.addPlayer(player1);
         chessBoard.addPlayer(player2);
 
 
-        for(Pawn p : pawns){
-            chessBoard.addPiece(p);
-        }
-
-        chessBoard.addPiece(wbishop1);
-        chessBoard.addPiece(wbishop2);
-        chessBoard.addPiece(wbishop3);
-        chessBoard.addPiece(wbishop4);
-
-        chessBoard.addPiece(bbishop1);
-        chessBoard.addPiece(bbishop2);
-        chessBoard.addPiece(bbishop3);
-        chessBoard.addPiece(bbishop4);
-
-        chessBoard.addPiece(wemperor);
-        chessBoard.addPiece(bemperor);
-
-        chessBoard.addPiece(wlandCarrier1);
-        chessBoard.addPiece(wlandCarrier2);
-        chessBoard.addPiece(blandCarrier1);
-        chessBoard.addPiece(blandCarrier2);
-
-        chessBoard.addPiece(wqueen);
-        chessBoard.addPiece(bqueen);
-
-        chessBoard.addPiece(wtorpedo);
-        chessBoard.addPiece(btorpedo);
-
-        chessBoard.addPiece(wwasp);
-        chessBoard.addPiece(bwasp);
-
-        chessBoard.addPiece(lifebuoy);
-        chessBoard.addPiece(overClocker);
-        chessBoard.addPiece(blocade);
-
-
-
-        for (int i = 0; i < 9; i++) {
-            chessBoard.addWaterSquares(i, 3);
-            chessBoard.addWaterSquares(i, 4);
-            chessBoard.addWaterSquares(i, 5);
-        }
-
-        for (int i = 0; i < 9; i++) {
-            chessBoard.addPromotionSquares(i, 0,Colour.White);
-            chessBoard.addPromotionSquares(i, 8,Colour.Black);
-
+        for(int i = 0;i<14;i++){
+            chessBoard.addPiece(new Pawn("w pawn",i,12,Colour.White,0));
+            chessBoard.addPiece(new Pawn("b pawn",i,1,Colour.Black,2));
+            chessBoard.addPromotionSquares(i,6,Colour.White);
+            chessBoard.addPromotionSquares(i,7,Colour.Black);
         }
 
 
 
-        chessBoard.printBoard();
+
+
 //konec inicializace šachovnice
 
         chessBoard.printBoard();
 
-        chessBoard.savePosition("test",player1);
+        chessBoard.savePosition("XXL chess (rip of)",player1);
 
 
         break;
@@ -195,22 +116,18 @@ public class Main/*extends Application */{
 /*TODO
 
 
+vylepšit výběr map
+udělat tutorial mapu
+záznamy her
 
-4.
-settings soubor
-
-udělat výběr na zvuk checku .
-udělat save settings pro rozlišení .
-5.
-6.
 
 nepodstatné :
 
 map editor
 piece editor
-záznamy her
 
-//udělat tutorial mapu
+
+
 //překreslit pawna
 //překreslit letadlo
 

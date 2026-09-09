@@ -4,8 +4,9 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
-import java.awt.event.ActionEvent;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class MapSelect extends JPanel {
@@ -16,7 +17,53 @@ public class MapSelect extends JPanel {
     private JPanel mapsPanel;
     private ButtonGroup mapGroup;
 
-    private ArrayList<String> maps;
+    // --------------------------------------------------
+    // SLOŽKY
+    // --------------------------------------------------
+    private static final String MAPS_PATH = "src/files/positions";
+    private static final String MAP_EXTENSION = ".chess";
+
+    // --------------------------------------------------
+    // SLOŽKA S IKONAMI MAP
+    // --------------------------------------------------
+    private static final String MAPS_ICONS_PATH = "src/files/images/mapsicons";
+    private static final String DEFAULT_ICON_NAME = "default.png";
+    // --------------------------------------------------
+    // ROZMĚRY TLAČÍTEK MAP (RELATIVNÍ)
+    // --------------------------------------------------
+    // Šířka/výška ikony jako procento okna
+    private static final double THUMB_WIDTH_PERCENT = 6;   // % šířky okna
+    private static final double THUMB_HEIGHT_PERCENT = 10; // % výšky okna
+
+    // Minimální rozměry, ať to nekolabuje na malém okně
+    private static final int MIN_THUMB_WIDTH = 70;
+    private static final int MIN_THUMB_HEIGHT = 70;
+
+    // Velikost náhledu obrázku mapy
+    private static final int THUMB_WIDTH = 96;
+    private static final int THUMB_HEIGHT = 96;
+
+    private static final String[] ICON_EXTENSIONS = {
+            ".png", ".jpg", ".jpeg", ".gif"
+    };
+
+    // Cache defaultní ikony, ať se nenačítá pořád dokola
+    private ImageIcon defaultIcon;
+
+    // --------------------------------------------------
+    // JEDNA MAPA = NÁZEV + IKONA
+    // --------------------------------------------------
+    private static class MapEntry {
+        String name;
+        ImageIcon icon;
+
+        MapEntry(String name, ImageIcon icon) {
+            this.name = name;
+            this.icon = icon;
+        }
+    }
+
+    private ArrayList<MapEntry> maps;
 
     public MapSelect(MainFrame frame) {
 
@@ -29,15 +76,10 @@ public class MapSelect extends JPanel {
         setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
         // --------------------------------------------------
-        // MAPY
+        // MAPY - NAČTENÍ ZE SLOŽKY
         // --------------------------------------------------
 
-        maps = new ArrayList<>();
-
-        maps.add("standard");
-        maps.add("map1 fighter defense");
-        maps.add("WaterFight");
-        maps.add("test");
+        loadMapsFromFolder();
 
         mapGroup = new ButtonGroup();
 
@@ -366,13 +408,162 @@ public class MapSelect extends JPanel {
                 new AbstractAction() {
 
                     @Override
-                    public void actionPerformed(ActionEvent e) {
+                    public void actionPerformed(java.awt.event.ActionEvent e) {
 
                         frame.showScene("PLAYMENU");
                     }
                 }
         );
+
     }
+
+
+
+
+    // ======================================================
+    // NAČTENÍ MAP ZE SLOŽKY S POZICEMI (.chess)
+    // ======================================================
+
+    private void loadMapsFromFolder() {
+
+        maps = new ArrayList<>();
+
+        File dir = new File(MAPS_PATH);
+
+        if (!dir.exists() || !dir.isDirectory()) {
+            System.out.println(
+                    "Složka s mapami neexistuje: "
+                            + dir.getAbsolutePath()
+            );
+            return;
+        }
+
+        // --------------------------------------------------
+        // FILTR SOUBORŮ MAP (.chess)
+        // --------------------------------------------------
+
+        File[] files = dir.listFiles((d, name) ->
+                name.toLowerCase().endsWith(MAP_EXTENSION)
+        );
+
+        if (files == null) {
+            return;
+        }
+
+        // Seřazení podle názvu, ať je pořadí map konzistentní
+        Arrays.sort(files);
+
+        for (File file : files) {
+
+            String fileName = file.getName();
+
+            int dotIndex = fileName.lastIndexOf('.');
+
+            String mapName = (dotIndex > 0)
+                    ? fileName.substring(0, dotIndex)
+                    : fileName;
+
+            ImageIcon icon = loadIconForMap(mapName);
+
+            maps.add(new MapEntry(mapName, icon));
+        }
+    }
+
+    // ======================================================
+    // NAČTENÍ IKONY PRO DANOU MAPU (S FALLBACKEM NA DEFAULT)
+    // ======================================================
+
+    private ImageIcon loadIconForMap(String mapName) {
+
+        // --------------------------------------------------
+        // ZKUS NAJÍT SOUBOR S PŘESNÝM NÁZVEM MAPY
+        // --------------------------------------------------
+
+        for (String ext : ICON_EXTENSIONS) {
+
+            File iconFile = new File(
+                    MAPS_ICONS_PATH + File.separator + mapName + ext
+            );
+
+            if (iconFile.exists() && iconFile.isFile()) {
+
+                ImageIcon rawIcon = new ImageIcon(iconFile.getPath());
+
+                // Ochrana proti poškozenému / nenačitatelnému souboru
+                if (rawIcon.getImageLoadStatus() != MediaTracker.ERRORED
+                        && rawIcon.getIconWidth() > 0) {
+
+                    return scaleIcon(rawIcon, THUMB_WIDTH, THUMB_HEIGHT);
+                }
+            }
+        }
+
+        // --------------------------------------------------
+        // IKONA NENALEZENA -> POUŽIJ DEFAULT.PNG
+        // --------------------------------------------------
+
+        System.out.println(
+                "Ikona pro mapu '" + mapName
+                        + "' nenalezena, používám výchozí ikonu."
+        );
+
+        return getDefaultIcon();
+    }
+
+    private ImageIcon getDefaultIcon() {
+
+        if (defaultIcon != null) {
+            return defaultIcon;
+        }
+
+        File defaultFile = new File(
+                MAPS_ICONS_PATH + File.separator + DEFAULT_ICON_NAME
+        );
+
+        if (defaultFile.exists() && defaultFile.isFile()) {
+
+            ImageIcon rawIcon = new ImageIcon(defaultFile.getPath());
+
+            if (rawIcon.getImageLoadStatus() != MediaTracker.ERRORED
+                    && rawIcon.getIconWidth() > 0) {
+
+                defaultIcon = scaleIcon(rawIcon, THUMB_WIDTH, THUMB_HEIGHT);
+                return defaultIcon;
+            }
+        }
+
+        // --------------------------------------------------
+        // ANI DEFAULT.PNG NEEXISTUJE -> PRÁZDNÁ IKONA
+        // --------------------------------------------------
+
+        System.out.println(
+                "Výchozí ikona '" + DEFAULT_ICON_NAME
+                        + "' nebyla nalezena ve složce: "
+                        + MAPS_ICONS_PATH
+        );
+
+        defaultIcon = new ImageIcon(
+                new java.awt.image.BufferedImage(
+                        THUMB_WIDTH,
+                        THUMB_HEIGHT,
+                        java.awt.image.BufferedImage.TYPE_INT_ARGB
+                )
+        );
+
+        return defaultIcon;
+    }
+
+    private ImageIcon scaleIcon(ImageIcon icon, int width, int height) {
+
+        Image scaled = icon.getImage().getScaledInstance(
+                width,
+                height,
+                Image.SCALE_SMOOTH
+        );
+
+        return new ImageIcon(scaled);
+    }
+
 
     // ======================================================
     // VYKRESLENÍ / FILTROVÁNÍ MAP
@@ -400,13 +591,6 @@ public class MapSelect extends JPanel {
         // --------------------------------------------------
         // ODSTRANĚNÍ STARÝCH TLAČÍTEK Z BUTTON GROUP
         // --------------------------------------------------
-
-        /*
-         * ButtonGroup nemá clear().
-         *
-         * Proto projdeme všechny jeho tlačítka
-         * a odstraníme je.
-         */
 
         ArrayList<AbstractButton> oldButtons =
                 new ArrayList<>();
@@ -438,42 +622,85 @@ public class MapSelect extends JPanel {
                         .toLowerCase();
 
         // --------------------------------------------------
-        // VYTVOŘENÍ MAP
+        // VYTVOŘENÍ TLAČÍTEK MAP (OBRÁZEK + NÁZEV)
         // --------------------------------------------------
 
-        for (String map : maps) {
+        int frameW = frame.getWidth();
+        int frameH = frame.getHeight();
 
-            if (!map.toLowerCase().contains(filter)) {
+        int thumbW = Math.max(
+                MIN_THUMB_WIDTH,
+                UI.toPercent((int) THUMB_WIDTH_PERCENT, frameW)
+        );
+
+        int thumbH = Math.max(
+                MIN_THUMB_HEIGHT,
+                UI.toPercent((int) THUMB_HEIGHT_PERCENT, frameH)
+        );
+
+        // Šířka pro zalomení textu - o něco širší než ikona
+        int buttonW = (int) (thumbW * 1.4);
+
+        for (MapEntry entry : maps) {
+
+            if (!entry.name.toLowerCase().contains(filter)) {
                 continue;
             }
 
+            ImageIcon scaledIcon = scaleIcon(
+                    entry.icon,
+                    thumbW,
+                    thumbH
+            );
+
+            // ------------------------------------------
+            // TEXT JAKO HTML - AUTOMATICKÉ ZALOMENÍ
+            // ------------------------------------------
+
+            String htmlName =
+                    "<html><div style='text-align:center; width:"
+                            + buttonW
+                            + "px;'>"
+                            + entry.name
+                            + "</div></html>";
+
             JToggleButton mapButton =
-                    new JToggleButton(map);
+                    new JToggleButton(htmlName, scaledIcon);
+
+            mapButton.setHorizontalTextPosition(SwingConstants.CENTER);
+            mapButton.setVerticalTextPosition(SwingConstants.BOTTOM);
+            mapButton.setIconTextGap(6);
+            mapButton.setFocusPainted(false);
 
             /*
-             * ActionCommand musí obsahovat skutečný
-             * název mapy.
+             * NEVOLÁME setPreferredSize s pevnou výškou!
+             * Necháme Swing spočítat skutečnou velikost
+             * podle zalomeného HTML textu, aby se nic
+             * neořízlo. Jen zajistíme minimální šířku,
+             * ať tlačítko není užší, než potřebuje ikona.
              */
 
-            mapButton.setActionCommand(map);
+            Dimension natural = mapButton.getPreferredSize();
 
-            /*
-             * Přidáme tlačítko do ButtonGroup.
-             */
+            mapButton.setPreferredSize(
+                    new Dimension(
+                            Math.max(natural.width, buttonW),
+                            natural.height
+                    )
+            );
+
+            mapButton.setActionCommand(entry.name);
+
+            styleMapButton(mapButton, mapButton.isSelected());
+
+            mapButton.addChangeListener(e ->
+                    styleMapButton(mapButton, mapButton.isSelected())
+            );
 
             mapGroup.add(mapButton);
-
-            /*
-             * A zároveň do GUI.
-             */
-
             mapsPanel.add(mapButton);
 
-            // --------------------------------------------------
-            // OBNOVENÍ PŮVODNÍHO VÝBĚRU
-            // --------------------------------------------------
-
-            if (map.equals(selectedMap)) {
+            if (entry.name.equals(selectedMap)) {
                 mapButton.setSelected(true);
             }
         }
@@ -484,5 +711,31 @@ public class MapSelect extends JPanel {
 
         mapsPanel.revalidate();
         mapsPanel.repaint();
+    }
+
+    // ======================================================
+    // VIZUÁLNÍ ZVÝRAZNĚNÍ VYBRANÉ MAPY
+    // ======================================================
+
+    private void styleMapButton(JToggleButton button, boolean selected) {
+
+        if (selected) {
+            button.setBorder(
+                    BorderFactory.createLineBorder(
+                            new Color(0, 120, 215),
+                            3
+                    )
+            );
+            button.setBackground(new Color(200, 225, 255));
+            button.setOpaque(true);
+        } else {
+            button.setBorder(
+                    BorderFactory.createLineBorder(
+                            Color.GRAY,
+                            1
+                    )
+            );
+            button.setOpaque(false);
+        }
     }
 }
