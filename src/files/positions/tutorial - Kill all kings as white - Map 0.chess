@@ -65,7 +65,7 @@ piece : class pieces.Pawn ;pawm; 5 2 Black true 100 2
 piece : class pieces.Pawn ;pawm; 5 3 White true 100 2
 piece : class pieces.Torpedo ;torpedo; 5 4 White true 200 0
 piece : class pieces.Blocade ;blocade; 5 5 Blockade true 0
-piece : class pieces.Blocade ;blocade; 5 6 Blockade true 0
+piece : class pieces.King ;w king; 5 6 White true 100000
 piece : class pieces.Blocade ;blocade; 5 7 Blockade true 0
 piece : class pieces.Blocade ;blocade; 5 8 Blockade true 0
 piece : class pieces.King ;w king; 5 9 Black true 100000
@@ -103,8 +103,7 @@ piece : class pieces.Blocade ;blocade; 9 4 Blockade true 0
 piece : class pieces.Blocade ;blocade; 9 5 Blockade true 0
 piece : class pieces.Blocade ;blocade; 9 6 Blockade true 0
 piece : class pieces.Blocade ;blocade; 9 7 Blockade true 0
-piece : class pieces.Torpedo ;w torpedo; 9 8 White true 200 2
-piece : class pieces.King ;w king; 9 9 White true 100000
+piece : class pieces.utilities.RestartPiece ;Restart; 9 8 White true 0
 
 Players :
 Player :  ;Bílý; White 600 PowerUps :

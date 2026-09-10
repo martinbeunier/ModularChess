@@ -10,11 +10,15 @@ public class PieceFactory {
     public static Piece create(String className, String name, int x, int y, Colour colour, int rotation) {
         try {
             Class<?> clazz;
-            // Zkusi najit tridu v 'pieces.', pokud neselze, zkusi 'pieces.PoweUps.'
+            // Zkusi najit tridu v 'pieces.', pokud neselze, zkusi 'pieces.PoweUps.', pak 'pieces.utilities.'
             try {
                 clazz = Class.forName("pieces." + className);
             } catch (ClassNotFoundException e) {
-                clazz = Class.forName("pieces.PoweUps." + className);
+                try {
+                    clazz = Class.forName("pieces.PoweUps." + className);
+                } catch (ClassNotFoundException e2) {
+                    clazz = Class.forName("pieces.utilities." + className);
+                }
             }
 
             // 1. Konstruktor pro PowerUp (String, int, int)

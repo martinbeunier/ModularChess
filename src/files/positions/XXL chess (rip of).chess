@@ -33,38 +33,56 @@ promotion colours of tile : 13 7 Black
 Tiles water :
 
 Pieces :
-piece : class pieces.King ;w king; 0 0 White true 100000
+piece : class pieces.Rook ;rook; 0 0 Black true 500
 piece : class pieces.Pawn ;b pawn; 0 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 0 12 White true 100 0
-piece : class pieces.King ;w king; 1 0 White true 100000
+piece : class pieces.Rook ;rook; 0 13 White true 500
+piece : class pieces.Knight ;knight; 1 0 Black true 300
 piece : class pieces.Pawn ;b pawn; 1 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 1 12 White true 100 0
+piece : class pieces.Knight ;knight; 1 13 White true 300
+piece : class pieces.Bishop ;bishop; 2 0 Black true 320
 piece : class pieces.Pawn ;b pawn; 2 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 2 12 White true 100 0
+piece : class pieces.Bishop ;bishop; 2 13 White true 320
+piece : class pieces.ArciBishop ;arcibishop; 3 0 Black true 700
 piece : class pieces.Pawn ;b pawn; 3 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 3 12 White true 100 0
-piece : class pieces.King ;b king; 4 0 Black true 100000
+piece : class pieces.ArciBishop ;arcibishop; 3 13 White true 700
 piece : class pieces.Pawn ;b pawn; 4 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 4 12 White true 100 0
-piece : class pieces.King ;b king; 5 0 Black true 100000
+piece : class pieces.Guardian ;guardian; 5 0 Black true 0
 piece : class pieces.Pawn ;b pawn; 5 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 5 12 White true 100 0
+piece : class pieces.Guardian ;guardian; 5 13 White true 0
+piece : class pieces.Empress ;empress; 6 0 Black true 0
 piece : class pieces.Pawn ;b pawn; 6 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 6 12 White true 100 0
+piece : class pieces.Empress ;empress; 6 13 White true 0
+piece : class pieces.King ;b king; 7 0 Black true 100000
 piece : class pieces.Pawn ;b pawn; 7 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 7 12 White true 100 0
+piece : class pieces.King ;w king; 7 13 White true 100000
+piece : class pieces.Guardian ;guardian; 8 0 Black true 0
 piece : class pieces.Pawn ;b pawn; 8 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 8 12 White true 100 0
+piece : class pieces.Guardian ;guardian; 8 13 White true 0
 piece : class pieces.Pawn ;b pawn; 9 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 9 12 White true 100 0
 piece : class pieces.Pawn ;b pawn; 10 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 10 12 White true 100 0
+piece : class pieces.Bishop ;bishop; 11 0 Black true 320
 piece : class pieces.Pawn ;b pawn; 11 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 11 12 White true 100 0
+piece : class pieces.Bishop ;bishop; 11 13 White true 320
+piece : class pieces.Knight ;knight; 12 0 Black true 300
 piece : class pieces.Pawn ;b pawn; 12 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 12 12 White true 100 0
+piece : class pieces.Knight ;knight; 12 13 White true 300
+piece : class pieces.Rook ;rook; 13 0 Black true 500
 piece : class pieces.Pawn ;b pawn; 13 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 13 12 White true 100 0
+piece : class pieces.Rook ;rook; 13 13 White true 500
 
 Players :
 Player :  ;Bílý; White 600 PowerUps :

@@ -25,6 +25,7 @@ import java.util.Map;
 import com.github.weisj.jsvg.SVGDocument;
 import com.github.weisj.jsvg.parser.SVGLoader;
 import com.github.weisj.jsvg.view.ViewBox;
+import pieces.utilities.RestartPiece;
 
 
 public class Loop extends JPanel {
@@ -867,6 +868,37 @@ public class Loop extends JPanel {
 
         gameLoop.setMoveListener((fromX, fromY, toX, toY) -> {
             SwingUtilities.invokeLater(() -> {
+
+                // --------------------------------------------------
+                // KONTROLA: RestartPiece -> obnovit počáteční pozici
+                // --------------------------------------------------
+
+                Piece movedPiece = gameLoop.getChessBoard().getPiece(toX, toY);
+
+                if (movedPiece instanceof RestartPiece) {
+
+                    System.out.println(
+                            "RestartPiece se pohnul, obnovuji počáteční pozici mapy: "
+                                    + selectedMap
+                    );
+
+                    gameLoop.initGame(selectedMap);
+
+                    resetSelection();
+                    resetLastMove();
+
+                    updateThreatWarnings();
+                    gameLoop.saveGame();
+                    checkGameOver();
+                    repaint();
+
+                    return; // po restartu nepokračujeme dál se starým tahem
+                }
+
+                // --------------------------------------------------
+                // BĚŽNÝ TAH (beze změny)
+                // --------------------------------------------------
+
                 registerLastMove(fromX, fromY, toX, toY);
                 updateThreatWarnings();
                 gameLoop.saveGame();
@@ -1513,6 +1545,11 @@ public class Loop extends JPanel {
             case "blocade":
                scale = 1.0;// scale = 2.35;
                 break;
+
+            case "restartpiece":
+                scale = 1.5;// scale = 2.35;
+                break;
+
 
 
 
