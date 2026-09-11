@@ -188,7 +188,7 @@ public class Main/*extends Application */{
 /*TODO
 
 tutorial piece
-restart piece
+
 přidat ,ať můžu vybrat(označit piece), než odehraje bot
 dát do cache hint obrázky
 kolize carriers
