@@ -103,6 +103,9 @@ public class Loop extends JPanel {
     // Cache pro uložení již načtených SVG obrázků v paměti RAM
     private final Map<String, BufferedImage> imageCache = new HashMap<>();
 
+    // Hlídání předchozí pozice kurzoru pro zabránění zbytečnému repaintu
+    private int lastHoverX = -2;
+    private int lastHoverY = -2;
     private void openPdf() {
         File file = new File("src\\files/Pieceology.pdf");
 
@@ -577,9 +580,7 @@ public class Loop extends JPanel {
         g2d.fillPolygon(new int[]{adjEndX, x3, x4}, new int[]{adjEndY, y3, y4}, 3);
     }
 
-    // Hlídání předchozí pozice kurzoru pro zabránění zbytečnému repaintu
-    private int lastHoverX = -2;
-    private int lastHoverY = -2;
+
 
     private void updateHoverPreview(int mouseX, int mouseY) {
         if (gameLoop == null || gameLoop.getChessBoard() == null) return;
@@ -1550,7 +1551,19 @@ public class Loop extends JPanel {
                 scale = 1.5;// scale = 2.35;
                 break;
 
+            case "empress" :
+                scale = 1.15;
+                break;
 
+            case "hexarook" :
+                scale = 1.1;
+                break;
+            case "guardian" :
+                scale = 1.2;
+                break;
+            case "hobbyhorse" :
+                scale = 2.0;
+                break;
 
 
         }

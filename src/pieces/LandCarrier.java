@@ -4,7 +4,7 @@ import logic.*;
 
 public class LandCarrier extends Carrier {
     public LandCarrier(String name, int x, int y, Colour colour) {
-        super(name, x,  y, colour,450);
+        super(name, x,  y, colour,250);
 
         addMove(new MoveType(1,0, MoveBehaviour.MOVE, MoveClass.CARRIER));
         addMove(new MoveType(0,1, MoveBehaviour.MOVE, MoveClass.CARRIER));

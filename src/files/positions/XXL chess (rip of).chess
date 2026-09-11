@@ -49,28 +49,34 @@ piece : class pieces.ArciBishop ;arcibishop; 3 0 Black true 700
 piece : class pieces.Pawn ;b pawn; 3 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 3 12 White true 100 0
 piece : class pieces.ArciBishop ;arcibishop; 3 13 White true 700
+piece : class pieces.HobbyHorse ;hobbyhorse; 4 0 Black true 300
 piece : class pieces.Pawn ;b pawn; 4 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 4 12 White true 100 0
-piece : class pieces.Guardian ;guardian; 5 0 Black true 0
+piece : class pieces.HobbyHorse ;hobbyhorse; 4 13 White true 300
+piece : class pieces.Guardian ;guardian; 5 0 Black true 400
 piece : class pieces.Pawn ;b pawn; 5 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 5 12 White true 100 0
-piece : class pieces.Guardian ;guardian; 5 13 White true 0
-piece : class pieces.Empress ;empress; 6 0 Black true 0
+piece : class pieces.Guardian ;guardian; 5 13 White true 400
+piece : class pieces.Empress ;empress; 6 0 Black true 1300
 piece : class pieces.Pawn ;b pawn; 6 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 6 12 White true 100 0
-piece : class pieces.Empress ;empress; 6 13 White true 0
+piece : class pieces.Empress ;empress; 6 13 White true 1300
 piece : class pieces.King ;b king; 7 0 Black true 100000
 piece : class pieces.Pawn ;b pawn; 7 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 7 12 White true 100 0
 piece : class pieces.King ;w king; 7 13 White true 100000
-piece : class pieces.Guardian ;guardian; 8 0 Black true 0
+piece : class pieces.Guardian ;guardian; 8 0 Black true 400
 piece : class pieces.Pawn ;b pawn; 8 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 8 12 White true 100 0
-piece : class pieces.Guardian ;guardian; 8 13 White true 0
+piece : class pieces.Guardian ;guardian; 8 13 White true 400
+piece : class pieces.HobbyHorse ;hobbyhorse; 9 0 Black true 300
 piece : class pieces.Pawn ;b pawn; 9 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 9 12 White true 100 0
+piece : class pieces.HobbyHorse ;hobbyhorse; 9 13 White true 300
+piece : class pieces.HexaRook ;hexarook; 10 0 Black true 800
 piece : class pieces.Pawn ;b pawn; 10 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 10 12 White true 100 0
+piece : class pieces.HexaRook ;hexarook; 10 13 White true 800
 piece : class pieces.Bishop ;bishop; 11 0 Black true 320
 piece : class pieces.Pawn ;b pawn; 11 1 Black true 100 2
 piece : class pieces.Pawn ;w pawn; 11 12 White true 100 0

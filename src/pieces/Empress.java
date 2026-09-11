@@ -7,7 +7,7 @@ import logic.MoveType;
 
 public class Empress extends  Piece{
     public Empress(String name , int x , int y , Colour colour) {
-        super(name, x, y, colour);
+        super(name, x, y, colour,1300);
 
 
         addMove(new MoveType(1,1, MoveBehaviour.BOTH,MoveClass.REPEAT));

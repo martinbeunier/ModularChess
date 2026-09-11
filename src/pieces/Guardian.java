@@ -7,7 +7,7 @@ import logic.MoveType;
 
 public class Guardian extends  Piece{
     public Guardian(String name , int x , int y , Colour colour) {
-        super(name, x, y, colour);
+        super(name, x, y, colour,400);
 
 
         addMove(new MoveType(1,1, MoveBehaviour.BOTH,MoveClass.LEAP));

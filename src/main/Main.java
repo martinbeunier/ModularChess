@@ -104,6 +104,14 @@ public class Main/*extends Application */{
                 Knight wknight1 = new Knight("knight", 1, 13, Colour.White);
                 Knight wknight2 = new Knight("knight", 12, 13, Colour.White);
 
+                HexaRook whexarook = new HexaRook("hexarook",10,13,Colour.White);
+                HexaRook bhexarook = new HexaRook("hexarook",10,0,Colour.Black);
+
+                HobbyHorse bhobbyhorse1 = new HobbyHorse("hobbyhorse", 4, 0, Colour.Black);
+                HobbyHorse bhobbyhorse2 = new HobbyHorse("hobbyhorse", 9, 0, Colour.Black);
+                HobbyHorse whobbyhorse1 = new HobbyHorse("hobbyhorse", 4, 13, Colour.White);
+                HobbyHorse whobbyhorse2 = new HobbyHorse("hobbyhorse", 9, 13, Colour.White);
+
 //konec inicializace figur
 
 
@@ -151,6 +159,13 @@ public class Main/*extends Application */{
                 chessBoard.addPiece(wknight2);
                 chessBoard.addPiece(bknight2);
 
+                chessBoard.addPiece(whexarook);
+                chessBoard.addPiece(bhexarook);
+
+                chessBoard.addPiece(whobbyhorse1);
+                chessBoard.addPiece(whobbyhorse2);
+                chessBoard.addPiece(bhobbyhorse1);
+                chessBoard.addPiece(bhobbyhorse2);
 
 
 //konec inicializace šachovnice
@@ -158,7 +173,7 @@ public class Main/*extends Application */{
 
         chessBoard.printBoard();
 
-        chessBoard.savePosition("XXL chess (rip of)",player1);
+        chessBoard.savePosition("test 2",player1);
 
 
         break;
@@ -185,7 +200,6 @@ piece editor
 
 
 
-//překreslit pawna
 //překreslit letadlo
 
 */
