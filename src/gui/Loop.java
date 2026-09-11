@@ -72,6 +72,7 @@ public class Loop extends JPanel {
     private int lastMoveToY = -1;
 
     private boolean boardFlipped = false; // true = hraje se za černého, otočíme pohled na desku
+    private boolean awaitingRestartAfterBotMove = false;   // <-- nové pole
     private static final int MARGIN = 60;
 
     // Nastav tak, aby (BAND_RIGHT_FRACTION - BAND_LEFT_FRACTION) >= (getHeight()-MARGIN)/getWidth()
@@ -106,6 +107,10 @@ public class Loop extends JPanel {
     // Hlídání předchozí pozice kurzoru pro zabránění zbytečnému repaintu
     private int lastHoverX = -2;
     private int lastHoverY = -2;
+
+
+
+
     private void openPdf() {
         File file = new File("src\\files/Pieceology.pdf");
 
@@ -857,6 +862,17 @@ public class Loop extends JPanel {
         this.selectedColour = selectedColour;
     }
 
+    private void attachPromotionChooser() {
+        gameLoop.getChessBoard().setPromotionChooser((x, y, pieceNames) -> {
+            Bot currentBot = gameLoop.getBot();
+            if (gameLoop.isVsBot() && currentBot != null
+                    && gameLoop.getCurrentPlayer().getColor() == gameLoop.getBotColour()) {
+                return currentBot.choosePromotion(pieceNames);
+            }
+            return showPromotionDialog(x, y, pieceNames);
+        });
+    }
+
     public void startGame() {
         System.out.println("Načítám hrací plochu s mapou: " + selectedMap + " a botem: " + selectedOpponent);
 
@@ -867,38 +883,70 @@ public class Loop extends JPanel {
         gameLoop = new GameLoop();
         gameLoop.initGame(selectedMap);
 
+
+
         gameLoop.setMoveListener((fromX, fromY, toX, toY) -> {
             SwingUtilities.invokeLater(() -> {
 
-                // --------------------------------------------------
-                // KONTROLA: RestartPiece -> obnovit počáteční pozici
-                // --------------------------------------------------
-
                 Piece movedPiece = gameLoop.getChessBoard().getPiece(toX, toY);
 
-                if (movedPiece instanceof RestartPiece) {
+                // Bot nikdy nemá RestartPiece hrát — bereme jako neplatný stav, ať k tomu došlo kdykoliv
+                boolean movedByBot = gameLoop.isVsBot()
+                        && movedPiece instanceof RestartPiece
+                        && movedPiece.getColour() == gameLoop.getBotColour();
 
-                    System.out.println(
-                            "RestartPiece se pohnul, obnovuji počáteční pozici mapy: "
-                                    + selectedMap
+                if (movedByBot) {
+                    awaitingRestartAfterBotMove = false; // pro jistotu vyresetovat
+                    JOptionPane.showMessageDialog(
+                            this,
+                            "Bot se pokusil zahrát Restart Piece. Musíš hrát jako Bílý.",
+                            "Neplatný tah",
+                            JOptionPane.WARNING_MESSAGE
                     );
+                    frame.showScene("MAPSELECT");
+                    return;
+                }
 
+                // Čekáme na dokončení botova tahu po hráčově restartu -> teď je čas resetovat
+                if (awaitingRestartAfterBotMove) {
+                    awaitingRestartAfterBotMove = false;
                     gameLoop.initGame(selectedMap);
-
+                    attachPromotionChooser();
                     resetSelection();
                     resetLastMove();
-
                     updateThreatWarnings();
                     gameLoop.saveGame();
                     checkGameOver();
                     repaint();
-
-                    return; // po restartu nepokračujeme dál se starým tahem
+                    return;
                 }
 
-                // --------------------------------------------------
-                // BĚŽNÝ TAH (beze změny)
-                // --------------------------------------------------
+                if (movedPiece instanceof RestartPiece) {
+                    boolean botAboutToMove = gameLoop.isVsBot()
+                            && gameLoop.getCurrentPlayer().getColor() == gameLoop.getBotColour();
+
+                    if (botAboutToMove) {
+                        // Bot-vlákno už bylo odstartováno -> nech ho doběhnout,
+                        // reset provedeme v jeho callbacku výše (větev movedByBot / awaitingRestartAfterBotMove).
+                        awaitingRestartAfterBotMove = true;
+                        registerLastMove(fromX, fromY, toX, toY);
+                        updateThreatWarnings();
+                        gameLoop.saveGame();
+                        checkGameOver();
+                        repaint();
+                        return;
+                    }
+
+                    gameLoop.initGame(selectedMap);
+                    attachPromotionChooser();
+                    resetSelection();
+                    resetLastMove();
+                    updateThreatWarnings();
+                    gameLoop.saveGame();
+                    checkGameOver();
+                    repaint();
+                    return;
+                }
 
                 registerLastMove(fromX, fromY, toX, toY);
                 updateThreatWarnings();
@@ -907,6 +955,9 @@ public class Loop extends JPanel {
                 repaint();
             });
         });
+
+        attachPromotionChooser();
+
 
         gameLoop.getChessBoard().setPromotionChooser((x, y, pieceNames) -> {
             Bot currentBot = gameLoop.getBot();
