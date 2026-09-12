@@ -19,6 +19,8 @@ promotion colours of tile : 7 0 White
 promotion colours of tile : 7 8 Black
 promotion colours of tile : 8 0 White
 promotion colours of tile : 8 8 Black
+promotion colours of tile : 10 5 White Black
+promotion colours of tile : 11 5 White Black
 
 Tiles water :
 water : 0 3
@@ -55,11 +57,11 @@ piece : class pieces.Pawn ;Black Pawn; 0 2 Black true 100 2
 piece : class pieces.Pawn ;White Pawn; 0 6 White true 100 0
 piece : class pieces.Wasp ;white wasp; 0 7 White true 800
 piece : class pieces.Bishop ;Black Bishop; 1 0 Black true 320
-piece : class pieces.LandCarrier ;b Land Carrier; 1 1 Black true 450
+piece : class pieces.LandCarrier ;b Land Carrier; 1 1 Black true 250
 piece : class pieces.Pawn ;Black Pawn; 1 2 Black true 100 2
 piece : class pieces.PoweUps.OverClocker ;OverClocker; 1 4 Neutral true 0
 piece : class pieces.Pawn ;White Pawn; 1 6 White true 100 0
-piece : class pieces.LandCarrier ;w Land Carrier; 1 7 White true 450
+piece : class pieces.LandCarrier ;w Land Carrier; 1 7 White true 250
 piece : class pieces.Bishop ;White Bishop; 1 8 White true 320
 piece : class pieces.Bishop ;Black Bishop; 2 0 Black true 320
 piece : class pieces.Pawn ;Black Pawn; 2 2 Black true 100 2
@@ -83,11 +85,11 @@ piece : class pieces.Pawn ;Black Pawn; 6 2 Black true 100 2
 piece : class pieces.Pawn ;White Pawn; 6 6 White true 100 0
 piece : class pieces.Bishop ;White Bishop; 6 8 White true 320
 piece : class pieces.Bishop ;Black Bishop; 7 0 Black true 320
-piece : class pieces.LandCarrier ;b Land Carrier; 7 1 Black true 450
+piece : class pieces.LandCarrier ;b Land Carrier; 7 1 Black true 250
 piece : class pieces.Pawn ;Black Pawn; 7 2 Black true 100 2
 piece : class pieces.Blocade ;blocade; 7 4 Blockade true 0
 piece : class pieces.Pawn ;White Pawn; 7 6 White true 100 0
-piece : class pieces.LandCarrier ;w Land Carrier; 7 7 White true 450
+piece : class pieces.LandCarrier ;w Land Carrier; 7 7 White true 250
 piece : class pieces.Bishop ;White Bishop; 7 8 White true 320
 piece : class pieces.Pawn ;Black Pawn; 8 2 Black true 100 2
 piece : class pieces.Pawn ;White Pawn; 8 6 White true 100 0

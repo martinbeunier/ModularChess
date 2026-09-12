@@ -104,6 +104,14 @@ public class Loop extends JPanel {
     // Cache pro uložení již načtených SVG obrázků v paměti RAM
     private final Map<String, BufferedImage> imageCache = new HashMap<>();
 
+    // Cache pro náhledové obrázky figurek (karta při najetí myší) — klíč = cesta k souboru.
+// Použijeme placeholder objekt místo Javy null, protože HashMap neumí rozlišit
+// "hodnota null uložená v mapě" od "klíč v mapě vůbec není" a my chceme cachovat
+// i informaci "soubor neexistuje", ať to zbytečně pořád nezkoušíme na disku.
+    private final Map<String, Image> previewImageCache = new HashMap<>();
+    private static final Image NO_PREVIEW_MARKER = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+
+
     // Hlídání předchozí pozice kurzoru pro zabránění zbytečnému repaintu
     private int lastHoverX = -2;
     private int lastHoverY = -2;
@@ -639,17 +647,27 @@ public class Loop extends JPanel {
     }
 
     private Image loadPreviewForPiece(Piece piece) {
-        // Načte obrázek podle násobení násobené třídy figury (např. "card_pawn.png", "card_linebreaker.png")
+        // Načte obrázek podle třídy figury (např. "card_pawn.png", "card_linebreaker.png")
         String className = piece.getClass().getSimpleName().toLowerCase();
         String path = "src/files/images/movehint/" + className + ".png";
 
-        java.io.File file = new java.io.File(path);
-        if (file.exists()) {
-            return new ImageIcon(path).getImage();
+        Image cached = previewImageCache.get(path);
+        if (cached != null) {
+            return (cached == NO_PREVIEW_MARKER) ? null : cached;
         }
 
+        java.io.File file = new java.io.File(path);
+        if (file.exists()) {
+            Image img = new ImageIcon(path).getImage();
+            previewImageCache.put(path, img);
+            return img;
+        }
+
+        // Zapamatujeme si i to, že soubor neexistuje, ať to znovu nezkoušíme z disku
+        previewImageCache.put(path, NO_PREVIEW_MARKER);
         return null; // Pokud soubor neexistuje, použije se defaultUnknownPieceImage
     }
+
 
     private String loadPieceName(Piece piece) {
 
@@ -1143,7 +1161,15 @@ public class Loop extends JPanel {
                                 tile.getPromotionColours().contains(Colour.Black);
 
                         if (hasWhite && hasBlack) {
-                            g2d.setColor(new Color(186, 85, 211, 200));
+
+
+                            if ((x + y) % 2 == 0) {
+
+
+                                g2d.setColor(new Color(189, 122, 199));
+                            } else {
+                                g2d.setColor(new Color(186, 85, 211));
+                            }
 
                         } else if (hasWhite) {
 
@@ -1595,7 +1621,7 @@ public class Loop extends JPanel {
                 scale = 1.25;
                 break;
             case "blocade":
-               scale = 1.0;// scale = 2.35;
+               scale = 1.05;// scale = 2.35;
                 break;
 
             case "restartpiece":
