@@ -50,6 +50,8 @@ public class Main/*extends Application */{
 
         DebugConfiguration.getInstance() ;
         UIconfiguration.getInstance();
+        logic.PlayerManager.load();
+
 
         switch (choice) {
 
@@ -209,7 +211,8 @@ přidat ,ať můžu vybrat(označit piece), než odehraje bot
 záznamy her
 
 
-Přidat hráče a progress systém .
+přidat upravení profilu .
+Přidat progress systém .
 Přidat campaign .
 
 

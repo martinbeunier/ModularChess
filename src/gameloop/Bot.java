@@ -1,26 +1,29 @@
 package gameloop;
 
+import logic.Player;
+import logic.PlayerManager;
+
 /**
- * Společný kontrakt pro všechny typy botů. Každý konkrétní bot (RandomBot,
+ * Společný základ pro všechny typy botů. Každý konkrétní bot (RandomBot,
  * GreedyBot, ...) implementuje vlastní strategii výběru tahu i promoce,
- * ale GameLoop s nimi pracuje jednotně přes tohle rozhraní — nemusí vědět,
- * o jaký konkrétní typ jde.
+ * ale nese si i svou trvalou identitu (jméno, elo, avatar) přes napojený
+ * Player — ten se získává z PlayerManageru podle pevného id, takže elo a
+ * statistiky zůstávají trvalé mezi hrami.
  */
-public interface Bot {
+public abstract class Bot {
 
-    /**
-     * Vybere a ROVNOU provede jeden platný tah pro aktuálního hráče (přes
-     * gameLoop.tryMove(...)) — konkrétní strategie výběru záleží na implementaci.
-     *
-     * @return {fromX, fromY, toX, toY} provedeného tahu (u rotace from==to),
-     *         nebo null, pokud bot nemá žádnou platnou možnost.
-     */
-    int[] chooseAndPlayMove(GameLoop gameLoop);
+    private final Player player;
 
-    /**
-     * Vybere index promoční figurky z nabízených možností.
-     * @param pieceNames jména dostupných možností
-     * @return index vybrané figurky
-     */
-    int choosePromotion(String[] pieceNames);
+    protected Bot(String id, String displayName, int elo, String avatarPath) {
+        this.player = PlayerManager.getOrCreate(id, displayName, elo, avatarPath);
+    }
+
+    /** Vrátí trvalého (barvy-neznajícího) Player hráče reprezentujícího tohoto bota. */
+    public Player getPlayer() {
+        return player;
+    }
+
+    public abstract int[] chooseAndPlayMove(GameLoop gameLoop);
+
+    public abstract int choosePromotion(String[] pieceNames);
 }

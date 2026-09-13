@@ -19,12 +19,14 @@ import java.util.Random;
  * SEARCH_DEPTH = 2 znamená: náš tah + soupeřova nejlepší odpověď na něj.
  * Vyšší hloubka = chytřejší, ale výrazně pomalejší (roste exponenciálně).
  */
-public class MinimaxBot implements Bot {    // 3/10
+public class MinimaxBot extends Bot {    // 3/10
     private static final int SEARCH_DEPTH = 2;
     private static final int HEAD_THREAT_PENALTY = 3000;
 
     private final Random random = new Random();
-
+    public MinimaxBot() {
+        super("2/10", "Greedy", 1200, "src/files/images/avatars/bot_medium.png");
+    }
     private static class Move {
         static final int TYPE_MOVE = 0;
         static final int TYPE_ROTATE = 1;

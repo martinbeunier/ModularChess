@@ -11,11 +11,15 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public class SimulationBot implements Bot {
+public class SimulationBot extends Bot {
     private final Random random = new Random();
 
     private static final int TYPE_MOVE = 0;
     private static final int TYPE_ROTATE = 1;
+
+    public SimulationBot() {
+        super("bot_medium", "Bot Karel (Medium)", 1200, "src/files/images/avatars/bot_medium.png");
+    }
 
     private static class Candidate {
         final int type, startX, startY, targetX, targetY, delta;

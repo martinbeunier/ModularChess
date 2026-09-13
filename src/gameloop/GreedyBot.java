@@ -15,12 +15,17 @@ import java.util.Random;
  * Vždy preferuje nejcennější dostupné braní. Mezi rovnocennými možnostmi
  * (žádné braní k dispozici) si vybírá náhodně.
  */
-public class GreedyBot implements Bot {       //   1/10
+public class GreedyBot extends Bot {       //   1/10
     private final Random random = new Random();
 
     private static final int TYPE_MOVE = 0;
     private static final int TYPE_ROTATE = 1;
     private static final int NEUTRAL_SCORE = 1;
+
+
+    public GreedyBot() {
+        super("2/10", "Greedy", 800, "src/files/images/avatars/bot_easy.png");
+    }
 
     private static class Candidate {
         final int type, startX, startY, a, b, score;

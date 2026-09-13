@@ -1,0 +1,2 @@
+current:player_martin
+player_martin;Martin;1000;none;0;0;0

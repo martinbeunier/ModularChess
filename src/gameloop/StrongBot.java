@@ -21,7 +21,7 @@ import java.util.Random;
  *
  * Evaluace: materiál + ohrožení Head (obou stran) + mobilita.
  */
-public class StrongBot implements Bot { //6 /10 trapper
+public class StrongBot extends Bot { //6 /10 trapper
     private static final int MAX_DEPTH = 8;                 // bezpečnostní strop, obvykle se nedosáhne
     private static final long TIME_BUDGET_MILLIS = 1500;    // kolik smí bot maximálně "přemýšlet"
     private static final int QUIESCENCE_MAX_DEPTH = 4;
@@ -31,6 +31,10 @@ public class StrongBot implements Bot { //6 /10 trapper
     private final Random random = new Random();
     private final Map<String, Integer> transpositionTable = new HashMap<>();
     private long searchDeadline;
+
+    public StrongBot() {
+        super("6/10", "Trapper", 1200, "src/files/images/avatars/bot_medium.png");
+    }
 
     private static class Move {
         static final int TYPE_MOVE = 0;

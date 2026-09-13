@@ -2303,6 +2303,12 @@ for (MoveType m : moves) {
 
                     Player player = new Player(playerName, colour, elo);
 
+                    for (String token : rest) {
+                        if (token.startsWith("id:") && !token.equals("id:none")) {
+                            player.setId(token.substring("id:".length()));
+                        }
+                    }
+
                     if (line.contains("PowerUps :")) {
                         String[] powerupParts = line.split("PowerUps :", -1);
                         String afterPowerUps = powerupParts.length > 1 ? powerupParts[1].trim() : "";

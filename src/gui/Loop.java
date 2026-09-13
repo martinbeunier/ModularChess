@@ -824,6 +824,24 @@ public class Loop extends JPanel {
         }
     }
 
+    private void updatePlayersAfterGame(Colour winnerColour) {
+        for (Player livePlayer : gameLoop.getChessBoard().getPlayers()) {
+            if (livePlayer.getId() == null) continue;
+
+            Player template = PlayerManager.getById(livePlayer.getId());
+            if (template == null) continue;
+
+            if (winnerColour == null) {
+                template.recordDraw();
+            } else if (livePlayer.getColor() == winnerColour) {
+                template.recordWin();
+            } else {
+                template.recordLoss();
+            }
+        }
+        PlayerManager.saveAll();
+    }
+
 
     /**
      * Po každém tahu (i rotaci) zjistí, jestli je nějaká Head figurka ohrožená
@@ -1005,6 +1023,15 @@ public class Loop extends JPanel {
         boolean vsBot = (bot != null);
         Colour botColour = boardFlipped ? Colour.White : Colour.Black;
         gameLoop.setVsBot(vsBot, botColour, bot);
+
+        Player humanTemplate = PlayerManager.getCurrentHumanPlayer(); // teď vrátí Martina, načteného ze souboru
+        for (Player p : gameLoop.getChessBoard().getPlayers()) {
+            if (vsBot && p.getColor() == botColour) {
+                p.copyIdentityFrom(bot.getPlayer());
+            } else {
+                p.copyIdentityFrom(humanTemplate);
+            }
+        }
 
         resetSelection();
         repaint();

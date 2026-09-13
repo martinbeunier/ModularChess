@@ -15,8 +15,12 @@ import java.util.Random;
  * Náhodně vybere jednu z figurek a náhodně jednu z jejích platných možností
  * (pohyb i rotaci) — žádná strategie, čistá náhoda.
  */
-public class RandomBot implements Bot {
+public class RandomBot extends Bot {
     private final Random random = new Random();
+
+    public RandomBot() {
+        super("bot_easy", "Bot Petr (Easy)", 800, "src/files/images/avatars/bot_easy.png");
+    }
 
     @Override
     public int[] chooseAndPlayMove(GameLoop gameLoop) {

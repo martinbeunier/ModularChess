@@ -20,18 +20,30 @@ import java.util.Random;
  *    tiché pozice bez braní/ohrožení krále přestaly být dokonale vyrovnané
  *    (a bot přestal bloudit náhodně, jako to dělal Greedy/TacticalBot).
  */
-public class AlphaBetaBot implements Bot {              // 2/10
+
+
+
+public class AlphaBetaBot extends Bot {              // 2/10
     private static final int SEARCH_DEPTH = 2; // díky prořezávání zvládneme jít hlouběji než MinimaxBot
     private static final int HEAD_THREAT_PENALTY = 5000;
     private static final int MOBILITY_WEIGHT = 2; // váha jednoho dostupného tahu v ohodnocení
 
     private final Random random = new Random();
 
+
+    public AlphaBetaBot() {
+        super("bot_easy", "Bot Petr (Easy)", 800, "src/files/images/avatars/bot_easy.png");
+    }
+
     private static class Move {
         static final int TYPE_MOVE = 0;
         static final int TYPE_ROTATE = 1;
 
         final int type, startX, startY, a, b;
+
+
+
+
 
         Move(int type, int startX, int startY, int a, int b) {
             this.type = type;
@@ -41,6 +53,8 @@ public class AlphaBetaBot implements Bot {              // 2/10
             this.b = b;
         }
     }
+
+
 
     @Override
     public int[] chooseAndPlayMove(GameLoop gameLoop) {

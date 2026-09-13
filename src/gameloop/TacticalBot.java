@@ -20,7 +20,7 @@ import java.util.Random;
  *  3) Lehce penalizuje okamžité vrácení svého vlastního posledního tahu,
  *     ať se zbytečně netočí tam a zpátky.
  */
-public class TacticalBot implements Bot {  // 2/10 Bold Man
+public class TacticalBot extends Bot {  // 2/10 Bold Man
     private final Random random = new Random();
 
     private static final int TYPE_MOVE = 0;
@@ -31,6 +31,11 @@ public class TacticalBot implements Bot {  // 2/10 Bold Man
 
     // Pamatuje si poslední VLASTNÍ tah, aby se ho vyhnul okamžitě vrátit
     private int lastFromX = -1, lastFromY = -1, lastToX = -1, lastToY = -1;
+
+    public TacticalBot() {
+        super("1/10", "Bold man", 1200, "src/files/images/avatars/bot_medium.png");
+    }
+
 
     private static class Candidate {
         final int type, startX, startY, a, b, score;
