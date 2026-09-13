@@ -1363,6 +1363,11 @@ if (firstTime == false)
                 ownSquares.add(ox + "," + oy);
             }
 
+            // Sestav set všech polí obsazených JINÝMI Carriery (střed + jejich occupation
+            // squares). Tahle pole nejsou v board[][] uložená (kromě středu), takže
+            // kolizi s tělem jiné lodi normální kontrola board[x][y] != null neodhalí.
+            HashSet<String> otherCarrierSquares = getOtherCarrierSquares(startX, startY);
+
             for (MoveType move : carrierMoves) {
                 boolean valid = true;
 
@@ -1372,34 +1377,58 @@ if (firstTime == false)
                 int endX = startX + dx;
                 int endY = startY + dy;
 
+                // Cílový otisk celé lodi (střed + occupation squares) na nové pozici
+                HashSet<String> targetFootprint = new HashSet<>();
+                targetFootprint.add(endX + "," + endY);
                 for (OcupationSquare square : squares) {
-                    int targetX = endX + square.getX();
-                    int targetY = endY + square.getY();
+                    targetFootprint.add((endX + square.getX()) + "," + (endY + square.getY()));
+                }
 
-                    // 1) kontrola hranic
-                    if (!inBoard(targetX, targetY, targetX, targetY)) {
+                for (String target : targetFootprint) {
+                    // Kolize s tělem JINÉ lodi na kterémkoliv poli cílového otisku — bez ohledu
+                    // na to, jestli je to "přední hrana", protože jiná loď se sama neuhne.
+                    if (otherCarrierSquares.contains(target)) {
                         valid = false;
                         break;
                     }
+                }
 
-                    // 2) přeskočit vlastní čtverce carrieru
-                    if (ownSquares.contains(targetX + "," + targetY)) {
-                        continue;
-                    }
+                if (valid) {
+                    for (OcupationSquare square : squares) {
+                        int targetX = endX + square.getX();
+                        int targetY = endY + square.getY();
 
-                    // 3) kolize jen na předních hranových čtvercích
-                    if (isFrontSquare(square, squares, dx, dy)) {
-                        Piece piece = board[targetX][targetY];
-
-                        if (piece != null) {
-                            if(DebugConfiguration.validCarrierMoves){System.out.println(
-                                    "KOLIZE na " + targetX + " " + targetY +
-                                            " s " + piece.getName()
-                            );}
+                        // 1) kontrola hranic
+                        if (!inBoard(targetX, targetY, targetX, targetY)) {
                             valid = false;
                             break;
                         }
+
+                        // 2) přeskočit vlastní čtverce carrieru
+                        if (ownSquares.contains(targetX + "," + targetY)) {
+                            continue;
+                        }
+
+                        // 3) kolize jen na předních hranových čtvercích (běžné figurky)
+                        if (isFrontSquare(square, squares, dx, dy)) {
+                            Piece piece = board[targetX][targetY];
+
+                            if (piece != null) {
+                                if(DebugConfiguration.validCarrierMoves){System.out.println(
+                                        "KOLIZE na " + targetX + " " + targetY +
+                                                " s " + piece.getName()
+                                );}
+                                valid = false;
+                                break;
+                            }
+                        }
                     }
+                }
+
+                // I samotný střed (endX, endY) musí projít kontrolou hranic,
+                // pro případ, že by occupation squares byly prázdné.
+                if (valid && !inBoard(endX, endY, endX, endY)) {
+                    valid = false;
                 }
 
                 if (valid) {
@@ -1409,6 +1438,36 @@ if (firstTime == false)
             }
         }
         return validMoves;
+    }
+
+    /**
+     * Vrátí set všech polí ("x,y") obsazených tělem libovolného JINÉHO Carrieru
+     * na desce (kromě toho na [excludeX, excludeY], což je carrier, který se
+     * právě pokouší pohnout). Zahrnuje střed i všechny jeho occupation squares,
+     * protože jen střed je reálně uložen v board[][] — zbytek těla lodi je
+     * "virtuální" a bez téhle kontroly by ho šlo přejet jinou lodí.
+     */
+    private HashSet<String> getOtherCarrierSquares(int excludeX, int excludeY) {
+        HashSet<String> squares = new HashSet<>();
+
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board[x].length; y++) {
+                if (x == excludeX && y == excludeY) continue;
+
+                if (board[x][y] instanceof Carrier) {
+                    Carrier other = (Carrier) board[x][y];
+                    squares.add(x + "," + y);
+
+                    for (OcupationSquare square : other.getOcupationSquares()) {
+                        int ox = x + square.getX();
+                        int oy = y + square.getY();
+                        squares.add(ox + "," + oy);
+                    }
+                }
+            }
+        }
+
+        return squares;
     }
 
     public ArrayList<MoveType> validateTorpedoMoves( int startX,int startY,ArrayList<MoveType> moves,Player player) {
@@ -1679,24 +1738,15 @@ for (MoveType m : moves) {
 
 
     public boolean executeCarrierMoves(int startX,int startY,int endX, int endY ,Player player , ArrayList<MoveType> validCarierMoves){
-
-        boolean firstTime = true;
-        for(MoveType move: validCarierMoves){
-
-           // if(firstTime){System.out.println("moves v exekuci");firstTime=false;}
-
+        for (MoveType move : validCarierMoves) {
             int targetX = startX + move.getX();
             int targetY = startY + move.getY();
 
-            System.out.println((move.getX() + startX )+" " +( move.getY()+ startY) );
-
             if (targetX == endX && targetY == endY) {
-                if( board[startX][startY] instanceof Carrier) {
+                if (board[startX][startY] instanceof Carrier) {
 
                     Carrier carrier = (Carrier) board[startX][startY];
-                    ArrayList<OcupationSquare> OcupationSquares = new ArrayList<>();
-                    OcupationSquares = carrier.getOcupationSquares();
-
+                    ArrayList<OcupationSquare> OcupationSquares = carrier.getOcupationSquares();
 
                     ArrayList<TempPiece> tempPieces = new ArrayList<>();
 
@@ -1704,8 +1754,10 @@ for (MoveType m : moves) {
 
                     for (OcupationSquare square : OcupationSquares) {
                         if (isPiece(startX + square.getX(), startY + square.getY())) {
-                            tempPieces.add(new TempPiece(startX + square.getX(), startY + square.getY(), board[startX + square.getX()][startY + square.getY()]));
-
+                            tempPieces.add(new TempPiece(
+                                    startX + square.getX(),
+                                    startY + square.getY(),
+                                    board[startX + square.getX()][startY + square.getY()]));
                         }
                     }
 
@@ -1713,24 +1765,25 @@ for (MoveType m : moves) {
                         board[startX + square.getX()][startY + square.getY()] = null;
                     }
 
+                    // 1) NEJDŘÍV přemísti úplně VŠECHNO (carrier + cargo) na cílové pozice.
+                    //    Deska tak bude vizuálně kompletní ještě předtím, než se otevře
+                    //    jakýkoliv promoční dialog.
                     for (TempPiece piece : tempPieces) {
-                        // System.out.println(piece.getX() + " " + piece.getY());
                         board[move.getX() + piece.getX()][move.getY() + piece.getY()] = piece.getPiece();
-                             promotion(move.getX() + piece.getX(),move.getY() + piece.getY());
                     }
-
                     board[startX + move.getX()][startY + move.getY()] = carrier;
 
+                    // 2) TEPRVE TEĎ řeš promoce. I když se otevře modální dialog,
+                    //    zbytek desky (carrier i ostatní cargo) je už na svém místě.
+                    for (TempPiece piece : tempPieces) {
+                        promotion(move.getX() + piece.getX(), move.getY() + piece.getY());
+                    }
 
                     return true;
                 }
             }
         }
-
-
-
-return false;
-
+        return false;
     }
 
     public boolean executeTorpedoMoves(int startX,int startY,int endX, int endY ,Player player , ArrayList<MoveType> validTorpedoMoves){
