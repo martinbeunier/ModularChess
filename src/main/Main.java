@@ -208,6 +208,12 @@ přidat ,ať můžu vybrat(označit piece), než odehraje bot
 kolize carriers
 záznamy her
 
+nepropisuje se sebrání kinga v gui .
+Špatná animace promotion na carrier v backend
+Přidat hráče a progress systém .
+Přidat campaign .
+
+
 
 nepodstatné :
 

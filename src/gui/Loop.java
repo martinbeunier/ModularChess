@@ -934,8 +934,9 @@ public class Loop extends JPanel {
                     resetLastMove();
                     updateThreatWarnings();
                     gameLoop.saveGame();
+                    repaintNow();
                     checkGameOver();
-                    repaint();
+
                     return;
                 }
 
@@ -950,8 +951,9 @@ public class Loop extends JPanel {
                         registerLastMove(fromX, fromY, toX, toY);
                         updateThreatWarnings();
                         gameLoop.saveGame();
+                        repaintNow();
                         checkGameOver();
-                        repaint();
+
                         return;
                     }
 
@@ -961,16 +963,18 @@ public class Loop extends JPanel {
                     resetLastMove();
                     updateThreatWarnings();
                     gameLoop.saveGame();
+                    repaintNow();
                     checkGameOver();
-                    repaint();
+
                     return;
                 }
 
                 registerLastMove(fromX, fromY, toX, toY);
                 updateThreatWarnings();
                 gameLoop.saveGame();
+                repaintNow();
                 checkGameOver();
-                repaint();
+
             });
         });
 
@@ -1082,6 +1086,13 @@ public class Loop extends JPanel {
     private int displayY(int y, int rows) {
         return boardFlipped ? (rows - 1 - y) : y;
     }
+
+    private void repaintNow() {
+        // Synchronní překreslení – na rozdíl od repaint() se provede OKAMŽITĚ,
+        // takže ho lze bezpečně zavolat před otevřením modálního dialogu.
+        paintImmediately(0, 0, getWidth(), getHeight());
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
