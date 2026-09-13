@@ -789,24 +789,35 @@ public class Loop extends JPanel {
     private void checkGameOver() {
         if (gameLoop.isGameOver()) {
             String message;
+            String resultForHistory;
 
             if (gameLoop.isDrawByRepetition()) {
                 message = "Hra skončila!\nRemíza — stejná pozice nastala potřetí.";
+                resultForHistory = "DRAW (repetition)";
 
             } else if (gameLoop.isDrawByNoCapture()) {
                 message = "Hra skončila!\nRemíza — 70 tahů bez sežrání figurky.";
+                resultForHistory = "DRAW (no capture in 70 moves)";
 
             } else {
                 Colour winner = gameLoop.getChessBoard().getSurvivingHeadColour();
 
                 if (winner == Colour.White) {
                     message = "Hra skončila!\nVítěz: Bílý";
+                    resultForHistory = "WIN: White (checkmate)";
                 } else if (winner == Colour.Black) {
                     message = "Hra skončila!\nVítěz: Černý";
+                    resultForHistory = "WIN: Black (checkmate)";
                 } else {
                     message = "Hra skončila!\nRemíza — oba Headi byli zničeni.";
+                    resultForHistory = "DRAW (both heads destroyed)";
                 }
             }
+
+            // gameHistoryFilePath je v tuhle chvíli VŽDY už nastavené,
+            // protože applyPostMoveRules -> moveListener -> Loop.saveGame()
+            // proběhlo dřív, než se vůbec zavolalo checkGameOver().
+            gameLoop.getChessBoard().appendGameResult(gameLoop.getGameHistoryFilePath(), resultForHistory);
 
             JOptionPane.showMessageDialog(this, message, "Konec hry", JOptionPane.INFORMATION_MESSAGE);
             frame.showScene("MAPSELECT");

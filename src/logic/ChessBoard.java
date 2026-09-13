@@ -504,6 +504,41 @@ public class ChessBoard {
         return true;
      }
 
+    public void appendGameResult(String gameHistoryFilePath, String resultDescription) {
+
+        try {
+            File myObj = new File(gameHistoryFilePath);
+            if (myObj.createNewFile()) {
+                System.out.println("File created: " + myObj.getName());
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+        try (FileWriter myWriter = new FileWriter(gameHistoryFilePath, true)) {
+            StringBuilder sb = new StringBuilder();
+
+            sb.append("\n========================================\n");
+            sb.append("GAME RESULT\n");
+            sb.append("========================================\n");
+            sb.append(resultDescription).append("\n");
+
+            for (Player player : players) {
+                sb.append(player.myToString())
+                        .append(" material : ")
+                        .append(countMaterial(player.getColor()))
+                        .append("\n");
+            }
+
+            myWriter.write(sb.toString());
+            System.out.println("\nGame result appended to history.");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
 
     //  Vrátí všechny možné surové tahy na desce bez kontextu podmínek
     //  @return

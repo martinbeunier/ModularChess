@@ -214,6 +214,13 @@ public class GameLoop {
 
     public ChessBoard getChessBoard() { return chessBoard; }
     public Player getCurrentPlayer() { return currentPlayer; }
+    public String getGameHistoryFilePath() {
+        // Pojistka: kdyby se z nějakého důvodu volalo dřív, než proběhl první saveGame()
+        if (gameHistoryFilePath == null) {
+            gameHistoryFilePath = buildGameHistoryFilePath();
+        }
+        return gameHistoryFilePath;
+    }
 
     /** Volitelná konzolová varianta — GUI (Loop) ji nepoužívá, jen pro testování/spuštění bez UI. */
 
