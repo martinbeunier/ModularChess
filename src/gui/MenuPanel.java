@@ -106,14 +106,16 @@ public class MenuPanel extends JPanel {
         JButton turnOffButton = new JButton("Exit game");
         turnOffButton.setBounds(UI.toCenter(20, w), UI.toPercent(70, h), UI.toPercent(20, w), UI.toPercent(10, h));
 
-
-
-
-
-
         turnOffButton.addActionListener(e -> {
             System.exit(0);
         });
+
+
+        JButton profileButton = new JButton("Profile");
+        profileButton.setBounds(UI.toPercent(75,w), UI.toPercent(70, h), UI.toPercent(8, w), UI.toPercent(10, h));
+
+
+
 
         add(mapEditorButton);
         add(pieceEditorButton);
@@ -122,6 +124,7 @@ public class MenuPanel extends JPanel {
         add(playButton);
         add(pieceologyButton);
         add(gameHistoryButton);
+        add(profileButton);
 
         add(title);
 

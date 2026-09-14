@@ -199,7 +199,6 @@ public class Main/*extends Application */{
 
 
 Přidat campaign .
-vyřešit optimalizaci
 přidat upravení profilu .
 Přidat progress systém .
 

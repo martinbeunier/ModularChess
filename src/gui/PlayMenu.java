@@ -40,6 +40,8 @@ public class PlayMenu extends JPanel {
         JButton rogueB = new JButton("Rogue like mode");
         rogueB .setBounds(UI.toPercent(60,w), UI.toPercent(55, h), UI.toPercent(20, w), UI.toPercent(10, h));
 
+        JButton tutorialB = new JButton("Tutorial");
+        tutorialB .setBounds(UI.toPercent(46,w), UI.toPercent(75, h), UI.toPercent(8, w), UI.toPercent(7, h));
 
 
         add(title);
@@ -47,6 +49,7 @@ public class PlayMenu extends JPanel {
         add(campaingB);
         add(multiplayerB);
         add(rogueB);
+        add(tutorialB);
 
 
 
