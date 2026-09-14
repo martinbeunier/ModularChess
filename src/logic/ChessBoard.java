@@ -1,12 +1,10 @@
 package logic;
-import javafx.scene.shape.Path;
 import main.Main;
 import pieces.*;
 import pieces.PoweUps.PowerUp;
 
 import java.awt.*;
 import java.io.*;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +23,9 @@ public class ChessBoard {
     private int snapShotCount ;
 
     private HashMap<String, Integer> positionCounts = new HashMap<>();
+
+    private BufferedWriter historyWriter;
+    private String historyWriterPath;
 
     //region capsulation
 
@@ -401,124 +402,72 @@ public class ChessBoard {
         return newCount >= 3;
     }
 
-     public boolean saveGameHistorySnapshot(String gameHistoryFilePath,Player currentPlayer,int movesWithoutCapture){
-         //System.out.println(gameHistoryFilePath);
-
-         try {
-             File myObj = new File(gameHistoryFilePath);
-             if (myObj.createNewFile()) {
-                 System.out.println("File created: " + myObj.getName());
-             } else {
-                 System.out.println("File already exists.");
-             }
-         } catch (IOException e) {
-             System.out.println("An error occurred.");
-             e.printStackTrace();
-         }
-
-         try {
-             FileWriter myWriter = new FileWriter(gameHistoryFilePath, true);
-             StringBuilder sb = new StringBuilder();
-
-             snapShotCount++;
-             sb.append("\n========================================\n");
-             sb.append("GAME HISTORY SNAPSHOT "+snapShotCount+"\n");
-             sb.append("========================================\n");
-
-
-             if (DebugConfiguration.savePosition) System.out.println("\nWidth : " + board.length + " Height: " + board[0].length);
-             sb.append("Width : ").append(board.length).append(" Height: ").append(board[0].length).append("\n");
-
-             if (DebugConfiguration.savePosition) System.out.println("\nTiles promotion colours :");
-             sb.append("\nTiles promotion colours :\n");
-             for (int j = 0; j < tiles.length; j++) {
-                 for (int i = 0; i < tiles[j].length; i++) {
-                     if (!tiles[j][i].getPromotionColours().isEmpty()) {
-                         if (DebugConfiguration.savePosition) System.out.print("promotion colours of tile : " + j + " " + i);
-                         sb.append("promotion colours of tile : ").append(j).append(" ").append(i);
-
-                         for (Colour colour : tiles[j][i].getPromotionColours()) {
-                             if (DebugConfiguration.savePosition) System.out.print(" " + colour.name());
-                             sb.append(" ").append(colour.name());
-                         }
-                         if (DebugConfiguration.savePosition) System.out.println();
-                         sb.append("\n");
-                     }
-                 }
-             }
-
-             if (DebugConfiguration.savePosition) System.out.println("\nTiles water :");
-             sb.append("\nTiles water :\n");
-             for (int j = 0; j < tiles.length; j++) {
-                 for (int i = 0; i < tiles[j].length; i++) {
-                     if (tiles[j][i].getWater()) {
-                         if (DebugConfiguration.savePosition) System.out.println("water : " + j + " " + i + "  ");
-                         sb.append("water : ").append(j).append(" ").append(i).append("\n");
-                     }
-                 }
-             }
-
-             if (enPassantTarget != null) {
-                 if (DebugConfiguration.savePosition) System.out.println("\nenPassant : " + enPassantTarget[0] + " " + enPassantTarget[1]);
-                 sb.append("\nenPassant : ").append(enPassantTarget[0]).append(" ").append(enPassantTarget[1]).append("\n");
-             }
-
-             if (DebugConfiguration.savePosition) System.out.println("\nPieces :");
-             sb.append("\nPieces :\n");
-             for (int j = 0; j < board.length; j++) {
-                 for (int i = 0; i < board[j].length; i++) {
-                     if (board[j][i] != null) {
-                         String pieceStr = "piece : " + board[j][i].getClass() + " " + board[j][i].myToString2();
-                         if (board[j][i] instanceof OrientedPiece) {
-                             pieceStr += " " + ((OrientedPiece) board[j][i]).getRotation();
-                         }
-                         if (DebugConfiguration.savePosition) System.out.println(pieceStr);
-                         sb.append(pieceStr).append("\n");
-                     }
-                 }
-             }
-
-             if (DebugConfiguration.savePosition) System.out.println("\nPlayers :");
-             sb.append("\nPlayers :\n");
-             for (Player player : players) {
-                 String playerStr = player.myToString() + " PowerUps :";
-                 for (PowerUpName powerUp : player.getPowerUps()) {
-                     playerStr += " " + powerUp.name();
-                 }
-                 if (DebugConfiguration.savePosition) System.out.println(playerStr);
-                 sb.append(playerStr).append("\n");
-             }
-
-             String currentStr = "\ncurrent player : " + currentPlayer.getColor();
-             if (DebugConfiguration.savePosition) System.out.println(currentStr);
-             sb.append(currentStr).append("\n");
-
-             myWriter.write(sb.toString());
-             myWriter.close();
-             System.out.println("\nSuccessfully wrote to the file.");
-         } catch (IOException e) {
-             System.out.println("An error occurred.");
-             e.printStackTrace();
-         }
-
-        return true;
-     }
-
-    public void appendGameResult(String gameHistoryFilePath, String resultDescription) {
-
+    public boolean saveGameHistorySnapshot(String gameHistoryFilePath, Player currentPlayer, int movesWithoutCapture) {
         try {
-            File myObj = new File(gameHistoryFilePath);
-            if (myObj.createNewFile()) {
-                System.out.println("File created: " + myObj.getName());
+            ensureHistoryWriterOpen(gameHistoryFilePath);
+
+            StringBuilder sb = new StringBuilder();
+            snapShotCount++;
+            sb.append("\n========================================\n");
+            sb.append("GAME HISTORY SNAPSHOT ").append(snapShotCount).append("\n");
+            sb.append("========================================\n");
+            sb.append("Width : ").append(board.length).append(" Height: ").append(board[0].length).append("\n");
+
+            sb.append("\nTiles promotion colours :\n");
+            for (int j = 0; j < tiles.length; j++) {
+                for (int i = 0; i < tiles[j].length; i++) {
+                    if (!tiles[j][i].getPromotionColours().isEmpty()) {
+                        sb.append("promotion colours of tile : ").append(j).append(" ").append(i);
+                        for (Colour colour : tiles[j][i].getPromotionColours()) sb.append(" ").append(colour.name());
+                        sb.append("\n");
+                    }
+                }
             }
+
+            sb.append("\nTiles water :\n");
+            for (int j = 0; j < tiles.length; j++)
+                for (int i = 0; i < tiles[j].length; i++)
+                    if (tiles[j][i].getWater()) sb.append("water : ").append(j).append(" ").append(i).append("\n");
+
+            if (enPassantTarget != null)
+                sb.append("\nenPassant : ").append(enPassantTarget[0]).append(" ").append(enPassantTarget[1]).append("\n");
+
+            sb.append("\nPieces :\n");
+            for (int j = 0; j < board.length; j++) {
+                for (int i = 0; i < board[j].length; i++) {
+                    if (board[j][i] != null) {
+                        String pieceStr = "piece : " + board[j][i].getClass() + " " + board[j][i].myToString2();
+                        if (board[j][i] instanceof OrientedPiece)
+                            pieceStr += " " + ((OrientedPiece) board[j][i]).getRotation();
+                        sb.append(pieceStr).append("\n");
+                    }
+                }
+            }
+
+            sb.append("\nPlayers :\n");
+            for (Player player : players) {
+                String playerStr = player.myToString() + " PowerUps :";
+                for (PowerUpName powerUp : player.getPowerUps()) playerStr += " " + powerUp.name();
+                sb.append(playerStr).append("\n");
+            }
+
+            sb.append("\ncurrent player : ").append(currentPlayer.getColor()).append("\n");
+
+            historyWriter.write(sb.toString());
+            historyWriter.flush(); // zapíše na disk hned, ale soubor zůstává otevřený pro další tah
+
         } catch (IOException e) {
-            System.out.println("An error occurred.");
             e.printStackTrace();
         }
 
-        try (FileWriter myWriter = new FileWriter(gameHistoryFilePath, true)) {
-            StringBuilder sb = new StringBuilder();
+        return true;
+    }
 
+    public void appendGameResult(String gameHistoryFilePath, String resultDescription) {
+        try {
+            ensureHistoryWriterOpen(gameHistoryFilePath);
+
+            StringBuilder sb = new StringBuilder();
             sb.append("\n========================================\n");
             sb.append("GAME RESULT\n");
             sb.append("========================================\n");
@@ -531,14 +480,41 @@ public class ChessBoard {
                         .append("\n");
             }
 
-            myWriter.write(sb.toString());
-            System.out.println("\nGame result appended to history.");
+            historyWriter.write(sb.toString());
+            historyWriter.flush();
+
         } catch (IOException e) {
-            System.out.println("An error occurred.");
             e.printStackTrace();
+        } finally {
+            closeHistoryWriter(); // hra skončila, soubor už nikdo nepotřebuje
         }
     }
+    private void ensureHistoryWriterOpen(String path) throws IOException {
+        if (historyWriter != null && path.equals(historyWriterPath)) return;
 
+        closeHistoryWriter(); // pro jistotu, kdyby se cesta změnila
+
+        File file = new File(path);
+        if (file.getParentFile() != null) file.getParentFile().mkdirs();
+        file.createNewFile(); // zavoláme JEN JEDNOU, při otevření
+
+        historyWriter = new BufferedWriter(new FileWriter(file, true));
+        historyWriterPath = path;
+    }
+
+    public void closeHistoryWriter() {
+        if (historyWriter != null) {
+            try {
+                historyWriter.flush();
+                historyWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                historyWriter = null;
+                historyWriterPath = null;
+            }
+        }
+    }
 
     //  Vrátí všechny možné surové tahy na desce bez kontextu podmínek
     //  @return
@@ -719,19 +695,19 @@ return goodMoves;
         ArrayList<MoveType> allValidMoves = new ArrayList<>();
 
         if (inBoard(startX, startY, endX, endY) == false) {
-            System.out.println("\nnemůžeš se přesunout mimo šachovnici");
+         //   System.out.println("\nnemůžeš se přesunout mimo šachovnici");
             return false;
         }
         if (isPiece(startX, startY) == false) {
-            System.out.println("\ntam není figura");
+       //     System.out.println("\ntam není figura");
             return false;
         }
         if (isEnemyPiece(startX, startY, player) == true) {
-            System.out.println("\nTo není tvoje figura");
+        //    System.out.println("\nTo není tvoje figura");
             return false;
         }
 
-        System.out.println("\n\nfigura : " + board[startX][startY].getName() + " z (" + startX + ", " + startY + ") na (" + endX + ", " + endY + ")");
+     //   System.out.println("\n\nfigura : " + board[startX][startY].getName() + " z (" + startX + ", " + startY + ") na (" + endX + ", " + endY + ")");
 
 
 
@@ -787,7 +763,7 @@ if(executeLinebreakerMoves(startX,startY,endX,endY,player,validLinebreakerMoves)
 
 
 
-        System.out.println("pohyb neodpovídá typu figury");
+       // System.out.println("pohyb neodpovídá typu figury");
         return false;
 
 
@@ -800,11 +776,11 @@ if(executeLinebreakerMoves(startX,startY,endX,endY,player,validLinebreakerMoves)
 
 
         if (isPiece(startX, startY) == false) {
-            System.out.println("\ntam není figura");
+       //     System.out.println("\ntam není figura");
             return false;
         }
         if (isEnemyPiece(startX, startY, player) == true) {
-            System.out.println("\nTo není tvoje figura");
+        //    System.out.println("\nTo není tvoje figura");
             return false;
         }
 
@@ -823,7 +799,7 @@ if(executeLinebreakerMoves(startX,startY,endX,endY,player,validLinebreakerMoves)
 
 
 
-                System.out.println("otočil ses");
+             //   System.out.println("otočil ses");
 
                 rotatePiece(startX,startY,rotation,player);
 
@@ -839,7 +815,7 @@ if(executeLinebreakerMoves(startX,startY,endX,endY,player,validLinebreakerMoves)
 
         }
 
-        System.out.println("nemůžeš se otočit tímto způsobem");
+    //    System.out.println("nemůžeš se otočit tímto způsobem");
         return false;
     }
 
@@ -870,7 +846,6 @@ if(inBoard(x,y,x,y)) tiles[x][y].addPromotionColour(colour);
             System.out.print(x + "    ");
         }
         System.out.println();
-
 
         for (int y = 0; y < board[0].length; y++) {
 
@@ -1608,7 +1583,7 @@ return validMoves;
 
         if(DebugConfiguration.validRotateMoves)System.out.println("valid rotate moves");
 for (MoveType m : moves) {
-    System.out.println(m.getRotate());
+    if(DebugConfiguration.validRotateMoves) System.out.println(m.getRotate()); // <-- OPRAVA
     if(!m.getRequiresFirstMove() || board[startX][startY].getFirstMove())
     {
         validMoves.add(m);

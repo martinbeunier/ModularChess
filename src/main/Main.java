@@ -5,7 +5,6 @@ import java.util.Scanner;
 
 import profile.PlayerManager;
 import gui.MainFrame;
-//import gui.Menu;
 import gui.UIconfiguration;
 import logic.ChessBoard;
 import logic.Colour;
@@ -212,6 +211,7 @@ nepodstatné :
 přidat ,ať můžu vybrat(označit piece), než odehraje bot
 map editor
 piece editor
+dát zápis hry do vlastního vlákna
 
 
 

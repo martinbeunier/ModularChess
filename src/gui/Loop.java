@@ -128,7 +128,7 @@ public class Loop extends JPanel {
     private int lastHoverX = -2;
     private int lastHoverY = -2;
 
-
+    private final Map<String, ImageIcon> avatarIconCache = new HashMap<>();
 
 
     private void openPdf() {
@@ -1064,6 +1064,7 @@ public class Loop extends JPanel {
         }
 
         resetSelection();
+        loadPlayerNames();
         repaint();
     }
 
@@ -1607,7 +1608,7 @@ public class Loop extends JPanel {
 
 
         loadScore();
-        loadPlayerNames();
+
 
 
 
@@ -1639,6 +1640,35 @@ public class Loop extends JPanel {
                     (gameLoop.getChessBoard().countMaterial(Colour.White) / 100) + "</font></html>");
         }
     }
+
+
+    private void setAvatarIcon(JLabel avatarLabel, String avatarPath) {
+        int w = avatarLabel.getWidth();
+        int h = avatarLabel.getHeight();
+
+        if (avatarPath == null || w <= 0 || h <= 0) {
+            avatarLabel.setIcon(null);
+            return;
+        }
+
+        String cacheKey = avatarPath + "_" + w + "x" + h;
+        ImageIcon cached = avatarIconCache.get(cacheKey);
+        if (cached != null) {
+            avatarLabel.setIcon(cached);
+            return;
+        }
+
+        Image avatarImg = loadAvatarImage(avatarPath);
+        if (avatarImg != null) {
+            Image scaled = avatarImg.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+            ImageIcon icon = new ImageIcon(scaled);
+            avatarIconCache.put(cacheKey, icon);
+            avatarLabel.setIcon(icon);
+        } else {
+            avatarLabel.setIcon(null);
+        }
+    }
+
     public void loadPlayerNames() {
 
         int fontSize = UI.toPercent(1.3, getWidth());
@@ -1667,17 +1697,7 @@ public class Loop extends JPanel {
         setAvatarIcon(playerAvatar2, humanPlayer.getAvatarPath());
     }
 
-    private void setAvatarIcon(JLabel avatarLabel, String avatarPath) {
-        Image avatarImg = loadAvatarImage(avatarPath);
 
-        if (avatarImg != null) {
-            Image scaled = avatarImg.getScaledInstance(
-                    avatarLabel.getWidth(), avatarLabel.getHeight(), Image.SCALE_SMOOTH);
-            avatarLabel.setIcon(new ImageIcon(scaled));
-        } else {
-            avatarLabel.setIcon(null); // žádný obrázek — necháme prázdné místo, ne rozbitou ikonu
-        }
-    }
 
     private Image loadAvatarImage(String avatarPath) {
 
