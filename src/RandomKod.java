@@ -40,3 +40,6 @@ while (inBoard(x, y)) {
 
 
  */
+/*
+this.playerName1 = new JLabel(selectedOpponent);
+this.playerName2  = new JLabel(PlayerManager.getCurrentHumanPlayer().getName());*/

@@ -3,6 +3,7 @@ package main;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import profile.PlayerManager;
 import gui.MainFrame;
 //import gui.Menu;
 import gui.UIconfiguration;
@@ -10,21 +11,10 @@ import logic.ChessBoard;
 import logic.Colour;
 import logic.DebugConfiguration;
 import logic.*;
-import org.w3c.dom.ls.LSOutput;
 import pieces.*;
 import gameloop.GameLoop;
 import pieces.PoweUps.Lifebuoy;
 import pieces.PoweUps.OverClocker;
-
-import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
-import javafx.stage.Stage;
-
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import pieces.utilities.RestartPiece;
 
 public class Main/*extends Application */{
 
@@ -50,7 +40,7 @@ public class Main/*extends Application */{
 
         DebugConfiguration.getInstance() ;
         UIconfiguration.getInstance();
-        logic.PlayerManager.load();
+        PlayerManager.load();
 
 
         switch (choice) {
@@ -204,21 +194,22 @@ public class Main/*extends Application */{
 
 /*TODO
 
-tutorial piece
 
-přidat ,ať můžu vybrat(označit piece), než odehraje bot
+
+
+
+
+Přidat campaign .
+vyřešit optimalizaci
+přidat upravení profilu .
+Přidat progress systém .
 
 záznamy her
 
-
-přidat upravení profilu .
-Přidat progress systém .
-Přidat campaign .
-
-
+tutorial piece
 
 nepodstatné :
-
+přidat ,ať můžu vybrat(označit piece), než odehraje bot
 map editor
 piece editor
 

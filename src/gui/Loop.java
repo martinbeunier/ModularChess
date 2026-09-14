@@ -1,5 +1,6 @@
 package gui;
 
+import profile.PlayerManager;
 import gameloop.Bot;
 import gameloop.BotFactory;
 import gameloop.GameLoop;
@@ -48,6 +49,10 @@ public class Loop extends JPanel {
     private JLabel title ;
     private JLabel score1;
     private JLabel score2;
+    private JLabel playerName1;
+    private JLabel playerName2;
+
+
 
     // Tlačítka pro rotaci — aktivní jen když je vybraná figurka, která umí rotovat daným směrem
     private JButton rotateLeftButton;
@@ -111,6 +116,13 @@ public class Loop extends JPanel {
     private final Map<String, Image> previewImageCache = new HashMap<>();
     private static final Image NO_PREVIEW_MARKER = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
 
+    private JLabel playerAvatar1;
+    private JLabel playerAvatar2;
+
+    // Cache, ať se avatar nenačítá znovu z disku při každém repaintu
+    private final Map<String, Image> avatarImageCache = new HashMap<>();
+    private static final Image NO_AVATAR_MARKER = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+
 
     // Hlídání předchozí pozice kurzoru pro zabránění zbytečnému repaintu
     private int lastHoverX = -2;
@@ -161,7 +173,7 @@ public class Loop extends JPanel {
 
         this.title = new JLabel("");
         this.title.setFont(new Font("SansSerif", Font.BOLD,UI.toPercent(5, h)));
-        this.title.setBounds(UI.toPercent(70, w), UI.toPercent(50, h), UI.toPercent(24, w), UI.toPercent(10, h));
+        this.title.setBounds(UI.toPercent(65, w), UI.toPercent(53, h), UI.toPercent(34, w), UI.toPercent(10, h));
 
         this.score1 = new JLabel("Score");
         this.score1.setFont(new Font("SansSerif", Font.BOLD,UI.toPercent(5, h)));
@@ -170,6 +182,20 @@ public class Loop extends JPanel {
         this.score2  = new JLabel("Score");
         this.score2.setFont(new Font("SansSerif", Font.BOLD,UI.toPercent(5, h)));
         this.score2.setBounds(UI.toPercent(2, w), UI.toPercent(80, h), UI.toPercent(24, w), UI.toPercent(10, h));
+
+        this.playerName1 = new JLabel(selectedOpponent);
+        this.playerName1.setFont(new Font("SansSerif", Font.BOLD,UI.toPercent(5, h)));
+        this.playerName1.setBounds(UI.toPercent(2, w), UI.toPercent(37, h), UI.toPercent(24, w), UI.toPercent(10, h));
+
+        this.playerName2  = new JLabel(PlayerManager.getCurrentHumanPlayer().getName());
+        this.playerName2.setFont(new Font("SansSerif", Font.BOLD,UI.toPercent(5, h)));
+        this.playerName2.setBounds(UI.toPercent(2, w), UI.toPercent(48, h), UI.toPercent(24, w), UI.toPercent(10, h));
+
+        this.playerAvatar1 = new JLabel();
+        this.playerAvatar1.setBounds(UI.toPercent(2, w), UI.toPercent(22, h), UI.toPercent(11, w), UI.toPercent(17, h));
+
+        this.playerAvatar2 = new JLabel();
+        this.playerAvatar2.setBounds(UI.toPercent(2, w), UI.toPercent(55, h), UI.toPercent(11, w), UI.toPercent(17, h));
 
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "backTo");
         getActionMap().put("backTo", new AbstractAction() {
@@ -331,7 +357,10 @@ public class Loop extends JPanel {
         add(title);
         add(score1);
         add(score2);
-
+        add(playerName1);
+        add(playerName2);
+        add(playerAvatar1);
+        add(playerAvatar2);
 
 
         // ------------------------------------------------------------
@@ -395,6 +424,7 @@ public class Loop extends JPanel {
                     repaint();
                     return;
                 }
+                System.out.println();
 
                 Piece clickedPiece = board.getPiece(gridX, gridY);
 
@@ -676,7 +706,7 @@ public class Loop extends JPanel {
 
               finalName = name.substring(0,1)  ;
 
-        System.out.println(finalName);
+      //  System.out.println(finalName);
         for(int i = 1; i < name.length(); i++) {
             char c = name.charAt(i);
 
@@ -1577,6 +1607,10 @@ public class Loop extends JPanel {
 
 
         loadScore();
+        loadPlayerNames();
+
+
+
 
 
 
@@ -1604,6 +1638,60 @@ public class Loop extends JPanel {
             score2.setText("<html><font color='orange'>Your material:<br>" +
                     (gameLoop.getChessBoard().countMaterial(Colour.White) / 100) + "</font></html>");
         }
+    }
+    public void loadPlayerNames() {
+
+        int fontSize = UI.toPercent(1.3, getWidth());
+        Font scoreFont = new Font("SansSerif", Font.BOLD, Math.max(12, fontSize));
+
+        playerName1.setFont(scoreFont);
+        playerName2.setFont(scoreFont);
+
+        String opponentName;
+        String opponentAvatarPath;
+
+        if (gameLoop.isVsBot() && gameLoop.getBot() != null) {
+            opponentName = gameLoop.getBot().getPlayer().getName();
+            opponentAvatarPath = gameLoop.getBot().getPlayer().getAvatarPath();
+        } else {
+            opponentName = selectedOpponent;
+            opponentAvatarPath = null;
+        }
+
+        Player humanPlayer = PlayerManager.getCurrentHumanPlayer();
+
+        playerName1.setText("<html><font color='orange'>" + opponentName + "</font></html>");
+        playerName2.setText("<html><font color='orange'>" + humanPlayer.getName() + "</font></html>");
+
+        setAvatarIcon(playerAvatar1, opponentAvatarPath);
+        setAvatarIcon(playerAvatar2, humanPlayer.getAvatarPath());
+    }
+
+    private void setAvatarIcon(JLabel avatarLabel, String avatarPath) {
+        Image avatarImg = loadAvatarImage(avatarPath);
+
+        if (avatarImg != null) {
+            Image scaled = avatarImg.getScaledInstance(
+                    avatarLabel.getWidth(), avatarLabel.getHeight(), Image.SCALE_SMOOTH);
+            avatarLabel.setIcon(new ImageIcon(scaled));
+        } else {
+            avatarLabel.setIcon(null); // žádný obrázek — necháme prázdné místo, ne rozbitou ikonu
+        }
+    }
+
+    private Image loadAvatarImage(String avatarPath) {
+
+       // System.out.println(avatarPath);
+        if (avatarPath == null) return null;
+
+        Image cached = avatarImageCache.get(avatarPath);
+        if (cached != null) {
+            return (cached == NO_AVATAR_MARKER) ? null : cached;
+        }
+
+        Image img = safeLoadImage(avatarPath);
+        avatarImageCache.put(avatarPath, (img != null) ? img : NO_AVATAR_MARKER);
+        return img;
     }
 
     private double getScaleByClass(String className){

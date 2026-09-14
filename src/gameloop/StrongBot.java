@@ -33,7 +33,7 @@ public class StrongBot extends Bot { //6 /10 trapper
     private long searchDeadline;
 
     public StrongBot() {
-        super("6/10", "Trapper", 1200, "src/files/images/avatars/bot_medium.png");
+        super("6/10", "Trapper", 1200, "src/files/images/avatars/trapper.png");
     }
 
     private static class Move {

@@ -1,7 +1,7 @@
 package gameloop;
 
 import logic.Player;
-import logic.PlayerManager;
+import profile.PlayerManager;
 
 /**
  * Společný základ pro všechny typy botů. Každý konkrétní bot (RandomBot,

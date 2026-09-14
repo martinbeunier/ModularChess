@@ -7,7 +7,9 @@ import java.awt.*;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
+
 
 public class MapSelect extends JPanel {
 
@@ -43,12 +45,21 @@ public class MapSelect extends JPanel {
     private static final int THUMB_WIDTH = 96;
     private static final int THUMB_HEIGHT = 96;
 
+    private static final List<String> PRIORITY_ORDER = Arrays.asList(
+            "tutorial - Kill all kings as white",
+            "standard",
+            "fighter defense",
+            "XXL chess (rip of)"
+    );
+
     private static final String[] ICON_EXTENSIONS = {
             ".png", ".jpg", ".jpeg", ".gif"
     };
 
     // Cache defaultní ikony, ať se nenačítá pořád dokola
     private ImageIcon defaultIcon;
+
+
 
     // --------------------------------------------------
     // JEDNA MAPA = NÁZEV + IKONA
@@ -431,16 +442,9 @@ public class MapSelect extends JPanel {
         File dir = new File(MAPS_PATH);
 
         if (!dir.exists() || !dir.isDirectory()) {
-            System.out.println(
-                    "Složka s mapami neexistuje: "
-                            + dir.getAbsolutePath()
-            );
+            System.out.println("Složka s mapami neexistuje: " + dir.getAbsolutePath());
             return;
         }
-
-        // --------------------------------------------------
-        // FILTR SOUBORŮ MAP (.chess)
-        // --------------------------------------------------
 
         File[] files = dir.listFiles((d, name) ->
                 name.toLowerCase().endsWith(MAP_EXTENSION)
@@ -450,25 +454,35 @@ public class MapSelect extends JPanel {
             return;
         }
 
-        // Seřazení podle názvu, ať je pořadí map konzistentní
-        Arrays.sort(files);
+        Arrays.sort(files); // abecedně jako záloha
 
         for (File file : files) {
-
             String fileName = file.getName();
-
             int dotIndex = fileName.lastIndexOf('.');
-
-            String mapName = (dotIndex > 0)
-                    ? fileName.substring(0, dotIndex)
-                    : fileName;
+            String mapName = (dotIndex > 0) ? fileName.substring(0, dotIndex) : fileName;
 
             ImageIcon icon = loadIconForMap(mapName);
-
             maps.add(new MapEntry(mapName, icon));
         }
-    }
 
+        // --------------------------------------------------
+        // FINÁLNÍ SEŘAZENÍ: vlastní pořadí, pak abecedně
+        // --------------------------------------------------
+        maps.sort((a, b) -> {
+            int ia = PRIORITY_ORDER.indexOf(a.name);
+            int ib = PRIORITY_ORDER.indexOf(b.name);
+
+            boolean aInList = ia != -1;
+            boolean bInList = ib != -1;
+
+            if (aInList && bInList) {
+                return Integer.compare(ia, ib);       // obě ve vlastním pořadí
+            }
+            if (aInList) return -1;                   // a má prioritu
+            if (bInList) return 1;                    // b má prioritu
+            return a.name.compareToIgnoreCase(b.name); // obě abecedně
+        });
+    }
     // ======================================================
     // NAČTENÍ IKONY PRO DANOU MAPU (S FALLBACKEM NA DEFAULT)
     // ======================================================

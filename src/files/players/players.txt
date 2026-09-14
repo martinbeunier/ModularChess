@@ -1,2 +1,2 @@
 current:player_martin
-player_martin;Martin;1000;none;0;0;0
+player_martin;Martin;1000;src/files/images/avatars/defaultAvatar.png;0;0;0

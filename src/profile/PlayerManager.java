@@ -1,5 +1,7 @@
 
-package logic;
+package profile;
+
+import logic.Player;
 
 import java.io.*;
         import java.util.*;
@@ -37,10 +39,25 @@ public class PlayerManager {
         String name = parts[1].trim();
         int elo = Integer.parseInt(parts[2].trim());
         String avatarRaw = parts[3].trim();
-        String avatar = avatarRaw.equals("none") ? null : avatarRaw;
+
+
+
+        String avatar = "";
+                if(avatarRaw.equals("none")){
+                    avatar = "src/files/images/avatars/defaultAvatar.png";
+                    System.out.println("hracuv defaultni avatar "+avatarRaw);
+                }else{
+                    avatar = avatarRaw;
+                    System.out.println("hracuv avatar "+avatarRaw);
+                }
+
+
+
+
         int wins = Integer.parseInt(parts[4].trim());
         int losses = Integer.parseInt(parts[5].trim());
         int draws = Integer.parseInt(parts[6].trim());
+
 
         Player p = new Player(name, null, elo); // barva se přiřadí až ve hře
         p.setId(id);
@@ -54,12 +71,30 @@ public class PlayerManager {
     /** Vrátí existujícího trvalého hráče podle id, nebo ho vytvoří s danými výchozími hodnotami. */
     public static Player getOrCreate(String id, String name, int elo, String avatarPath) {
         ensureLoaded();
-        return players.computeIfAbsent(id, k -> {
+
+        Player existing = players.get(id);
+        if (existing == null) {
             Player p = new Player(name, null, elo);
             p.setId(id);
             p.setAvatarPath(avatarPath);
+            players.put(id, p);
+
             return p;
-        });
+
+
+        }
+
+        // Hráč (typicky bot) už existuje ze souboru — jméno/avatar bere kód jako
+        // zdroj pravdy, takže je dosynchronizujeme, i když už záznam existoval.
+        // Elo a statistiky (wins/losses/draws) NEPŘEPISUJEME — ty patří disku.
+        if (existing.getAvatarPath() == null && avatarPath != null) {
+            existing.setAvatarPath(avatarPath);
+        }
+        if (existing.getName() == null || existing.getName().isBlank()) {
+            // jen pojistka pro poškozený/starý záznam
+        }
+
+        return existing;
     }
 
     public static Player getById(String id) {
