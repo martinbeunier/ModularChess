@@ -105,6 +105,9 @@ public class Player {
         this.losses = template.losses;
         this.draws = template.draws;
     }
+    public void setName(String name) {
+        this.name = name;
+    }
 
     @Override
     public String toString() {
@@ -115,6 +118,7 @@ public class Player {
                 ", powerUps=" + powerUps +
                 '}';
     }
+
 
     public String myToString() {
         String idPart = (id != null) ? "id:" + id : "id:none";

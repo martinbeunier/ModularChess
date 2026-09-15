@@ -255,6 +255,7 @@ public class Loop extends JPanel {
                                 options2[0]
                         );
                         if (choice2 == 1) {
+                            resignGame();
                             frame.showScene("MAPSELECT");
                         }
                         break;
@@ -815,11 +816,50 @@ public class Loop extends JPanel {
 
         repaint();
     }
+    /** Zapíše aktuální hru jako prohru resignací pro hráče, který ji opustil. */
+    private void resignGame() {
+        if (gameLoop == null) return;
 
+        for (Player livePlayer : gameLoop.getChessBoard().getPlayers()) {
+            if (livePlayer.getId() == null) continue;
+
+            Player template = PlayerManager.getById(livePlayer.getId());
+            if (template == null) continue; // bot — nic si nepamatujeme
+
+            // Předpoklad: hráč, který se vzdává, hraje jako "human" barva —
+            // tj. NENÍ to barva bota. Pokud vsBot == false (hráč vs hráč lokálně),
+            // berememe to jako prohru pro toho, kdo je aktuálně na tahu... ale
+            // ve skutečnosti chceme prohru vždy pro TOHO, KDO KLIKL "Quit Game" —
+            // což je fyzicky člověk u klávesnice, tedy ne-bot barva.
+            boolean isBotSide = gameLoop.isVsBot() && livePlayer.getColor() == gameLoop.getBotColour();
+
+            if (isBotSide) {
+                template.recordWin(); // bot "vyhrává" vzdáním hráče — ale bot se neukládá, tak se nic nezapíše
+            } else {
+                template.recordLoss(); // hráč se vzdal -> prohra
+            }
+        }
+
+        String opponentName = (gameLoop.isVsBot() && gameLoop.getBot() != null)
+                ? gameLoop.getBot().getPlayer().getName()
+                : selectedOpponent;
+
+        PlayerManager.saveAll();
+        PlayerManager.recordMapPlayed(selectedMap, opponentName, "LOSS (resignation)");
+
+        // Zápis i do historie hry na disku, ať je vidět proč skončila
+        if (gameLoop.getChessBoard() != null) {
+            gameLoop.getChessBoard().appendGameResult(
+                    gameLoop.getGameHistoryFilePath(),
+                    "RESIGNATION — player quit the game"
+            );
+        }
+    }
     private void checkGameOver() {
         if (gameLoop.isGameOver()) {
             String message;
             String resultForHistory;
+            Colour winnerColour = null; // null = remíza
 
             if (gameLoop.isDrawByRepetition()) {
                 message = "Hra skončila!\nRemíza — stejná pozice nastala potřetí.";
@@ -831,6 +871,7 @@ public class Loop extends JPanel {
 
             } else {
                 Colour winner = gameLoop.getChessBoard().getSurvivingHeadColour();
+                winnerColour = winner; // může být null i tady (oba Headi zničeni)
 
                 if (winner == Colour.White) {
                     message = "Hra skončila!\nVítěz: Bílý";
@@ -844,35 +885,63 @@ public class Loop extends JPanel {
                 }
             }
 
-            // gameHistoryFilePath je v tuhle chvíli VŽDY už nastavené,
-            // protože applyPostMoveRules -> moveListener -> Loop.saveGame()
-            // proběhlo dřív, než se vůbec zavolalo checkGameOver().
             gameLoop.getChessBoard().appendGameResult(gameLoop.getGameHistoryFilePath(), resultForHistory);
+
+            // Aktualizace trvalých statistik hráčů + zápis do progrese
+            updatePlayersAfterGame(winnerColour);
 
             JOptionPane.showMessageDialog(this, message, "Konec hry", JOptionPane.INFORMATION_MESSAGE);
             frame.showScene("MAPSELECT");
         }
     }
-
     private void updatePlayersAfterGame(Colour winnerColour) {
+        String result = "DRAW";
+        boolean playerWon = false;
+
         for (Player livePlayer : gameLoop.getChessBoard().getPlayers()) {
             if (livePlayer.getId() == null) continue;
 
             Player template = PlayerManager.getById(livePlayer.getId());
-            if (template == null) continue;
+            if (template == null) continue; // bot — nic si nepamatujeme
 
             if (winnerColour == null) {
                 template.recordDraw();
+                result = "DRAW";
+
             } else if (livePlayer.getColor() == winnerColour) {
                 template.recordWin();
+                result = "WIN";
+                playerWon = true;
+
             } else {
                 template.recordLoss();
+                result = "LOSS";
             }
         }
+
+        String opponentName = (gameLoop.isVsBot() && gameLoop.getBot() != null)
+                ? gameLoop.getBot().getPlayer().getName()
+                : selectedOpponent;
+
         PlayerManager.saveAll();
+        PlayerManager.recordMapPlayed(selectedMap, opponentName, result);
+
+        if (playerWon) {
+            boolean firstTime = PlayerManager.markMapCompleted(
+                    selectedMap,
+                    opponentName
+            );
+
+            if (firstTime) {
+                System.out.println(
+                        "Nově splněno: "
+                                + selectedMap
+                                + " proti "
+                                + opponentName
+                );
+            }
+        }
     }
-
-
     /**
      * Po každém tahu (i rotaci) zjistí, jestli je nějaká Head figurka ohrožená
      * (nepřátelská figurka na ni může platně táhnout), a pokud ano:

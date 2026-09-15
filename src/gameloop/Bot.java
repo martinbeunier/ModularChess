@@ -15,8 +15,12 @@ public abstract class Bot {
     private final Player player;
 
     protected Bot(String id, String displayName, int elo, String avatarPath) {
-        this.player = PlayerManager.getOrCreate(id, displayName, elo, avatarPath);
+        // Boti nemají trvalý profil — jen dočasný Player objekt pro tuto hru.
+        this.player = new Player(displayName, null, elo);
+        this.player.setId(id);
+        this.player.setAvatarPath(avatarPath);
     }
+
 
     /** Vrátí trvalého (barvy-neznajícího) Player hráče reprezentujícího tohoto bota. */
     public Player getPlayer() {

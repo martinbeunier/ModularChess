@@ -39,7 +39,7 @@ public class Main/*extends Application */{
 
         DebugConfiguration.getInstance() ;
         UIconfiguration.getInstance();
-        PlayerManager.load();
+        PlayerManager.getCurrentHumanPlayer(); // vynutí načtení/vytvoření profilu hned na startu
 
 
         switch (choice) {
@@ -201,6 +201,7 @@ public class Main/*extends Application */{
 Přidat campaign .
 přidat upravení profilu .
 Přidat progress systém .
+Přidat cheat code pro odemknutí všech map .
 
 záznamy her
 

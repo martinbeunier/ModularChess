@@ -1,180 +1,354 @@
-
 package profile;
 
 import logic.Player;
 
 import java.io.*;
-        import java.util.*;
+import java.time.LocalDateTime;
+import java.util.*;
 
-/**
- * Jediné místo, kde žijí TRVALÉ identity hráčů (lidský hráč i všichni boti),
- * uložené v jednom souboru. Boti mají pevné, neměnné id (např. "bot_easy"),
- * takže se jejich elo/statistiky kumulují napříč hrami stejně jako u člověka.
- */
 public class PlayerManager {
-    private static final String PLAYERS_PATH = "src\\files\\players\\players.txt";
-    private static Map<String, Player> players = new HashMap<>();
-    private static Player currentHumanPlayer = null;
-    private static boolean loaded = false;
-    private static String currentHumanPlayerId = null;
 
+    private static final String PROFILE_PATH = "src\\files\\players\\profile.txt";
+    private static final String MAP_HISTORY_PATH = "src\\files\\players\\map_history.txt";
+    private static final String COMPLETED_MAPS_PATH = "src\\files\\players\\completed_maps.txt";
+    private static final String DEFAULT_AVATAR = "src/files/images/avatars/defaultAvatar.png";
 
+    private static Player profile = null;
 
+    // "mapName;opponent"
+    private static Set<String> completedMapEntries = null;
 
+    // ------------------------------------------------------------------
+    // Načtení / vytvoření profilu
+    // ------------------------------------------------------------------
 
+    private static void ensureLoaded() {
+        if (profile != null) return;
 
-    // Jednoduchý formát nezávislý na Colour (trvalá identita barvu nemá — ta se
-    // přiděluje až za běhu hry). id;name;elo;avatar;wins;losses;draws
-    private static String formatStoredPlayer(Player p) {
-        return p.getId() + ";" + p.getName() + ";" + p.getElo() + ";"
-                + (p.getAvatarPath() == null ? "none" : p.getAvatarPath()) + ";"
-                + p.getWins() + ";" + p.getLosses() + ";" + p.getDraws();
-    }
+        File file = new File(PROFILE_PATH);
 
-    private static Player parseStoredPlayer(String line) {
-        String[] parts = line.split(";");
-        if (parts.length < 7) return null;
+        if (file.exists()) {
+            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 
-        String id = parts[0].trim();
-        String name = parts[1].trim();
-        int elo = Integer.parseInt(parts[2].trim());
-        String avatarRaw = parts[3].trim();
+                String line = br.readLine();
 
+                if (line != null && !line.isBlank()) {
+                    String[] parts = line.split(";");
 
+                    if (parts.length >= 6) {
+                        String name = parts[0].trim();
+                        int elo = Integer.parseInt(parts[1].trim());
 
-        String avatar = "";
-                if(avatarRaw.equals("none")){
-                    avatar = "src/files/images/avatars/defaultAvatar.png";
-                    System.out.println("hracuv defaultni avatar "+avatarRaw);
-                }else{
-                    avatar = avatarRaw;
-                    System.out.println("hracuv avatar "+avatarRaw);
+                        String avatarRaw = parts[2].trim();
+                        String avatar = avatarRaw.equals("none")
+                                ? DEFAULT_AVATAR
+                                : avatarRaw;
+
+                        int wins = Integer.parseInt(parts[3].trim());
+                        int losses = Integer.parseInt(parts[4].trim());
+                        int draws = Integer.parseInt(parts[5].trim());
+
+                        profile = new Player(name, null, elo);
+                        profile.setId("player");
+                        profile.setAvatarPath(avatar);
+
+                        for (int i = 0; i < wins; i++) {
+                            profile.recordWin();
+                        }
+
+                        for (int i = 0; i < losses; i++) {
+                            profile.recordLoss();
+                        }
+
+                        for (int i = 0; i < draws; i++) {
+                            profile.recordDraw();
+                        }
+                    }
                 }
 
-
-
-
-        int wins = Integer.parseInt(parts[4].trim());
-        int losses = Integer.parseInt(parts[5].trim());
-        int draws = Integer.parseInt(parts[6].trim());
-
-
-        Player p = new Player(name, null, elo); // barva se přiřadí až ve hře
-        p.setId(id);
-        p.setAvatarPath(avatar);
-        for (int i = 0; i < wins; i++) p.recordWin();
-        for (int i = 0; i < losses; i++) p.recordLoss();
-        for (int i = 0; i < draws; i++) p.recordDraw();
-        return p;
-    }
-
-    /** Vrátí existujícího trvalého hráče podle id, nebo ho vytvoří s danými výchozími hodnotami. */
-    public static Player getOrCreate(String id, String name, int elo, String avatarPath) {
-        ensureLoaded();
-
-        Player existing = players.get(id);
-        if (existing == null) {
-            Player p = new Player(name, null, elo);
-            p.setId(id);
-            p.setAvatarPath(avatarPath);
-            players.put(id, p);
-
-            return p;
-
-
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
-        // Hráč (typicky bot) už existuje ze souboru — jméno/avatar bere kód jako
-        // zdroj pravdy, takže je dosynchronizujeme, i když už záznam existoval.
-        // Elo a statistiky (wins/losses/draws) NEPŘEPISUJEME — ty patří disku.
-        if (existing.getAvatarPath() == null && avatarPath != null) {
-            existing.setAvatarPath(avatarPath);
+        if (profile == null) {
+            profile = new Player("Hráč", null, 1000);
+            profile.setId("player");
+            profile.setAvatarPath(DEFAULT_AVATAR);
         }
-        if (existing.getName() == null || existing.getName().isBlank()) {
-            // jen pojistka pro poškozený/starý záznam
-        }
-
-        return existing;
-    }
-
-    public static Player getById(String id) {
-        ensureLoaded();
-        return players.get(id);
-    }
-
-    public static void setCurrentHumanPlayer(Player p) {
-        ensureLoaded();
-        currentHumanPlayer = p;
-        currentHumanPlayerId = p.getId();
-        players.put(p.getId(), p);
     }
 
     public static Player getCurrentHumanPlayer() {
         ensureLoaded();
-        if (currentHumanPlayer == null) {
-            currentHumanPlayer = getOrCreate("player_local", "Hráč", 1000, null);
-        }
-        return currentHumanPlayer;
+        return profile;
     }
 
-
-    /** Explicitně nahraje hráče ze souboru. Bezpečné zavolat víckrát — druhé a další volání nic neudělají. */
-    public static void load() {
-        if (loaded) return;
-        loaded = true;
-        loadFromDisk();
-       // ensureDefaultBots(); // pokud máš i tohle, jinak vynech
+    public static void setName(String newName) {
+        ensureLoaded();
+        profile.setName(newName);
+        save();
     }
-    private static void loadFromDisk() {
-        File file = new File(PLAYERS_PATH);
-        if (!file.exists()) return;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                line = line.trim();
-                if (line.isEmpty()) continue;
+    // ------------------------------------------------------------------
+    // Uložení profilu
+    // ------------------------------------------------------------------
 
-                if (line.startsWith("current:")) {
-                    currentHumanPlayerId = line.substring("current:".length()).trim();
-                    continue;
-                }
+    public static void save() {
+        ensureLoaded();
 
-                Player p = parseStoredPlayer(line);
-                if (p != null) players.put(p.getId(), p);
+        try {
+            File file = new File(PROFILE_PATH);
+            file.getParentFile().mkdirs();
+
+            try (FileWriter fw = new FileWriter(file, false)) {
+
+                String avatar = (profile.getAvatarPath() == null)
+                        ? "none"
+                        : profile.getAvatarPath();
+
+                String line = profile.getName() + ";"
+                        + profile.getElo() + ";"
+                        + avatar + ";"
+                        + profile.getWins() + ";"
+                        + profile.getLosses() + ";"
+                        + profile.getDraws();
+
+                fw.write(line + "\n");
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        // Pokud soubor obsahoval "current:", a odpovídající hráč se skutečně
-        // načetl, nastavíme ho hned jako aktuálního — Main pak jen zavolá
-        // getCurrentHumanPlayer() a dostane přesně tohohle hráče.
-        if (currentHumanPlayerId != null) {
-            Player fromFile = players.get(currentHumanPlayerId);
-            if (fromFile != null) {
-                currentHumanPlayer = fromFile;
-            }
-        }
-    }
-    private static void ensureLoaded() {
-        load(); // interní metody si samy zajistí, že je manager nahraný, i kdyby na to Main zapomněl
     }
 
     public static void saveAll() {
+        save();
+    }
+
+    public static Player getById(String id) {
+        ensureLoaded();
+
+        if ("player".equals(id)) {
+            return profile;
+        }
+
+        return null;
+    }
+
+    // ------------------------------------------------------------------
+    // Historie odehraných map
+    // Formát řádku:
+    // timestamp;mapName;opponent;result
+    // ------------------------------------------------------------------
+
+    public static void recordMapPlayed(
+            String mapName,
+            String opponent,
+            String result
+    ) {
         try {
-            File file = new File(PLAYERS_PATH);
+            File file = new File(MAP_HISTORY_PATH);
             file.getParentFile().mkdirs();
-            try (FileWriter fw = new FileWriter(file, false)) {
-                if (currentHumanPlayer != null) {
-                    fw.write("current:" + currentHumanPlayer.getId() + "\n");
-                }
-                for (Player p : players.values()) {
-                    fw.write(formatStoredPlayer(p) + "\n");
-                }
+
+            try (FileWriter fw = new FileWriter(file, true)) {
+
+                String line = LocalDateTime.now()
+                        + ";" + mapName
+                        + ";" + opponent
+                        + ";" + result;
+
+                fw.write(line + "\n");
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static List<String> getMapHistory() {
+        List<String> history = new ArrayList<>();
+
+        File file = new File(MAP_HISTORY_PATH);
+
+        if (!file.exists()) {
+            return history;
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+
+                if (!line.isEmpty()) {
+                    history.add(line);
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return history;
+    }
+
+    // ------------------------------------------------------------------
+    // Splněné (vyhrané) mapy — pro odemykání progresu
+    // Formát řádku:
+    // mapName;opponent
+    // ------------------------------------------------------------------
+
+    private static void ensureCompletedMapsLoaded() {
+
+        if (completedMapEntries != null) {
+            return;
+        }
+
+        completedMapEntries = new LinkedHashSet<>();
+
+        File file = new File(COMPLETED_MAPS_PATH);
+
+        if (!file.exists()) {
+            return;
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+
+            String line;
+
+            while ((line = br.readLine()) != null) {
+
+                line = line.trim();
+
+                if (!line.isEmpty()) {
+                    completedMapEntries.add(line);
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Zapíše mapu + oponenta jako splněné,
+     * pokud tam ještě není.
+     *
+     * Vrací true, pokud jde o nové odemčení.
+     */
+    public static boolean markMapCompleted(
+            String mapName,
+            String opponent
+    ) {
+        ensureCompletedMapsLoaded();
+
+        String entry = mapName + ";" + opponent;
+
+        if (completedMapEntries.contains(entry)) {
+            return false;
+        }
+
+        completedMapEntries.add(entry);
+
+        saveCompletedMaps();
+
+        return true;
+    }
+
+    private static void saveCompletedMaps() {
+
+        try {
+            File file = new File(COMPLETED_MAPS_PATH);
+            file.getParentFile().mkdirs();
+
+            try (FileWriter fw = new FileWriter(file, false)) {
+
+                for (String entry : completedMapEntries) {
+                    fw.write(entry + "\n");
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Vrátí, zda hráč danou mapu už dohrál s výhrou,
+     * s libovolným oponentem.
+     */
+    public static boolean isMapCompleted(String mapName) {
+
+        ensureCompletedMapsLoaded();
+
+        for (String entry : completedMapEntries) {
+
+            if (entry.startsWith(mapName + ";")) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Vrátí, zda hráč porazil konkrétního oponenta
+     * na konkrétní mapě.
+     */
+    public static boolean isMapCompletedAgainst(
+            String mapName,
+            String opponent
+    ) {
+        ensureCompletedMapsLoaded();
+
+        return completedMapEntries.contains(
+                mapName + ";" + opponent
+        );
+    }
+
+    /**
+     * Vrátí všechny oponenty, které hráč
+     * na dané mapě porazil.
+     */
+    public static Set<String> getDefeatedOpponentsOnMap(
+            String mapName
+    ) {
+        ensureCompletedMapsLoaded();
+
+        Set<String> opponents = new LinkedHashSet<>();
+
+        for (String entry : completedMapEntries) {
+
+            String[] parts = entry.split(";", 2);
+
+            if (parts.length == 2 && parts[0].equals(mapName)) {
+                opponents.add(parts[1]);
+            }
+        }
+
+        return opponents;
+    }
+
+    /**
+     * Vrátí všechny unikátní názvy map,
+     * na kterých hráč aspoň jednou vyhrál.
+     */
+    public static Set<String> getCompletedMaps() {
+
+        ensureCompletedMapsLoaded();
+
+        Set<String> maps = new LinkedHashSet<>();
+
+        for (String entry : completedMapEntries) {
+
+            String[] parts = entry.split(";", 2);
+
+            if (parts.length == 2) {
+                maps.add(parts[0]);
+            }
+        }
+
+        return maps;
     }
 }

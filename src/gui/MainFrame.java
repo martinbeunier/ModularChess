@@ -102,6 +102,7 @@ public class MainFrame extends JFrame {
         cards.add(new PlayMenu(this), "PLAYMENU");
         cards.add(new MapSelect(this), "MAPSELECT");
         cards.add(new Settings(this), "SETTINGS");
+        cards.add(new ProfileSettings(this), "PROFILESETTINGS");
         cards.add(loopPanel, "LOOP");
 
         add(cards);

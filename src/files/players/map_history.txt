@@ -1,0 +1,6 @@
+2026-09-15T21:13:19.356770600;standard;Bot 1;WIN
+2026-09-15T21:23:32.412882400;fighter defense;Trapper;LOSS
+2026-09-15T21:28:24.500154300;standard;Against yourself;LOSS (resignation)
+2026-09-15T21:30:29.161687900;fighter defense;Trapper;LOSS (resignation)
+2026-09-15T21:30:36.703131100;fighter defense;Bold man;WIN
+2026-09-15T21:58:04.920373400;fighter defense;Bold man;WIN
