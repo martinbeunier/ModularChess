@@ -4,3 +4,10 @@
 2026-09-15T21:30:29.161687900;fighter defense;Trapper;LOSS (resignation)
 2026-09-15T21:30:36.703131100;fighter defense;Bold man;WIN
 2026-09-15T21:58:04.920373400;fighter defense;Bold man;WIN
+2026-09-15T22:01:34.263458200;fighter defense;Bold man;WIN
+2026-09-16T09:17:55.747100200;standard;Bold man;WIN
+2026-09-16T09:26:08.188535800;standard;Bold man;LOSS (resignation)
+2026-09-16T10:24:42.031692500;standard;Bold man;WIN
+2026-09-16T10:26:39.282894;standard;Against yourself;LOSS (resignation)
+2026-09-16T10:31:45.680180200;standard;Bold man;WIN
+2026-09-16T10:32:52.392533600;standard;Bold man;WIN

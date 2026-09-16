@@ -1,8 +1,13 @@
 package gui;
 
+import profile.PlayerManager;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MainFrame extends JFrame {
 
@@ -12,6 +17,7 @@ public class MainFrame extends JFrame {
 
     private int width;
     private int height;
+    private final Set<Integer> pressedKeys = new HashSet<>();
 
     public MainFrame() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -120,6 +126,7 @@ public class MainFrame extends JFrame {
                 + " -> width=" + this.width + ", height=" + this.height);
 
         setupEmergencyResetShortcut();
+        cheatCodeShortCutActivation();
 
         showScene("MENU");
     }
@@ -172,5 +179,34 @@ public class MainFrame extends JFrame {
             }
         });
     }
+
+
+    private void cheatCodeShortCutActivation() {
+        KeyboardFocusManager.getCurrentKeyboardFocusManager()
+                .addKeyEventDispatcher(e -> {
+
+                    if (e.getID() == KeyEvent.KEY_PRESSED) {
+                        pressedKeys.add(e.getKeyCode());
+
+                        if (pressedKeys.contains(KeyEvent.VK_C) &&
+                                pressedKeys.contains(KeyEvent.VK_H) &&
+                                pressedKeys.contains(KeyEvent.VK_E) &&
+                                pressedKeys.contains(KeyEvent.VK_A) &&
+                                pressedKeys.contains(KeyEvent.VK_T)) {
+
+                            System.out.println("Cheat code Activated");
+                            PlayerManager.cheatcodeActivated = true;
+                            SoundPlayer.playWav("src/files/sounds/cheatCodeIsActivated.wav",UIconfiguration.soundEfectsVolume);
+                        }
+                    }
+
+                    if (e.getID() == KeyEvent.KEY_RELEASED) {
+                        pressedKeys.remove(e.getKeyCode());
+                    }
+
+                    return false;
+                });
+    }
+
 
 }

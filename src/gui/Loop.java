@@ -907,18 +907,18 @@ public class Loop extends JPanel {
             if (winnerColour == null) {
                 template.recordDraw();
                 result = "DRAW";
-
             } else if (livePlayer.getColor() == winnerColour) {
                 template.recordWin();
                 result = "WIN";
                 playerWon = true;
-
             } else {
                 template.recordLoss();
                 result = "LOSS";
             }
         }
 
+        // Skutečné jméno oponenta — pokud hraješ proti botovi, vezmi jeho displayName,
+        // ne label z menu (selectedOpponent bývá jen "Bot 1" apod.)
         String opponentName = (gameLoop.isVsBot() && gameLoop.getBot() != null)
                 ? gameLoop.getBot().getPlayer().getName()
                 : selectedOpponent;
@@ -927,18 +927,9 @@ public class Loop extends JPanel {
         PlayerManager.recordMapPlayed(selectedMap, opponentName, result);
 
         if (playerWon) {
-            boolean firstTime = PlayerManager.markMapCompleted(
-                    selectedMap,
-                    opponentName
-            );
-
+            boolean firstTime = PlayerManager.markMapCompleted(selectedMap, opponentName);
             if (firstTime) {
-                System.out.println(
-                        "Nově splněno: "
-                                + selectedMap
-                                + " proti "
-                                + opponentName
-                );
+                System.out.println("Nově splněno: " + selectedMap + " proti " + opponentName);
             }
         }
     }
