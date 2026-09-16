@@ -75,7 +75,11 @@ public class PlayerManager {
         profile.setName(newName);
         save();
     }
-
+    public static void setAvatarPath(String avatarPath) {
+        ensureLoaded();
+        profile.setAvatarPath(avatarPath);
+        save();
+    }
     // ------------------------------------------------------------------
     // Uložení profilu
     // ------------------------------------------------------------------

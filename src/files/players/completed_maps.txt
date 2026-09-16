@@ -1,1 +1,2 @@
 standard;Bold man
+tutorial - Kill all kings as white;Trapper

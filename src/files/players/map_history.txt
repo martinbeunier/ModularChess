@@ -11,3 +11,14 @@
 2026-09-16T10:26:39.282894;standard;Against yourself;LOSS (resignation)
 2026-09-16T10:31:45.680180200;standard;Bold man;WIN
 2026-09-16T10:32:52.392533600;standard;Bold man;WIN
+2026-09-16T12:37:54.558447900;standard;Against yourself;LOSS (resignation)
+2026-09-16T13:00:11.985754700;standard;Against yourself;LOSS (resignation)
+2026-09-16T13:00:27.783164700;tutorial - Kill all kings as white;Bold man;LOSS (resignation)
+2026-09-16T13:00:37.082148200;tutorial - Kill all kings as white;Trapper;LOSS (resignation)
+2026-09-16T13:01:01.310667400;tutorial - Kill all kings as white;Against yourself;LOSS (resignation)
+2026-09-16T13:02:15.870913800;tutorial - Kill all kings as white;Trapper;LOSS (resignation)
+2026-09-16T13:09:24.662479500;tutorial - Kill all kings as white;Trapper;WIN
+2026-09-16T13:21:28.742328600;standard;Against yourself;LOSS (resignation)
+2026-09-16T13:21:40.806317800;standard;Trapper;LOSS (resignation)
+2026-09-16T13:23:29.208949;tutorial - Kill all kings as white;Trapper;LOSS (resignation)
+2026-09-16T13:30:25.499971300;fighter defense;Trapper;LOSS

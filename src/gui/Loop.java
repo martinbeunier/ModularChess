@@ -674,9 +674,18 @@ public class Loop extends JPanel {
             System.err.println("Obrázek nenalezen: " + file.getAbsolutePath());
             return null;
         }
-        return new ImageIcon(path).getImage();
+        try {
+            BufferedImage img = javax.imageio.ImageIO.read(file);
+            if (img == null) {
+                System.err.println("ImageIO nerozpoznalo formát obrázku: " + file.getAbsolutePath());
+            }
+            return img;
+        } catch (IOException e) {
+            System.err.println("Chyba při načítání obrázku: " + file.getAbsolutePath());
+            e.printStackTrace();
+            return null;
+        }
     }
-
     private Image loadPreviewForPiece(Piece piece) {
         // Načte obrázek podle třídy figury (např. "card_pawn.png", "card_linebreaker.png")
         String className = piece.getClass().getSimpleName().toLowerCase();
@@ -1703,15 +1712,15 @@ public class Loop extends JPanel {
 
 
     private void setAvatarIcon(JLabel avatarLabel, String avatarPath) {
-        int w = avatarLabel.getWidth();
-        int h = avatarLabel.getHeight();
+        int boxW = avatarLabel.getWidth();
+        int boxH = avatarLabel.getHeight();
 
-        if (avatarPath == null || w <= 0 || h <= 0) {
+        if (avatarPath == null || boxW <= 0 || boxH <= 0) {
             avatarLabel.setIcon(null);
             return;
         }
 
-        String cacheKey = avatarPath + "_" + w + "x" + h;
+        String cacheKey = avatarPath + "_" + boxW + "x" + boxH;
         ImageIcon cached = avatarIconCache.get(cacheKey);
         if (cached != null) {
             avatarLabel.setIcon(cached);
@@ -1719,14 +1728,43 @@ public class Loop extends JPanel {
         }
 
         Image avatarImg = loadAvatarImage(avatarPath);
-        if (avatarImg != null) {
-            Image scaled = avatarImg.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+        if (avatarImg == null) {
+            avatarLabel.setIcon(null);
+            return;
+        }
+
+        int srcW = avatarImg.getWidth(null);
+        int srcH = avatarImg.getHeight(null);
+
+        if (srcW <= 0 || srcH <= 0) {
+            // Rozměry ještě nejsou k dispozici (asynchronní load) — fallback na starý postup
+            Image scaled = avatarImg.getScaledInstance(boxW, boxH, Image.SCALE_SMOOTH);
             ImageIcon icon = new ImageIcon(scaled);
             avatarIconCache.put(cacheKey, icon);
             avatarLabel.setIcon(icon);
-        } else {
-            avatarLabel.setIcon(null);
+            return;
         }
+
+        // Scale faktor podle menší strany, ať se obrázek vejde beze zkreslení
+        double scale = Math.min((double) boxW / srcW, (double) boxH / srcH);
+        int scaledW = Math.max(1, (int) Math.round(srcW * scale));
+        int scaledH = Math.max(1, (int) Math.round(srcH * scale));
+
+        // Vycentrování na plátně přesné velikosti labelu (zbytek plochy zůstane transparentní)
+        BufferedImage canvas = new BufferedImage(boxW, boxH, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = canvas.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        Image scaledImg = avatarImg.getScaledInstance(scaledW, scaledH, Image.SCALE_SMOOTH);
+        int drawX = (boxW - scaledW) / 2;
+        int drawY = (boxH - scaledH) / 2;
+        g2d.drawImage(scaledImg, drawX, drawY, null);
+        g2d.dispose();
+
+        ImageIcon icon = new ImageIcon(canvas);
+        avatarIconCache.put(cacheKey, icon);
+        avatarLabel.setIcon(icon);
     }
 
     public void loadPlayerNames() {
@@ -1760,8 +1798,6 @@ public class Loop extends JPanel {
 
 
     private Image loadAvatarImage(String avatarPath) {
-
-       // System.out.println(avatarPath);
         if (avatarPath == null) return null;
 
         Image cached = avatarImageCache.get(avatarPath);
@@ -1769,9 +1805,37 @@ public class Loop extends JPanel {
             return (cached == NO_AVATAR_MARKER) ? null : cached;
         }
 
-        Image img = safeLoadImage(avatarPath);
+        Image img;
+        if (avatarPath.toLowerCase().endsWith(".svg")) {
+            img = renderSvgToImage(avatarPath, 512); // vysoké rozlišení, zmenšení řeší setAvatarIcon
+        } else {
+            img = safeLoadImage(avatarPath);
+        }
+
         avatarImageCache.put(avatarPath, (img != null) ? img : NO_AVATAR_MARKER);
         return img;
+    }
+
+    private Image renderSvgToImage(String path, int size) {
+        try {
+            java.io.File file = new java.io.File(path);
+            if (!file.exists()) return null;
+
+            SVGLoader loader = new SVGLoader();
+            SVGDocument doc = loader.load(file.toURI().toURL());
+            if (doc == null) return null;
+
+            BufferedImage img = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2 = img.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            doc.render(null, g2, new ViewBox(0, 0, size, size));
+            g2.dispose();
+
+            return img;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private double getScaleByClass(String className){
@@ -1887,7 +1951,7 @@ public class Loop extends JPanel {
         String imagePath = "src/files/images/skins/" + colorPrefix + pieceType + ".svg";
 
         double baseScale = 1.0;
-        double finalScale = baseScale * getScaleByClass(pieceType);
+        double finalScale = baseScale * PieceVisuals.getScaleByClass(pieceType);
         int svgSize = (int) Math.round(tileSize * finalScale);
 
         // Unikátní klíč pro cache zahrnuje i velikost políčka (pokud se okno nezmění, použije se cache)
