@@ -87,6 +87,10 @@ public class MenuPanel extends JPanel {
 
         JButton gameHistoryButton = new JButton("Game History");
         gameHistoryButton.setBounds(UI.toPercent(40, w), UI.toPercent(40, h), UI.toPercent(10, w), UI.toPercent(10, h));
+        gameHistoryButton.addActionListener(e -> {
+            frame.showScene("GAMEHISTORY");
+        });
+
 
         JButton mapEditorButton = new JButton("Map editor");
         mapEditorButton.setBounds(UI.toPercent(50, w), UI.toPercent(50, h), UI.toPercent(10, w), UI.toPercent(10, h));
@@ -104,7 +108,6 @@ public class MenuPanel extends JPanel {
 
         JButton turnOffButton = new JButton("Exit game");
         turnOffButton.setBounds(UI.toCenter(20, w), UI.toPercent(70, h), UI.toPercent(20, w), UI.toPercent(10, h));
-
         turnOffButton.addActionListener(e -> {
             System.exit(0);
         });

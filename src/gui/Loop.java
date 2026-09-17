@@ -849,17 +849,20 @@ public class Loop extends JPanel {
             }
         }
 
+
         String opponentName = (gameLoop.isVsBot() && gameLoop.getBot() != null)
                 ? gameLoop.getBot().getPlayer().getName()
                 : selectedOpponent;
 
-        PlayerManager.saveAll();
-        PlayerManager.recordMapPlayed(selectedMap, opponentName, "LOSS (resignation)");
+        String historyFilePath = gameLoop.getGameHistoryFilePath();
+        String historyFileName = (historyFilePath != null) ? new File(historyFilePath).getName() : null;
 
-        // Zápis i do historie hry na disku, ať je vidět proč skončila
-        if (gameLoop.getChessBoard() != null) {
+        PlayerManager.saveAll();
+        PlayerManager.recordMapPlayed(selectedMap, opponentName, "LOSS (resignation)", historyFileName);
+
+        if (gameLoop.getChessBoard() != null && historyFilePath != null) {
             gameLoop.getChessBoard().appendGameResult(
-                    gameLoop.getGameHistoryFilePath(),
+                    historyFilePath,
                     "RESIGNATION — player quit the game"
             );
         }
@@ -932,8 +935,11 @@ public class Loop extends JPanel {
                 ? gameLoop.getBot().getPlayer().getName()
                 : selectedOpponent;
 
+        String historyFilePath = gameLoop.getGameHistoryFilePath();
+        String historyFileName = (historyFilePath != null) ? new File(historyFilePath).getName() : null;
+
         PlayerManager.saveAll();
-        PlayerManager.recordMapPlayed(selectedMap, opponentName, result);
+        PlayerManager.recordMapPlayed(selectedMap, opponentName, result, historyFileName);
 
         if (playerWon) {
             boolean firstTime = PlayerManager.markMapCompleted(selectedMap, opponentName);

@@ -115,19 +115,19 @@ public class PlayerManager {
     // Formát řádku: timestamp;mapName;opponent;result
     // ------------------------------------------------------------------
 
-    public static void recordMapPlayed(String mapName, String opponent, String result) {
+    public static void recordMapPlayed(String mapName, String opponent, String result, String historyFileName) {
         try {
             File file = new File(MAP_HISTORY_PATH);
             file.getParentFile().mkdirs();
             try (FileWriter fw = new FileWriter(file, true)) {
-                String line = LocalDateTime.now() + ";" + mapName + ";" + opponent + ";" + result;
+                String fileField = (historyFileName == null) ? "" : historyFileName;
+                String line = LocalDateTime.now() + ";" + mapName + ";" + opponent + ";" + result + ";" + fileField;
                 fw.write(line + "\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
     public static List<String> getMapHistory() {
         List<String> history = new ArrayList<>();
         File file = new File(MAP_HISTORY_PATH);
@@ -143,6 +143,36 @@ public class PlayerManager {
             e.printStackTrace();
         }
         return history;
+    }
+    public static class HistoryEntry {
+        public final String timestamp;
+        public final String mapName;
+        public final String opponent;
+        public final String result;
+        public final String historyFileName; // null u starších záznamů bez 5. sloupce
+
+        public HistoryEntry(String timestamp, String mapName, String opponent, String result, String historyFileName) {
+            this.timestamp = timestamp;
+            this.mapName = mapName;
+            this.opponent = opponent;
+            this.result = result;
+            this.historyFileName = historyFileName;
+        }
+    }
+
+    /** Vrátí celou historii her jako rozparsované záznamy. */
+    public static List<HistoryEntry> getMapHistoryEntries() {
+        List<HistoryEntry> entries = new ArrayList<>();
+        for (String line : getMapHistory()) {
+            String[] parts = line.split(";", -1);
+            if (parts.length < 4) continue;
+
+            String fileName = (parts.length >= 5 && !parts[4].isBlank()) ? parts[4].trim() : null;
+            entries.add(new HistoryEntry(
+                    parts[0].trim(), parts[1].trim(), parts[2].trim(), parts[3].trim(), fileName
+            ));
+        }
+        return entries;
     }
 
     // ------------------------------------------------------------------

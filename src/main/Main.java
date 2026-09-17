@@ -199,9 +199,9 @@ public class Main/*extends Application */{
 
 
 Přidat campaign .
-přidat upravení profilu .
+
 Přidat progress systém .
-Přidat cheat code pro odemknutí všech map .
+
 
 záznamy her
 
