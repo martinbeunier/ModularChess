@@ -159,6 +159,7 @@ public class GameHistory extends JPanel {
     private void openReplay(HistoryEntry entry) {
         File historyFile = new File(GAME_HISTORY_DIR, entry.historyFileName);
         frame.getGamePlayerPanel().loadFromFile(historyFile);
+        frame.getGamePlayerPanel().applyHistoryMetadata(entry.result, entry.timestamp);
         frame.showScene("GAMEPLAYER");
     }
         // Až bude replay JPanel hotový, tady se bude předávat historyFile (nebo jeho obsah)

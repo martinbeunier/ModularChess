@@ -1,14 +1,4 @@
 
-2026-09-17T17:03:46.877587500;standard;Bold man;WIN;2_standard.chess
-2026-09-17T17:12:13.869897100;fighter defense;Bold man;WIN;1_fighter defense.chess
-2026-09-17T17:18:40.082471;tutorial - Kill all kings as white;Bold man;WIN;2_tutorial - Kill all kings as white.chess
-2026-09-17T22:28:46.238882300;standard;Against yourself;LOSS (resignation);3_standard.chess
-2026-09-17T22:38:07.422752300;tutorial - Kill all kings as white;Against yourself;LOSS (resignation);4_tutorial - Kill all kings as white.chess
-2026-09-18T09:43:39.852051500;standard;Bold man;WIN;5_standard.chess
-2026-09-18T09:47:31.998065400;test 2;Against yourself;LOSS (resignation);6_test 2.chess
-2026-09-18T09:54:19.375940100;fighter defense;Against yourself;LOSS;7_fighter defense.chess
-2026-09-18T09:55:39.077555600;fighter defense;Against yourself;LOSS;8_fighter defense.chess
-2026-09-18T10:25:53.363763200;fighter defense;Bold man;WIN;9_fighter defense.chess
-2026-09-18T10:30:54.504909200;standard;Trapper;LOSS;10_standard.chess
-2026-09-18T10:33:09.066137600;standard;Against yourself;LOSS;11_standard.chess
-2026-09-18T10:43:29.368106500;test 2;Against yourself;LOSS (resignation);12_test 2.chess
+
+
+2026-09-18T13:32:49.143217500;standard;Trapper;LOSS;1_standard.chess

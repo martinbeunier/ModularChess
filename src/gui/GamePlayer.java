@@ -6,6 +6,7 @@ import pieces.*;
 import com.github.weisj.jsvg.SVGDocument;
 import com.github.weisj.jsvg.parser.SVGLoader;
 import com.github.weisj.jsvg.view.ViewBox;
+import profile.PlayerManager;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -18,6 +19,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.List;
+import java.awt.datatransfer.StringSelection;
+import java.time.format.DateTimeFormatter;
 
 public class GamePlayer extends JPanel {
 
@@ -41,6 +44,11 @@ public class GamePlayer extends JPanel {
     private static final int MARGIN = 60;
 
     private final Map<String, BufferedImage> imageCache = new HashMap<>();
+    private String pgnWhiteName = "White";
+    private String pgnBlackName = "Black";
+    private String pgnResultTag = "*";
+    private String pgnDateTag = "????.??.??";
+
 
     public GamePlayer(MainFrame frame) {
         this.frame = frame;
@@ -127,6 +135,12 @@ public class GamePlayer extends JPanel {
         backButton.addActionListener(e -> frame.showScene("GAMEHISTORY"));
         add(backButton);
 
+        JButton pgnButton = new JButton("Generovat PGN");
+        pgnButton.setBounds(UI.toPercent(64, w), UI.toPercent(96, h) - UI.toPercent(7, h), UI.toPercent(32, w), UI.toPercent(7, h));
+        pgnButton.addActionListener(e -> showPgnDialog());
+        add(pgnButton);
+
+
         getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("LEFT"), "prevSnapshot");
         getActionMap().put("prevSnapshot", new AbstractAction() {
             @Override
@@ -160,6 +174,8 @@ public class GamePlayer extends JPanel {
         imageCache.clear();
         currentSnapshotIndex = 0;
         boardFlipped = false;
+        pgnResultTag = "*";
+        pgnDateTag = "????.??.??";
 
         List<List<String>> blocks = splitIntoSnapshotBlocks(historyFile);
 
@@ -171,15 +187,52 @@ public class GamePlayer extends JPanel {
             }
         }
 
+        if (!snapshots.isEmpty()) {
+            for (Player p : snapshots.get(0).getPlayers()) {
+                if (p.getColor() == Colour.White) pgnWhiteName = p.getName();
+                if (p.getColor() == Colour.Black) pgnBlackName = p.getName();
+            }
+        }
+
         computeAllMoves();
         buildMoveTable();
         refreshView();
     }
 
+
+    /** Volitelné obohacení PGN hlavičky o výsledek a datum, pokud je známý HistoryEntry. */
+    /** Volitelné obohacení PGN hlavičky o výsledek a datum, pokud je známý HistoryEntry. */
+    public void applyHistoryMetadata(String resultText, String rawTimestamp) {
+        if (resultText != null) {
+            String humanName = PlayerManager.getCurrentHumanPlayer().getName();
+            Colour humanColour = null;
+            for (int i = 0; i < Math.min(snapshots.size(), 1); i++) {
+                for (Player p : snapshots.get(i).getPlayers()) {
+                    if (p.getName().equals(humanName)) humanColour = p.getColor();
+                }
+            }
+
+            if (resultText.contains("DRAW")) {
+                pgnResultTag = "1/2-1/2";
+            } else if (humanColour != null && resultText.contains("WIN")) {
+                pgnResultTag = (humanColour == Colour.White) ? "1-0" : "0-1";
+            } else if (humanColour != null && resultText.contains("LOSS")) {
+                pgnResultTag = (humanColour == Colour.White) ? "0-1" : "1-0";
+            }
+        }
+
+        if (rawTimestamp != null) {
+            try {
+                java.time.LocalDateTime dt = java.time.LocalDateTime.parse(rawTimestamp);
+                pgnDateTag = dt.format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
+            } catch (Exception ignored) {
+            }
+        }
+    }
+
     // ================================================================
     // PARSOVÁNÍ SOUBORU NA JEDNOTLIVÉ SNAPSHOTY
     // ================================================================
-
     private List<List<String>> splitIntoSnapshotBlocks(File file) {
         List<List<String>> blocks = new ArrayList<>();
         List<String> currentBlock = null;
@@ -773,5 +826,257 @@ public class GamePlayer extends JPanel {
 
             g2d.drawString(symbol, textX, textY);
         }
+    }
+    // ================================================================
+// GENEROVÁNÍ PGN (jen standardní figurky: Pawn, Knight, Bishop, Rook, Queen, King)
+// ================================================================
+
+    private void showPgnDialog() {
+        String pgn = generatePgnText();
+
+        JTextArea textArea = new JTextArea(pgn);
+        textArea.setEditable(false);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
+
+        JScrollPane scroll = new JScrollPane(textArea);
+        scroll.setPreferredSize(new Dimension(500, 400));
+
+        JButton copyButton = new JButton("Kopírovat");
+        copyButton.addActionListener(e -> {
+            Toolkit.getDefaultToolkit().getSystemClipboard()
+                    .setContents(new StringSelection(pgn), null);
+            copyButton.setText("Zkopírováno!");
+        });
+
+        JPanel panel = new JPanel(new BorderLayout(10, 10));
+        panel.add(scroll, BorderLayout.CENTER);
+        panel.add(copyButton, BorderLayout.SOUTH);
+
+        JOptionPane.showMessageDialog(this, panel, "PGN partie", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private String generatePgnText() {
+        if (snapshots.size() < 1) return "";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("[Event \"ModularChess partie\"]\n");
+        sb.append("[Site \"?\"]\n");
+        sb.append("[Date \"").append(pgnDateTag).append("\"]\n");
+        sb.append("[White \"").append(pgnWhiteName).append("\"]\n");
+        sb.append("[Black \"").append(pgnBlackName).append("\"]\n");
+        sb.append("[Result \"").append(pgnResultTag).append("\"]\n\n");
+
+        StringBuilder movetext = new StringBuilder();
+        int moveNumber = 1;
+        boolean waitingForBlack = false;
+
+        for (int i = 1; i < snapshots.size(); i++) {
+            Colour mover = (i - 1 < moverColours.size()) ? moverColours.get(i - 1) : null;
+            if (mover == null) continue;
+
+            ChessBoard prev = snapshots.get(i - 1);
+            ChessBoard curr = snapshots.get(i);
+            String moveStr = computePgnMove(prev, curr, mover, prev.getHeight());
+            if (moveStr == null) moveStr = "?";
+
+            if (mover == Colour.White) {
+                movetext.append(moveNumber).append(". ").append(moveStr).append(" ");
+                waitingForBlack = true;
+            } else {
+                if (!waitingForBlack) {
+                    movetext.append(moveNumber).append("... ");
+                }
+                movetext.append(moveStr).append(" ");
+                moveNumber++;
+                waitingForBlack = false;
+            }
+        }
+
+        movetext.append(pgnResultTag);
+        sb.append(movetext.toString().trim());
+        return sb.toString();
+    }
+
+    /**
+     * Vytvoří PGN notaci jednoho tahu porovnáním prev/curr snapshotů pro danou barvu na tahu.
+     * Zvládá: běžný tah, braní, povýšení, rošádu. NEZVLÁDÁ: šach/mat symboly, en passant jako speciální případ.
+     * Nestandardní figurky (mimo Pawn/Knight/Bishop/Rook/Queen/King) vrátí "?" jako písmeno figurky.
+     */
+    private String computePgnMove(ChessBoard prev, ChessBoard curr, Colour moverColour, int boardHeight) {
+        List<PieceSnapshot> prevAll = extractPieces(prev);
+        List<PieceSnapshot> currAll = extractPieces(curr);
+
+        for (Iterator<PieceSnapshot> itPrev = prevAll.iterator(); itPrev.hasNext();) {
+            PieceSnapshot p = itPrev.next();
+            Iterator<PieceSnapshot> itCurr = currAll.iterator();
+            boolean matched = false;
+            while (itCurr.hasNext()) {
+                PieceSnapshot c = itCurr.next();
+                if (isSameState(p, c)) {
+                    itCurr.remove();
+                    matched = true;
+                    break;
+                }
+            }
+            if (matched) itPrev.remove();
+        }
+
+        List<PieceSnapshot> moverPrev = filterColour(prevAll, moverColour);
+        List<PieceSnapshot> moverCurr = filterColour(currAll, moverColour);
+        List<PieceSnapshot> oppPrev = filterColour(prevAll, opposite(moverColour));
+
+        // --- Rošáda: král se posunul o 2 pole na stejné řadě ---
+        PieceSnapshot kingFrom = findSingleByClass(moverPrev, "King");
+        PieceSnapshot kingTo = findSingleByClass(moverCurr, "King");
+        if (kingFrom != null && kingTo != null && kingFrom.y == kingTo.y && Math.abs(kingFrom.x - kingTo.x) == 2) {
+            return (kingTo.x > kingFrom.x) ? "O-O" : "O-O-O";
+        }
+
+        if (moverPrev.isEmpty() || moverCurr.isEmpty()) return null;
+
+        PieceSnapshot from = null, to = null;
+        outer:
+        for (PieceSnapshot p : moverPrev) {
+            for (PieceSnapshot c : moverCurr) {
+                if (p.className.equals(c.className)) {
+                    from = p;
+                    to = c;
+                    break outer;
+                }
+            }
+        }
+
+        boolean promotion = false;
+        String promotedClass = null;
+        if (from == null) {
+            // Různé třídy = povýšení pěšce
+            from = moverPrev.get(0);
+            to = moverCurr.get(0);
+            promotion = true;
+            promotedClass = to.className;
+        }
+
+        boolean capture = false;
+        for (PieceSnapshot op : oppPrev) {
+            if (op.x == to.x && op.y == to.y) {
+                capture = true;
+                break;
+            }
+        }
+
+        String destSquare = squareOf(to.x, to.y, boardHeight);
+        StringBuilder sb = new StringBuilder();
+
+        if (from.className.equals("Pawn")) {
+            if (capture) {
+                sb.append((char) ('a' + from.x)).append("x").append(destSquare);
+            } else {
+                sb.append(destSquare);
+            }
+            if (promotion) {
+                sb.append("=").append(pgnLetter(promotedClass));
+            }
+        } else {
+            sb.append(pgnLetter(from.className));
+            sb.append(computeDisambiguation(prev, from, to, moverColour));
+            if (capture) sb.append("x");
+            sb.append(destSquare);
+        }
+
+        return sb.toString();
+    }
+
+    private List<PieceSnapshot> filterColour(List<PieceSnapshot> list, Colour colour) {
+        List<PieceSnapshot> result = new ArrayList<>();
+        for (PieceSnapshot p : list) {
+            if (p.colour.equals(colour.name())) result.add(p);
+        }
+        return result;
+    }
+
+    private PieceSnapshot findSingleByClass(List<PieceSnapshot> list, String className) {
+        PieceSnapshot found = null;
+        int count = 0;
+        for (PieceSnapshot p : list) {
+            if (p.className.equals(className)) {
+                found = p;
+                count++;
+            }
+        }
+        return (count == 1) ? found : null;
+    }
+
+    private Colour opposite(Colour colour) {
+        return (colour == Colour.White) ? Colour.Black : Colour.White;
+    }
+
+    private String squareOf(int x, int y, int boardHeight) {
+        char file = (char) ('a' + x);
+        int rank = boardHeight - y;
+        return "" + file + rank;
+    }
+
+    private String pgnLetter(String className) {
+        switch (className) {
+            case "King": return "K";
+            case "Queen": return "Q";
+            case "Rook": return "R";
+            case "Bishop": return "B";
+            case "Knight": return "N";
+            case "Pawn": return "";
+            default: return "?"; // nestandardní figurka
+        }
+    }
+
+    /** Standardní PGN pravidlo pro rozlišení tahu, když by ke stejnému cíli mohla dojít i jiná figurka stejné třídy. */
+    private String computeDisambiguation(ChessBoard prev, PieceSnapshot from, PieceSnapshot to, Colour colour) {
+        Player movingPlayer = null;
+        for (Player p : prev.getPlayers()) {
+            if (p.getColor() == colour) {
+                movingPlayer = p;
+                break;
+            }
+        }
+        if (movingPlayer == null) return "";
+
+        List<PieceSnapshot> ambiguous = new ArrayList<>();
+
+        for (int x = 0; x < prev.getWidth(); x++) {
+            for (int y = 0; y < prev.getHeight(); y++) {
+                if (x == from.x && y == from.y) continue;
+
+                Piece p = prev.getPiece(x, y);
+                if (p == null) continue;
+                if (!p.getClass().getSimpleName().equals(from.className)) continue;
+                if (p.getColour() != colour) continue;
+
+                ArrayList<int[]> targets = prev.getPossibleTargets(x, y, movingPlayer);
+                for (int[] t : targets) {
+                    if (t[0] == to.x && t[1] == to.y) {
+                        PieceSnapshot other = new PieceSnapshot();
+                        other.className = from.className;
+                        other.colour = colour.name();
+                        other.x = x;
+                        other.y = y;
+                        ambiguous.add(other);
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (ambiguous.isEmpty()) return "";
+
+        boolean sameFileExists = false, sameRankExists = false;
+        for (PieceSnapshot other : ambiguous) {
+            if (other.x == from.x) sameFileExists = true;
+            if (other.y == from.y) sameRankExists = true;
+        }
+
+        if (!sameFileExists) return String.valueOf((char) ('a' + from.x));
+        if (!sameRankExists) return String.valueOf(prev.getHeight() - from.y);
+        return squareOf(from.x, from.y, prev.getHeight());
     }
 }
