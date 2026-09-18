@@ -1034,7 +1034,7 @@ public class Loop extends JPanel {
 
         gameLoop = new GameLoop();
         gameLoop.initGame(selectedMap);
-
+        gameLoop.saveGame();
 
 
         gameLoop.setMoveListener((fromX, fromY, toX, toY) -> {

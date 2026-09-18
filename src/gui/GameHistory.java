@@ -83,6 +83,7 @@ public class GameHistory extends JPanel {
         add(scrollPane);
 
         loadHistory();
+        escape();
     }
     @Override
     public void setVisible(boolean visible) {
@@ -157,20 +158,31 @@ public class GameHistory extends JPanel {
      */
     private void openReplay(HistoryEntry entry) {
         File historyFile = new File(GAME_HISTORY_DIR, entry.historyFileName);
-
-        JOptionPane.showMessageDialog(
-                this,
-                "Replay zatím není implementován.\n\n" +
-                        "Mapa: " + entry.mapName + "\n" +
-                        "Soupeř: " + entry.opponent + "\n" +
-                        "Výsledek: " + entry.result + "\n" +
-                        "Soubor: " + historyFile.getAbsolutePath(),
-                "Replay",
-                JOptionPane.INFORMATION_MESSAGE
-        );
-
+        frame.getGamePlayerPanel().loadFromFile(historyFile);
+        frame.showScene("GAMEPLAYER");
+    }
         // Až bude replay JPanel hotový, tady se bude předávat historyFile (nebo jeho obsah)
         // a spouštět nová scéna, např.:
         // frame.showScene("REPLAY", historyFile);
+
+    private void escape() {
+
+        getInputMap(
+                WHEN_IN_FOCUSED_WINDOW
+        ).put(
+                KeyStroke.getKeyStroke("ESCAPE"),
+                "backTo"
+        );
+
+        getActionMap().put(
+                "backTo",
+                new AbstractAction() {
+
+                    @Override
+                    public void actionPerformed(java.awt.event.ActionEvent e) {
+                        frame.showScene("MENU");
+                    }
+                }
+        );
     }
 }

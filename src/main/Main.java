@@ -171,12 +171,12 @@ public class Main/*extends Application */{
 
 
 
-                chessBoard.printBoard();
+
 //konec inicializace šachovnice
 
                 chessBoard.printBoard();
 
-                chessBoard.savePosition("test",player1);
+                chessBoard.savePosition("test 2",player1);
 
 
 
@@ -203,7 +203,11 @@ Přidat campaign .
 Přidat progress systém .
 
 
-záznamy her
+
+přidat mazání starých her
+přidat konvezri na pgn
+přidat zvuk do gamePlayer
+přidat speciální moves do záznamu
 
 tutorial piece
 
@@ -220,5 +224,53 @@ dát zápis hry do vlastního vlákna
 */
 
 
-
     //konec kódu
+
+
+/*
+```
+@Override
+public String toString() {
+    return "x  x";
+}
+
+public String myToString() {
+    return "Piece{" +
+            "name='" + name + '\'' +
+            ", x=" + x +
+            ", y=" + y +
+            ", colour=" + colour +
+            ", moves=" + moves +
+            '}';
+}
+
+
+
+
+public String myToString2() {
+    return
+             ";"+name  + "; "+
+             x + " "
+             + y + " "
+             + colour + " "
+             + firstMove + " "
+             + value
+            ;
+}
+```
+
+Ano pawn je oriented piece , airplane je rotable piece , Vzhledem k tomu ,že se povedlo poskládat mapy do souboru a pak je načíst jako inicializační pozice ,nemněl by ten přehrávač být snad takový problém .
+ */
+
+/*
+ Sezam tahů :
+„sudá snapshot“	Bílý 	„lichý snapshot“	černý
+2	ArciBishop x,y -> x,y	3	ArciBishop x,y -> x,y
+4	Airplane x,y -> r	5
+…		…
+
+
+
+
+
+*/

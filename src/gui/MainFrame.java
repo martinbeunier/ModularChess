@@ -18,6 +18,7 @@ public class MainFrame extends JFrame {
     private int width;
     private int height;
     private final Set<Integer> pressedKeys = new HashSet<>();
+    private GamePlayer gamePlayerPanel;
 
     public MainFrame() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -103,6 +104,7 @@ public class MainFrame extends JFrame {
         cards = new JPanel(layout);
 
         this.loopPanel = new Loop(this);
+        this.gamePlayerPanel = new GamePlayer(this);
 
         cards.add(new MenuPanel(this), "MENU");
         cards.add(new PlayMenu(this), "PLAYMENU");
@@ -111,6 +113,7 @@ public class MainFrame extends JFrame {
         cards.add(new ProfileSettings(this), "PROFILESETTINGS");
         cards.add(new GameHistory(this), "GAMEHISTORY");
         cards.add(loopPanel, "LOOP");
+        cards.add(gamePlayerPanel, "GAMEPLAYER");
 
         add(cards);
 
@@ -207,6 +210,9 @@ public class MainFrame extends JFrame {
 
                     return false;
                 });
+    }
+    public GamePlayer getGamePlayerPanel() {
+        return gamePlayerPanel;
     }
 
 

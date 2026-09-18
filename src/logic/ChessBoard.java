@@ -8,7 +8,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-
+import java.util.List;
 
 
 
@@ -436,10 +436,7 @@ public class ChessBoard {
             for (int j = 0; j < board.length; j++) {
                 for (int i = 0; i < board[j].length; i++) {
                     if (board[j][i] != null) {
-                        String pieceStr = "piece : " + board[j][i].getClass() + " " + board[j][i].myToString2();
-                        if (board[j][i] instanceof OrientedPiece)
-                            pieceStr += " " + ((OrientedPiece) board[j][i]).getRotation();
-                        sb.append(pieceStr).append("\n");
+                        sb.append(buildPieceLine(j, i, board[j][i])).append("\n");
                     }
                 }
             }
@@ -2166,10 +2163,7 @@ for (MoveType m : moves) {
                 for (int j = 0; j < board.length; j++) {
                     for (int i = 0; i < board[j].length; i++) {
                         if (board[j][i] != null) {
-                            String pieceStr = "piece : " + board[j][i].getClass() + " " + board[j][i].myToString2();
-                            if (board[j][i] instanceof OrientedPiece) {
-                                pieceStr += " " + ((OrientedPiece) board[j][i]).getRotation();
-                            }
+                            String pieceStr = buildPieceLine(j, i, board[j][i]);
                             if (DebugConfiguration.savePosition) System.out.println(pieceStr);
                             sb.append(pieceStr).append("\n");
                         }
@@ -2201,126 +2195,121 @@ for (MoveType m : moves) {
         }
 
     public static ChessBoard loadPosition(String filename, ArrayList<Player> playersOutput) {
-        ChessBoard chessBoard = null;
-
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("src\\files\\positions\\" + filename + ".chess"));
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader("src\\files\\positions\\" + filename + ".chess"))) {
             String line;
-
             while ((line = br.readLine()) != null) {
-                line = line.trim();
-                if (line.isEmpty()) continue;
-
-                if (line.startsWith("Width")) {
-                    // "Width : 8 Height: 8"
-                    String[] nums = line.replaceAll("[^0-9]+", " ").trim().split("\\s+");
-                    int width = Integer.parseInt(nums[0]);
-                    int height = Integer.parseInt(nums[1]);
-                    chessBoard = new ChessBoard(width, height);
-                }
-
-                else if (chessBoard == null) {
-                    // Width musí být první řádek v souboru, jinak nemáme kam ukládat
-                    throw new IllegalStateException("Soubor neobsahuje řádek 'Width' jako první nastavovací řádek.");
-                }
-
-                else if (line.startsWith("promotion colours of tile")) {
-                    String[] parts = line.split(" : ")[1].trim().split(" ");
-                    int x = Integer.parseInt(parts[0]);
-                    int y = Integer.parseInt(parts[1]);
-                    for (int i = 2; i < parts.length; i++) {
-                        chessBoard.addPromotionSquares(x, y, Colour.valueOf(parts[i]));
-                    }
-                }
-
-                else if (line.startsWith("water")) {
-                    String[] parts = line.split(" : ")[1].trim().split(" ");
-                    int x = Integer.parseInt(parts[0]);
-                    int y = Integer.parseInt(parts[1]);
-                    chessBoard.addWaterSquares(x, y);
-                }
-
-                else if (line.startsWith("enPassant")) {
-                    String[] parts = line.split(" : ")[1].trim().split(" ");
-                    int[] target = new int[]{
-                            Integer.parseInt(parts[0]),
-                            Integer.parseInt(parts[1])
-                    };
-                    chessBoard.setEnPassantTarget(target);
-                }
-
-                else if (line.startsWith("piece")) {
-                    // "piece : class pieces.Pawn ;Black Pawn; 0 1 Black true 100 2"
-                    String className = line.split("class ")[1].split(" ")[0].trim();
-                    String simpleClass = className.substring(className.lastIndexOf('.') + 1);
-
-                    String[] semicolons = line.split(";");
-                    String name = semicolons[1].trim();
-                    String[] rest = semicolons[2].trim().split(" ");
-                    int x = Integer.parseInt(rest[0]);
-                    int y = Integer.parseInt(rest[1]);
-                    Colour colour = Colour.valueOf(rest[2]);
-                    boolean firstMove = Boolean.parseBoolean(rest[3]);
-                    int rotation = rest.length > 5 ? Integer.parseInt(rest[5].trim()) : 0;
-
-                    Piece p = PieceFactory.create(simpleClass, name, x, y, colour, rotation);
-                    p.setFirstMove(firstMove);
-                    chessBoard.addPiece(p);
-                }
-
-                else if  (line.startsWith("Player :")) {
-                    // "Player :  ;Bílý; White 600 PowerUps :"
-                    String[] semicolons = line.split(";");
-                    String playerName = semicolons[1].trim(); //1649
-                    String[] rest = semicolons[2].trim().split(" ");
-                    Colour colour = Colour.valueOf(rest[0]);
-                    int elo = Integer.parseInt(rest[1]);
-
-                    Player player = new Player(playerName, colour, elo);
-
-                    for (String token : rest) {
-                        if (token.startsWith("id:") && !token.equals("id:none")) {
-                            player.setId(token.substring("id:".length()));
-                        }
-                    }
-
-                    if (line.contains("PowerUps :")) {
-                        String[] powerupParts = line.split("PowerUps :", -1);
-                        String afterPowerUps = powerupParts.length > 1 ? powerupParts[1].trim() : "";
-                        if (!afterPowerUps.isEmpty()) {
-                            for (String pu : afterPowerUps.split(" ")) {
-                                if (!pu.isEmpty()) {
-                                    player.addPowerUp(PowerUpName.valueOf(pu));
-                                }
-                            }
-                        }
-                    }
-
-                    chessBoard.addPlayer(player);
-                    playersOutput.add(player);
-                }
-
-                else if (line.startsWith("current player")) {
-                    Colour colour = Colour.valueOf(line.split(" : ")[1].trim());
-                    for (Player p : playersOutput) {
-                        if (p.getColor() == colour) {
-                            playersOutput.add(p); // aktuální hráč na konci seznamu
-                            break;
-                        }
-                    }
-                }
+                lines.add(line);
             }
-
-            br.close();
-            System.out.println("Position loaded successfully.");
-
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
+            return null;
+        }
+        return loadPositionFromLines(lines, playersOutput);
+    }
+
+    /**
+     * Sdílené jádro parsování — používá loadPosition (soubor z positions/)
+     * i GamePlayer (jednotlivé snapshoty z gameHistory).
+     */
+    public static ChessBoard loadPositionFromLines(List<String> lines, ArrayList<Player> playersOutput) {
+        ChessBoard chessBoard = null;
+
+        for (String rawLine : lines) {
+            String line = rawLine.trim();
+            if (line.isEmpty()) continue;
+
+            if (line.startsWith("Width")) {
+                String[] nums = line.replaceAll("[^0-9]+", " ").trim().split("\\s+");
+                int width = Integer.parseInt(nums[0]);
+                int height = Integer.parseInt(nums[1]);
+                chessBoard = new ChessBoard(width, height);
+            }
+            else if (chessBoard == null) {
+                throw new IllegalStateException("Data neobsahují řádek 'Width' jako první nastavovací řádek.");
+            }
+            else if (line.startsWith("promotion colours of tile")) {
+                String[] parts = line.split(" : ")[1].trim().split(" ");
+                int x = Integer.parseInt(parts[0]);
+                int y = Integer.parseInt(parts[1]);
+                for (int i = 2; i < parts.length; i++) {
+                    chessBoard.addPromotionSquares(x, y, Colour.valueOf(parts[i]));
+                }
+            }
+            else if (line.startsWith("water")) {
+                String[] parts = line.split(" : ")[1].trim().split(" ");
+                int x = Integer.parseInt(parts[0]);
+                int y = Integer.parseInt(parts[1]);
+                chessBoard.addWaterSquares(x, y);
+            }
+            else if (line.startsWith("enPassant")) {
+                String[] parts = line.split(" : ")[1].trim().split(" ");
+                int[] target = new int[]{ Integer.parseInt(parts[0]), Integer.parseInt(parts[1]) };
+                chessBoard.setEnPassantTarget(target);
+            }
+            else if (line.startsWith("piece")) {
+                String className = line.split("class ")[1].split(" ")[0].trim();
+                String simpleClass = className.substring(className.lastIndexOf('.') + 1);
+
+                String[] semicolons = line.split(";");
+                String name = semicolons[1].trim();
+                String[] rest = semicolons[2].trim().split(" ");
+                int x = Integer.parseInt(rest[0]);
+                int y = Integer.parseInt(rest[1]);
+                Colour colour = Colour.valueOf(rest[2]);
+                boolean firstMove = Boolean.parseBoolean(rest[3]);
+                int rotation = rest.length > 5 ? Integer.parseInt(rest[5].trim()) : 0;
+
+                Piece p = PieceFactory.create(simpleClass, name, x, y, colour, rotation);
+                p.setFirstMove(firstMove);
+                chessBoard.addPiece(p);
+            }
+            else if (line.startsWith("Player :")) {
+                String[] semicolons = line.split(";");
+                String playerName = semicolons[1].trim();
+                String[] rest = semicolons[2].trim().split(" ");
+                Colour colour = Colour.valueOf(rest[0]);
+                int elo = Integer.parseInt(rest[1]);
+
+                Player player = new Player(playerName, colour, elo);
+
+                for (String token : rest) {
+                    if (token.startsWith("id:") && !token.equals("id:none")) {
+                        player.setId(token.substring("id:".length()));
+                    }
+                }
+
+                if (line.contains("PowerUps :")) {
+                    String[] powerupParts = line.split("PowerUps :", -1);
+                    String afterPowerUps = powerupParts.length > 1 ? powerupParts[1].trim() : "";
+                    if (!afterPowerUps.isEmpty()) {
+                        for (String pu : afterPowerUps.split(" ")) {
+                            if (!pu.isEmpty()) {
+                                player.addPowerUp(PowerUpName.valueOf(pu));
+                            }
+                        }
+                    }
+                }
+
+                chessBoard.addPlayer(player);
+                playersOutput.add(player);
+            }
+            else if (line.startsWith("current player")) {
+                Colour colour = Colour.valueOf(line.split(" : ")[1].trim());
+                for (Player p : playersOutput) {
+                    if (p.getColor() == colour) {
+                        playersOutput.add(p);
+                        break;
+                    }
+                }
+            }
         }
 
         return chessBoard;
     }
+
+
     public void reset() {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
@@ -2334,6 +2323,22 @@ for (MoveType m : moves) {
 
     public void setEnPassantTarget(int[] enPassantTarget){
         this.enPassantTarget = enPassantTarget;
+    }
+
+    private String buildPieceLine(int boardX, int boardY, Piece piece) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("piece : ").append(piece.getClass()).append(" ;")
+                .append(piece.getName()).append("; ")
+                .append(boardX).append(" ").append(boardY).append(" ")
+                .append(piece.getColour()).append(" ")
+                .append(piece.getFirstMove()).append(" ")
+                .append(piece.getValue());
+
+        if (piece instanceof OrientedPiece) {
+            sb.append(" ").append(((OrientedPiece) piece).getRotation());
+        }
+
+        return sb.toString();
     }
 
     //endregion

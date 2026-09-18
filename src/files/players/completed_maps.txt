@@ -2,3 +2,5 @@ standard;Bold man
 tutorial - Kill all kings as white;Trapper
 fighter defense;Bold man
 tutorial - Kill all kings as white;Bold man
+fighter defense;Against yourself
+standard;Against yourself
