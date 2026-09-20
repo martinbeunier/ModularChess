@@ -2,3 +2,10 @@
 
 
 2026-09-18T13:32:49.143217500;standard;Trapper;LOSS;1_standard.chess
+2026-09-18T14:06:48.740416100;fighter defense;Trapper;LOSS;2_fighter defense.chess
+2026-09-18T14:17:56.399413700;fighter defense;Trapper;LOSS;3_fighter defense.chess
+2026-09-20T10:25:40.513848200;fighter defense;Against yourself;LOSS (resignation);4_fighter defense.chess
+2026-09-20T10:34:46.389949800;test 2;Against yourself;LOSS (resignation);5_test 2.chess
+2026-09-20T10:35:46.327197800;standard;Against yourself;LOSS (resignation);6_standard.chess
+2026-09-20T10:48:41.514782500;fighter defense;Against yourself;LOSS (resignation);7_fighter defense.chess
+2026-09-20T10:49:37.861746900;standard;Against yourself;LOSS (resignation);8_standard.chess

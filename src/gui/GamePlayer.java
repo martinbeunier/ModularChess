@@ -179,12 +179,32 @@ public class GamePlayer extends JPanel {
 
         List<List<String>> blocks = splitIntoSnapshotBlocks(historyFile);
 
-        for (List<String> block : blocks) {
-            ChessBoard board = ChessBoard.loadPositionFromLines(block, new ArrayList<>());
+        List<Integer> failedBlocks = new ArrayList<>();
+
+        for (int i = 0; i < blocks.size(); i++) {
+            List<String> block = blocks.get(i);
+            ChessBoard board = null;
+            try {
+                board = ChessBoard.loadPositionFromLines(block, new ArrayList<>());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
             if (board != null) {
                 snapshots.add(board);
                 moverColours.add(extractCurrentPlayerColour(block));
+            } else {
+                failedBlocks.add(i + 1); // číslo snapshotu (1-based), které se nepovedlo naparsovat
             }
+        }
+
+        if (!failedBlocks.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Nepodařilo se načíst tyto snapshoty (přeskočeny, čísla se v přehrávači posunou): " + failedBlocks,
+                    "Chyba při načítání historie",
+                    JOptionPane.WARNING_MESSAGE
+            );
         }
 
         if (!snapshots.isEmpty()) {
@@ -297,12 +317,15 @@ public class GamePlayer extends JPanel {
     private static class MoveEntry {
         String description;
         Integer fromX, fromY, toX, toY; // pro zvýraznění na desce; null = nezvýrazňovat
+
+        Boolean isCapture;
     }
 
     private void computeAllMoves() {
         moves.clear();
         for (int i = 1; i < snapshots.size(); i++) {
-            moves.add(computeMove(snapshots.get(i - 1), snapshots.get(i)));
+            Colour mover = (i - 1 < moverColours.size()) ? moverColours.get(i - 1) : null;
+            moves.add(computeMove(snapshots.get(i - 1), snapshots.get(i), mover));
         }
     }
 
@@ -325,24 +348,28 @@ public class GamePlayer extends JPanel {
         return list;
     }
 
-    private MoveEntry computeMove(ChessBoard prev, ChessBoard curr) {
+    private MoveEntry computeMove(ChessBoard prev, ChessBoard curr, Colour moverColour) {
         List<PieceSnapshot> prevRemaining = extractPieces(prev);
         List<PieceSnapshot> currRemaining = extractPieces(curr);
+        removeUnchangedPieces(prevRemaining, currRemaining);
 
-        for (Iterator<PieceSnapshot> itPrev = prevRemaining.iterator(); itPrev.hasNext();) {
-            PieceSnapshot p = itPrev.next();
-            Iterator<PieceSnapshot> itCurr = currRemaining.iterator();
-            boolean matched = false;
-            while (itCurr.hasNext()) {
-                PieceSnapshot c = itCurr.next();
-                if (isSameState(p, c)) {
-                    itCurr.remove();
-                    matched = true;
-                    break;
-                }
-            }
-            if (matched) itPrev.remove();
+        if (prevRemaining.isEmpty() && currRemaining.isEmpty()) {
+            MoveEntry entry = new MoveEntry();
+            entry.description = "Beze změny";
+            return entry;
         }
+
+        MoveEntry castle = tryDetectCastle(prevRemaining, currRemaining, moverColour);
+        if (castle != null) return castle;
+
+        MoveEntry carrierMove = tryDetectCarrierMove(prevRemaining, currRemaining, moverColour);
+        if (carrierMove != null) return carrierMove;
+
+        MoveEntry linebreakerMove = tryDetectLinebreaker(prevRemaining, currRemaining, moverColour);
+        if (linebreakerMove != null) return linebreakerMove;
+
+        MoveEntry enPassant = tryDetectEnPassant(prevRemaining, currRemaining, moverColour);
+        if (enPassant != null) return enPassant;
 
         Map<String, List<PieceSnapshot>> prevGroups = groupByClassColour(prevRemaining);
         Map<String, List<PieceSnapshot>> currGroups = groupByClassColour(currRemaining);
@@ -359,7 +386,17 @@ public class GamePlayer extends JPanel {
                 currGroups.remove(key);
 
                 String capturedDesc = findCaptureAt(prevGroups, to.x, to.y);
-                return buildMoveDescription(from, to, capturedDesc);
+                MoveEntry entry = buildMoveDescription(from, to, capturedDesc);
+
+                if (from.className.equals("Torpedo") && !(from.x == to.x && from.y == to.y)) {
+                    List<String> destroyedAlongPath = collectDestroyedAlongPath(prevGroups, from, to);
+                    if (!destroyedAlongPath.isEmpty()) {
+                        entry.description += " (ničí cestou: " + String.join(", ", destroyedAlongPath) + ")";
+                        entry.isCapture = true;
+                    }
+                }
+
+                return entry;
             }
         }
 
@@ -391,9 +428,245 @@ public class GamePlayer extends JPanel {
         }
 
         MoveEntry fallback = new MoveEntry();
-        fallback.description = "Více změn na desce";
+        fallback.description = "Více změn na desce (nerozpoznaný typ tahu)";
         return fallback;
     }
+
+    private void removeUnchangedPieces(List<PieceSnapshot> prevList, List<PieceSnapshot> currList) {
+        for (Iterator<PieceSnapshot> itPrev = prevList.iterator(); itPrev.hasNext();) {
+            PieceSnapshot p = itPrev.next();
+            Iterator<PieceSnapshot> itCurr = currList.iterator();
+            boolean matched = false;
+            while (itCurr.hasNext()) {
+                PieceSnapshot c = itCurr.next();
+                if (isSameState(p, c)) {
+                    itCurr.remove();
+                    matched = true;
+                    break;
+                }
+            }
+            if (matched) itPrev.remove();
+        }
+    }
+
+    private PieceSnapshot findSingleByClassColour(List<PieceSnapshot> list, String className, Colour colour) {
+        PieceSnapshot found = null;
+        int count = 0;
+        for (PieceSnapshot p : list) {
+            if (p.className.equals(className) && p.colour.equals(colour.name())) {
+                found = p;
+                count++;
+            }
+        }
+        return (count == 1) ? found : null;
+    }
+
+    /** Rošáda: mover's King se posunul o 2 pole na stejné řadě a mover's Rook se taky změnil. */
+    private MoveEntry tryDetectCastle(List<PieceSnapshot> prevRemaining, List<PieceSnapshot> currRemaining, Colour moverColour) {
+        if (moverColour == null) return null;
+
+        PieceSnapshot kingFrom = findSingleByClassColour(prevRemaining, "King", moverColour);
+        PieceSnapshot kingTo = findSingleByClassColour(currRemaining, "King", moverColour);
+        if (kingFrom == null || kingTo == null) return null;
+        if (kingFrom.y != kingTo.y || Math.abs(kingFrom.x - kingTo.x) != 2) return null;
+
+        PieceSnapshot rookFrom = findSingleByClassColour(prevRemaining, "Rook", moverColour);
+        PieceSnapshot rookTo = findSingleByClassColour(currRemaining, "Rook", moverColour);
+        if (rookFrom == null || rookTo == null) return null;
+
+        MoveEntry entry = new MoveEntry();
+        entry.fromX = kingFrom.x;
+        entry.fromY = kingFrom.y;
+        entry.toX = kingTo.x;
+        entry.toY = kingTo.y;
+
+        String side = (kingTo.x > kingFrom.x) ? "krátká" : "dlouhá";
+        entry.description = "Rošáda (" + side + "): King " + kingFrom.x + "," + kingFrom.y + " -> " + kingTo.x + "," + kingTo.y
+                + ", Rook " + rookFrom.x + "," + rookFrom.y + " -> " + rookTo.x + "," + rookTo.y;
+        return entry;
+    }
+
+    /** LandCarrier: mover's LandCarrier se přesunul, případně s sebou "veze" další mover figurky (stejný offset). */
+    private MoveEntry tryDetectCarrierMove(List<PieceSnapshot> prevRemaining, List<PieceSnapshot> currRemaining, Colour moverColour) {
+        if (moverColour == null) return null;
+
+        PieceSnapshot carrierFrom = findSingleByClassColour(prevRemaining, "LandCarrier", moverColour);
+        PieceSnapshot carrierTo = findSingleByClassColour(currRemaining, "LandCarrier", moverColour);
+        if (carrierFrom == null || carrierTo == null) return null;
+        if (carrierFrom.x == carrierTo.x && carrierFrom.y == carrierTo.y) return null;
+
+        int dx = carrierTo.x - carrierFrom.x;
+        int dy = carrierTo.y - carrierFrom.y;
+
+        List<PieceSnapshot> cargoPrev = new ArrayList<>();
+        for (PieceSnapshot p : prevRemaining) {
+            if (p == carrierFrom || !p.colour.equals(moverColour.name())) continue;
+            for (PieceSnapshot c : currRemaining) {
+                if (c == carrierTo) continue;
+                if (c.className.equals(p.className) && c.colour.equals(p.colour)
+                        && c.x == p.x + dx && c.y == p.y + dy
+                        && Objects.equals(c.rotation, p.rotation)) {
+                    cargoPrev.add(p);
+                    break;
+                }
+            }
+        }
+
+        String capturedDesc = null;
+        for (PieceSnapshot op : prevRemaining) {
+            if (!op.colour.equals(moverColour.name()) && op.x == carrierTo.x && op.y == carrierTo.y) {
+                capturedDesc = op.className;
+                break;
+            }
+        }
+
+        MoveEntry entry = new MoveEntry();
+        entry.fromX = carrierFrom.x;
+        entry.fromY = carrierFrom.y;
+        entry.toX = carrierTo.x;
+        entry.toY = carrierTo.y;
+
+        StringBuilder sb = new StringBuilder("LandCarrier ")
+                .append(carrierFrom.x).append(",").append(carrierFrom.y)
+                .append(" -> ").append(carrierTo.x).append(",").append(carrierTo.y);
+
+        if (!cargoPrev.isEmpty()) {
+            sb.append(" (veze: ");
+            for (int i = 0; i < cargoPrev.size(); i++) {
+                if (i > 0) sb.append(", ");
+                sb.append(cargoPrev.get(i).className);
+            }
+            sb.append(")");
+        }
+        if (capturedDesc != null) {
+            sb.append(" (brání: ").append(capturedDesc).append(")");
+            entry.isCapture = true;
+        }
+
+        entry.description = sb.toString();
+        return entry;
+    }
+
+    /**
+     * LinebreakerRook self-destrukce: mover's LinebreakerRook úplně zmizí (nikde se znovu neobjeví).
+     * Pozor: pokud byla obě "zničená" pole prázdná, nepoznáme z diffu nic dalšího než samotné zmizení.
+     */
+    private MoveEntry tryDetectLinebreaker(List<PieceSnapshot> prevRemaining, List<PieceSnapshot> currRemaining, Colour moverColour) {
+        if (moverColour == null) return null;
+
+        PieceSnapshot linebreaker = null;
+        int count = 0;
+        for (PieceSnapshot p : prevRemaining) {
+            if (p.colour.equals(moverColour.name()) && p.className.contains("Linebreaker")) {
+                linebreaker = p;
+                count++;
+            }
+        }
+        if (linebreaker == null || count != 1) return null;
+
+        for (PieceSnapshot c : currRemaining) {
+            if (c.colour.equals(moverColour.name()) && c.className.contains("Linebreaker")) {
+                return null; // znovu se objevil = nejde o tento případ
+            }
+        }
+
+        List<String> destroyed = new ArrayList<>();
+        for (PieceSnapshot p : prevRemaining) {
+            if (p == linebreaker) continue;
+            boolean reappearsElsewhere = false;
+            for (PieceSnapshot c : currRemaining) {
+                if (c.className.equals(p.className) && c.colour.equals(p.colour)) {
+                    reappearsElsewhere = true;
+                    break;
+                }
+            }
+            if (!reappearsElsewhere) {
+                destroyed.add(p.className + " " + p.x + "," + p.y);
+            }
+        }
+
+        MoveEntry entry = new MoveEntry();
+        entry.fromX = linebreaker.x;
+        entry.fromY = linebreaker.y;
+        entry.toX = linebreaker.x;   // figurka se sama zničí na místě, kde stála — zvýrazníme jen tohle pole
+        entry.toY = linebreaker.y;
+        entry.description = "LinebreakerRook " + linebreaker.x + "," + linebreaker.y + " (self-destrukce)";
+        if (!destroyed.isEmpty()) {
+            entry.description += " — zničeno: " + String.join(", ", destroyed);
+            entry.isCapture = true;
+        }
+        return entry;
+    }
+
+    /** En passant: mover's Pawn táhne diagonálně na prázdné pole, opačný pěšec zmizí vedle (ne na cíli). */
+    private MoveEntry tryDetectEnPassant(List<PieceSnapshot> prevRemaining, List<PieceSnapshot> currRemaining, Colour moverColour) {
+        if (moverColour == null) return null;
+
+        PieceSnapshot pawnFrom = findSingleByClassColour(prevRemaining, "Pawn", moverColour);
+        PieceSnapshot pawnTo = findSingleByClassColour(currRemaining, "Pawn", moverColour);
+        if (pawnFrom == null || pawnTo == null) return null;
+
+        int dx = Math.abs(pawnTo.x - pawnFrom.x);
+        int dy = pawnTo.y - pawnFrom.y;
+        if (dx != 1 || Math.abs(dy) != 1) return null;
+
+        for (PieceSnapshot c : currRemaining) {
+            if (c != pawnTo && c.x == pawnTo.x && c.y == pawnTo.y) return null;
+        }
+        for (PieceSnapshot p : prevRemaining) {
+            if (p != pawnFrom && p.x == pawnTo.x && p.y == pawnTo.y) return null; // cíl nesměl být obsazený
+        }
+
+        Colour oppColour = opposite(moverColour);
+        PieceSnapshot captured = null;
+        for (PieceSnapshot p : prevRemaining) {
+            if (p.className.equals("Pawn") && p.colour.equals(oppColour.name())
+                    && p.x == pawnTo.x && p.y == pawnFrom.y) {
+                captured = p;
+                break;
+            }
+        }
+        if (captured == null) return null;
+
+        for (PieceSnapshot c : currRemaining) {
+            if (c.className.equals("Pawn") && c.colour.equals(oppColour.name())
+                    && c.x == captured.x && c.y == captured.y) {
+                return null; // pořád tam je = žádné braní se nekonalo
+            }
+        }
+
+        MoveEntry entry = new MoveEntry();
+        entry.fromX = pawnFrom.x;
+        entry.fromY = pawnFrom.y;
+        entry.toX = pawnTo.x;
+        entry.toY = pawnTo.y;
+        entry.isCapture = true;
+        entry.description = "Pawn " + pawnFrom.x + "," + pawnFrom.y + " -> " + pawnTo.x + "," + pawnTo.y
+                + " (brání mimochodem: Pawn " + captured.x + "," + captured.y + ")";
+        return entry;
+    }
+
+    /** Torpedo: cestou od "from" po "to" (exkluzivně) zjistí, co bylo zničeno mimo samotné braní na cíli. */
+    private List<String> collectDestroyedAlongPath(Map<String, List<PieceSnapshot>> prevGroupsRemaining, PieceSnapshot from, PieceSnapshot to) {
+        int stepX = Integer.signum(to.x - from.x);
+        int stepY = Integer.signum(to.y - from.y);
+        List<String> destroyed = new ArrayList<>();
+
+        int x = from.x + stepX;
+        int y = from.y + stepY;
+        int guard = 0;
+
+        while ((x != to.x || y != to.y) && guard < 64) {
+            String found = findCaptureAt(prevGroupsRemaining, x, y);
+            if (found != null) destroyed.add(found + " " + x + "," + y);
+            x += stepX;
+            y += stepY;
+            guard++;
+        }
+
+        return destroyed;
+    }
+
 
     private boolean isSameState(PieceSnapshot a, PieceSnapshot b) {
         return a.className.equals(b.className)
@@ -674,8 +947,11 @@ public class GamePlayer extends JPanel {
                 g2d.fillRect(posX, posY, tileSize, tileSize);
 
                 if (currentMove != null && currentMove.fromX != null) {
-                    if ((x == currentMove.fromX && y == currentMove.fromY)
-                            || (x == currentMove.toX && y == currentMove.toY)) {
+                    boolean isFromSquare = (x == currentMove.fromX && y == currentMove.fromY);
+                    boolean isToSquare = (currentMove.toX != null
+                            && x == currentMove.toX && y == currentMove.toY);
+
+                    if (isFromSquare || isToSquare) {
                         g2d.setColor(new Color(255, 255, 0, 80));
                         g2d.fillRect(posX, posY, tileSize, tileSize);
                     }

@@ -205,9 +205,8 @@ Přidat progress systém .
 
 
 přidat mazání starých her
-přidat konvezri na pgn
 přidat zvuk do gamePlayer
-přidat speciální moves do záznamu
+
 
 tutorial piece
 
