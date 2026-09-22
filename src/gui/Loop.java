@@ -1,5 +1,6 @@
 package gui;
 
+import pieces.utilities.TutorialPiece;
 import profile.PlayerManager;
 import gameloop.Bot;
 import gameloop.BotFactory;
@@ -51,6 +52,7 @@ public class Loop extends JPanel {
     private JLabel score2;
     private JLabel playerName1;
     private JLabel playerName2;
+    private JLabel tutorialText ;
 
 
 
@@ -182,6 +184,10 @@ public class Loop extends JPanel {
         this.score2  = new JLabel("Score");
         this.score2.setFont(new Font("SansSerif", Font.BOLD,UI.toPercent(5, h)));
         this.score2.setBounds(UI.toPercent(2, w), UI.toPercent(80, h), UI.toPercent(24, w), UI.toPercent(10, h));
+
+        this.tutorialText = new JLabel("tutorial text");
+        this.tutorialText.setFont(new Font("SansSerif", Font.BOLD,UI.toPercent(5, h)));
+        this.tutorialText.setBounds(UI.toPercent(70, w), UI.toPercent(10, h), UI.toPercent(34, w), UI.toPercent(30, h));
 
         this.playerName1 = new JLabel(selectedOpponent);
         this.playerName1.setFont(new Font("SansSerif", Font.BOLD,UI.toPercent(5, h)));
@@ -358,6 +364,7 @@ public class Loop extends JPanel {
         add(title);
         add(score1);
         add(score2);
+        add(tutorialText);
         add(playerName1);
         add(playerName2);
         add(playerAvatar1);
@@ -651,16 +658,28 @@ public class Loop extends JPanel {
         if (boardX >= 0 && boardX < board.getWidth() && boardY >= 0 && boardY < board.getHeight()) {
             Piece piece = board.getPiece(boardX, boardY);
 
-            if (piece != null) {
-                Image piecePreview = loadPreviewForPiece(piece);
-                this.title.setText(loadPieceName(piece));
-                this.title.setHorizontalAlignment(SwingConstants.CENTER);
+            tutorialText.setText("");
 
-                currentPreviewImage = (piecePreview != null) ? piecePreview : defaultUnknownPieceImage;
+            if (piece != null) {
+
+                if(piece instanceof TutorialPiece){
+                    currentPreviewImage = defaultNoPieceImage;
+                    parseTutorial(piece.getName());
+                }
+                else {
+
+                    Image piecePreview = loadPreviewForPiece(piece);
+                    ;
+                    this.title.setText(loadPieceName(piece));
+                    this.title.setHorizontalAlignment(SwingConstants.CENTER);
+
+                    currentPreviewImage = (piecePreview != null) ? piecePreview : defaultUnknownPieceImage;
+                }
             } else {
 
-                this.title.setText("");
-                currentPreviewImage = defaultNoPieceImage;
+                    this.title.setText("");
+                    currentPreviewImage = defaultNoPieceImage;
+
             }
         } else {
             currentPreviewImage = defaultNoPieceImage;
@@ -668,6 +687,23 @@ public class Loop extends JPanel {
 
         repaint();
     }
+    private void parseTutorial(String text) {
+        if (text == null) text = "";
+
+        // "\n" jako literální backslash+n i skutečný znak nového řádku -> <br>
+        String normalized = text
+                .replace("\\n", "<br>")
+                .replace("\n", "<br>");
+
+        int fontSize = UI.toPercent(2, getHeight()); // velikost písma jako % výšky panelu
+
+        tutorialText.setText(
+                "<html><div style='text-align:left; color: orange; font-size: " + fontSize + "px;'>"
+                        + normalized +
+                        "</div></html>"
+        );
+    }
+
     private Image safeLoadImage(String path) {
         java.io.File file = new java.io.File(path);
         if (!file.exists()) {
@@ -707,6 +743,8 @@ public class Loop extends JPanel {
         previewImageCache.put(path, NO_PREVIEW_MARKER);
         return null; // Pokud soubor neexistuje, použije se defaultUnknownPieceImage
     }
+
+
 
 
     private String loadPieceName(Piece piece) {
@@ -1844,97 +1882,6 @@ public class Loop extends JPanel {
         }
     }
 
-    private double getScaleByClass(String className){
-        double scale = 1;
-        switch (className){
-            case "pawn":
-                scale = 2.3;
-                break;
-
-            case "airplane":
-                scale = 2;
-                break;
-
-            case "fighter":
-                scale = 1.5;
-                break;
-            case "helicopter":
-                scale = 2.17;
-                break;
-            case "knight":
-                scale = 1.8;
-                break;
-
-            case "bishop":
-                scale = 1.5;
-                break;
-            case "arcibishop":
-                scale = 1.4;
-                break;
-            case "king":
-                scale = 1.80;
-                break;
-            case "emperor":
-                scale = 1.80;
-                break;
-
-            case "queen":
-                scale = 1.70;
-                break;
-
-            case "rook":
-                scale = 1.76;
-                break;
-            case "linebreakerrook":
-                scale = 1.76;
-                break;
-
-            case "landcarrier":
-                scale = 2.9;
-                break;
-
-            case "torpedo":
-                scale = 1.25;
-                break;
-            case "wasp":
-                scale = 1.5;
-                break;
-
-
-            case "lifebuoy":
-                scale = 1.85;
-                break;
-            case "overclocker":
-                scale = 1.25;
-                break;
-            case "blocade":
-               scale = 1.05;// scale = 2.35;
-                break;
-
-            case "restartpiece":
-                scale = 1.5;// scale = 2.35;
-                break;
-
-            case "empress" :
-                scale = 1.15;
-                break;
-
-            case "hexarook" :
-                scale = 1.1;
-                break;
-            case "guardian" :
-                scale = 1.2;
-                break;
-            case "hobbyhorse" :
-                scale = 2.0;
-                break;
-
-
-        }
-
-
-        return scale;
-    }
 
     private void drawPieceAt(Graphics2D g2d, Piece piece, int posX, int posY, int tileSize) {
 

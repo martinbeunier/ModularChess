@@ -10,7 +10,7 @@ public class TutorialPiece extends Piece {
     }
     @Override
     public String toString() {
-        return "----";
+        return "?TT?";
     }
 
 }

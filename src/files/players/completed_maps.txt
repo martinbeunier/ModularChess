@@ -4,3 +4,6 @@ fighter defense;Bold man
 tutorial - Kill all kings as white;Bold man
 fighter defense;Against yourself
 standard;Against yourself
+standard;Trapper
+XXL chess (rip of);Trapper
+fighter defense;Trapper

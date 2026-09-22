@@ -21,15 +21,24 @@ public class PieceVisuals {
             case "landcarrier": scale = 2.9; break;
             case "torpedo": scale = 1.25; break;
             case "wasp": scale = 1.5; break;
-            case "lifebuoy": scale = 1.85; break;
-            case "overclocker": scale = 1.25; break;
-            case "blocade": scale = 1.05; break;
-            case "restartpiece": scale = 1.5; break;
+
             case "empress": scale = 1.15; break;
             case "hexarook": scale = 1.1; break;
             case "guardian": scale = 1.2; break;
             case "hobbyhorse": scale = 2.0; break;
+
+            case "lifebuoy": scale = 1.85; break;
+            case "overclocker": scale = 1.25; break;
+            case "blocade": scale = 1.05; break;
+
+            case "restartpiece": scale = 1.5; break;
+            case "tutorialpiece": scale = 1.92; break;
+
         }
+
+
+
+
         return scale;
     }
 }

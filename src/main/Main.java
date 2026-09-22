@@ -3,6 +3,8 @@ package main;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import pieces.utilities.RestartPiece;
+import pieces.utilities.TutorialPiece;
 import profile.PlayerManager;
 import gui.MainFrame;
 import gui.UIconfiguration;
@@ -15,7 +17,7 @@ import gameloop.GameLoop;
 import pieces.PoweUps.Lifebuoy;
 import pieces.PoweUps.OverClocker;
 
-public class Main/*extends Application */{
+public class Main {
 
     public static final Scanner scanner = new Scanner(System.in);
 
@@ -54,120 +56,152 @@ public class Main/*extends Application */{
             case 2: //spuštění krokové simulace hry
                 //inicializace hráčů
 
-                Player player1 = new Player("Bílý",Colour.White,600);
-                Player player2 = new Player("Černý",Colour.Black,600);
+                Player player1 = new Player("Bílý", Colour.White, 600);
+                Player player2 = new Player("Černý", Colour.Black, 600);
 
 
 //konec inicializace hráčů
 
 //inicializace figur
 
-                ArrayList<Pawn> pawns= new ArrayList<>();
 
-                for (int i = 0; i < 9; i++) {
-                    pawns.add(new Pawn("White Pawn", i, 6, Colour.White, 0));
-                    pawns.add(new Pawn("Black Pawn", i, 2, Colour.Black, 2));
-                }
+                //Not tutorial
+                Torpedo torpedo2 = new Torpedo("w torpedo", 9, 8, Colour.White, 2);
 
-                Bishop wbishop1 = new Bishop("White Bishop",1,8,Colour.White);
-                Bishop wbishop2 = new Bishop("White Bishop",2,8,Colour.White);
-                Bishop wbishop3 = new Bishop("White Bishop",6,8,Colour.White);
-                Bishop wbishop4 = new Bishop("White Bishop",7,8,Colour.White);
-
-                Bishop bbishop1 = new Bishop("Black Bishop",1,0,Colour.Black);
-                Bishop bbishop2 = new Bishop("Black Bishop",2,0,Colour.Black);
-                Bishop bbishop3 = new Bishop("Black Bishop",6,0,Colour.Black);
-                Bishop bbishop4 = new Bishop("Black Bishop",7,0,Colour.Black);
-
-                Emperor wemperor = new Emperor("White Emperor",4,8,Colour.White);
-                Emperor bemperor = new Emperor("Black Emperor",4,0,Colour.Black);
-
-                LandCarrier wlandCarrier1 = new LandCarrier("w Land Carrier",1,7,Colour.White);
-                LandCarrier wlandCarrier2 = new LandCarrier("w Land Carrier",7,7,Colour.White);
-
-                LandCarrier blandCarrier1 = new LandCarrier("b Land Carrier",1,1,Colour.Black);
-                LandCarrier blandCarrier2 = new LandCarrier("b Land Carrier",7,1,Colour.Black);
-
-                Queen wqueen = new Queen("White Queen",4,7,Colour.White);
-                Queen bqueen = new Queen("Black Queen",4,1,Colour.Black);
-
-                Torpedo wtorpedo = new Torpedo("w Torpedo",3,8,Colour.White,0);
-                Torpedo btorpedo = new Torpedo("b Torpedo",3,0,Colour.Black,2);
-
-                Wasp wwasp = new Wasp("white wasp",0,7,Colour.White);
-                Wasp bwasp = new Wasp("black wasp",0,0,Colour.Black);
-
-                Lifebuoy lifebuoy = new Lifebuoy("ability",4,4);
-                OverClocker overClocker = new OverClocker("OverClocker",1,4);
-
-                Blocade blocade = new Blocade("blocade",7,4);
+                Rook rook = new Rook("rook",7,8,Colour.Black);
 
 
+//Tutorial 4
+                King king5 = new King("b king", 5, 0, Colour.Black, 0);
+                Torpedo torpedo = new Torpedo("torpedo",5,4, Colour.White, 0);
 
+                Pawn pawn6 = new Pawn("pawm",5,2,Colour.Black, 2);
+                Pawn pawn4 = new Pawn("pawm",5,3,Colour.White, 2);
+                Pawn pawn5 = new Pawn("pawm",5,1,Colour.Black, 2);
+
+
+                //Tutorial 3
+                King king4 = new King("b king", 8, 0, Colour.Black, 0);
+                LandCarrier landCarrier2 = new LandCarrier("carrier",8,1,Colour.Black);
+                Pawn pawn1 = new Pawn("pawm",7,0,Colour.Black, 2);
+                Pawn pawn2 = new Pawn("pawm",9,0,Colour.Black, 2);
+
+                Pawn pawn3 = new Pawn("pawm",8,5,Colour.White, 0);
+                LinebreakerRook linebreakerRook = new LinebreakerRook("linebreaker Rook",8,6,Colour.White);
+
+                //Tutorial 2
+                Airplane airplane = new Airplane("airplane", 0, 0, Colour.White, 0);
+                King king3 = new King("b king", 1, 2, Colour.Black, 0);
+
+//Tutorial 1
+                LandCarrier landCarrier = new LandCarrier("carrier", 1, 8, Colour.White);
+                Bishop bishop = new Bishop("bishop", 2, 7, Colour.White);
+                King king2 = new King("w king", 5, 9, Colour.Black, 0);
 
 //konec inicializace figur
 
 
 //inicializace šachovnice
 
-                ChessBoard chessBoard = new ChessBoard(13,9);
+                ChessBoard chessBoard = new ChessBoard(10, 10);
 
                 chessBoard.addPlayer(player1);
                 chessBoard.addPlayer(player2);
 
 
-                for(Pawn p : pawns){
-                    chessBoard.addPiece(p);
+                //Not Tutorial
+
+                chessBoard.addPiece(torpedo2);
+                chessBoard.addPiece(rook);
+
+
+                chessBoard.addPiece(new Blocade("blocade", 8, 8));
+                chessBoard.addPiece(new Blocade("blocade", 8,9));
+
+                //  Tutorial 4
+
+                chessBoard.addPiece(pawn6);
+                chessBoard.addPiece(pawn4);
+                chessBoard.addPiece(pawn5);
+                chessBoard.addPiece(torpedo);
+
+                chessBoard.addPiece(king5);
+                //Tutorial 3
+
+                chessBoard.addPiece(pawn1);
+                chessBoard.addPiece(pawn2);
+                chessBoard.addPiece(landCarrier2);
+
+                chessBoard.addPiece(king4);
+
+                chessBoard.addPiece(pawn3);
+                chessBoard.addPiece(linebreakerRook);
+
+                for (int j = 0; j < 5; j++) {
+                    chessBoard.addPiece(new Blocade("blocade", 6, j));
                 }
 
-                chessBoard.addPiece(wbishop1);
-                chessBoard.addPiece(wbishop2);
-                chessBoard.addPiece(wbishop3);
-                chessBoard.addPiece(wbishop4);
+                for (int i = 1; i < 8; i++) {
+                    chessBoard.addPiece(new Blocade("blocade", 7, i));
+                    chessBoard.addPiece(new Blocade("blocade", 9, i));
 
-                chessBoard.addPiece(bbishop1);
-                chessBoard.addPiece(bbishop2);
-                chessBoard.addPiece(bbishop3);
-                chessBoard.addPiece(bbishop4);
+                    chessBoard.addPiece(new Blocade("blocade", 7, i));
+                    chessBoard.addPiece(new Blocade("blocade", 9, i));
+                }
+                chessBoard.addPiece(new Blocade("blocade", 8,7));
 
-                chessBoard.addPiece(wemperor);
-                chessBoard.addPiece(bemperor);
+                for (int i = 7; i < 10; i++){
+                    for (int j = 0; j < 5; j++) {
 
-                chessBoard.addPiece(wlandCarrier1);
-                chessBoard.addPiece(wlandCarrier2);
-                chessBoard.addPiece(blandCarrier1);
-                chessBoard.addPiece(blandCarrier2);
-
-                chessBoard.addPiece(wqueen);
-                chessBoard.addPiece(bqueen);
-
-                chessBoard.addPiece(wtorpedo);
-                chessBoard.addPiece(btorpedo);
-
-                chessBoard.addPiece(wwasp);
-                chessBoard.addPiece(bwasp);
-
-                chessBoard.addPiece(lifebuoy);
-                chessBoard.addPiece(overClocker);
-                chessBoard.addPiece(blocade);
-
-
-
-                for (int i = 0; i < 9; i++) {
-                    chessBoard.addWaterSquares(i, 3);
-                    chessBoard.addWaterSquares(i, 4);
-                    chessBoard.addWaterSquares(i, 5);
+                        chessBoard.addWaterSquares(i,j);
+                    }
                 }
 
-                for (int i = 0; i < 9; i++) {
-                    chessBoard.addPromotionSquares(i, 0,Colour.White);
-                    chessBoard.addPromotionSquares(i, 8,Colour.Black);
+                //Tutorial 2
+                for (int i = 0; i < 5; i++){
+                    for (int j = 0; j < 5; j++) {
 
+                        chessBoard.addPiece(new Blocade("blocade", i, j));
+                    }
                 }
-                chessBoard.addPromotionSquares(10,5,Colour.White);
-                chessBoard.addPromotionSquares(10,5,Colour.Black);
-                chessBoard.addPromotionSquares(11,5,Colour.White);
-                chessBoard.addPromotionSquares(11,5,Colour.Black);
+
+                chessBoard.addPiece(king3);
+                chessBoard.addPiece(airplane);
+                chessBoard.addPromotionSquares(1,2,Colour.White);
+
+
+
+                // Tutorial 1
+                chessBoard.addPiece(landCarrier);
+                chessBoard.addPiece(bishop);
+                chessBoard.addPiece(king2);
+                for(int j = 0;j<7;j++){
+                    chessBoard.addPiece(new Blocade("blocade",j,5));
+                }
+                for(int j = 6;j<10;j++){
+                    chessBoard.addPiece(new Blocade("blocade",6,j));
+                }
+                chessBoard.addPiece(new Blocade("blocade",3,6));
+                chessBoard.addPiece(new Blocade("blocade",3,8));
+                chessBoard.addPiece(new Blocade("blocade",3,9));
+
+                chessBoard.addPiece(new Blocade("blocade",4,6));
+                chessBoard.addPiece(new Blocade("blocade",4,7));
+                chessBoard.addPiece(new Blocade("blocade",4,9));
+
+                chessBoard.addPiece(new Blocade("blocade",5,6));
+                chessBoard.addPiece(new Blocade("blocade",5,7));
+                chessBoard.addPiece(new Blocade("blocade",5,8));
+
+                chessBoard.addPiece(new TutorialPiece("Rotate moves : \\nRotate Airplane and take king ,\\n golden square is promotion .",0,3));
+                chessBoard.addPiece(new TutorialPiece("Carrier moves : \\nMove Land Carrier ,carriers can \\nmove other pieces .",5,6));
+                chessBoard.addPiece(new TutorialPiece("Torpedo moves : \\nTorpedo can take trought multiple \\n pieces with friendly fire",3,4));
+                chessBoard.addPiece(new TutorialPiece("Linebreaker moves : \\n Self destruction move ,\\n takes piece behind piece and \\n piece and piece in front of .",6,6));
+                chessBoard.addPiece(new TutorialPiece("Water : \\nTakes pawns on water squares .\\n Carrier and life buoy protects pawns .",9,3));
+                chessBoard.addPiece(new RestartPiece("Restart",9,8,Colour.White));
+               chessBoard.addPiece( new King("w king", 2, 4, Colour.White, 0));
+//konec inicializace šachovnice
+
 
 
 
@@ -176,7 +210,7 @@ public class Main/*extends Application */{
 
                 chessBoard.printBoard();
 
-                chessBoard.savePosition("test 2",player1);
+                chessBoard.savePosition("tutorial - Kill all kings as white",player1);
 
 
 
