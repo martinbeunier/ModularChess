@@ -15,6 +15,8 @@ public class MainFrame extends JFrame {
     private JPanel cards;
     private Loop loopPanel;
     private MapSelect mapSelectPanel;
+    private Tutorial tutorialPanel;
+    private Campaign campaignPanel;
 
     private int width;
     private int height;
@@ -107,10 +109,15 @@ public class MainFrame extends JFrame {
         this.loopPanel = new Loop(this);
         this.gamePlayerPanel = new GamePlayer(this);
         this.mapSelectPanel = new MapSelect(this);
+        this.mapSelectPanel = new MapSelect(this);
+        this.tutorialPanel = new Tutorial(this);
+        this.campaignPanel = new Campaign(this);
 
         cards.add(new MenuPanel(this), "MENU");
         cards.add(new PlayMenu(this), "PLAYMENU");
         cards.add(mapSelectPanel, "MAPSELECT");
+        cards.add(tutorialPanel, "TUTORIAL");
+        cards.add(campaignPanel, "CAMPAIGN");
         cards.add(new Settings(this), "SETTINGS");
         cards.add(new ProfileSettings(this), "PROFILESETTINGS");
         cards.add(new GameHistory(this), "GAMEHISTORY");
@@ -144,12 +151,17 @@ public class MainFrame extends JFrame {
         return new Dimension(safeWidth, safeHeight);
     }
 
-    public void showScene(String name) {
-        if ("MAPSELECT".equals(name)) {
-            mapSelectPanel.refresh();
+
+        public void showScene(String name) {
+            switch (name) {
+                case "MAPSELECT": mapSelectPanel.refresh(); break;
+                case "TUTORIAL": tutorialPanel.refresh(); break;
+                case "CAMPAIGN": campaignPanel.refresh(); break;
+            }
+            layout.show(cards, name);
         }
-        layout.show(cards, name);
-    }
+
+
 
     public Loop getLoopPanel() {
         return loopPanel;

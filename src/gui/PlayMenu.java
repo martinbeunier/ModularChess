@@ -31,8 +31,9 @@ public class PlayMenu extends JPanel {
             frame.showScene("MAPSELECT");
         });
 
-        JButton campaingB = new JButton("Campaing");
+        JButton campaingB = new JButton("Campaign");
         campaingB.setBounds(UI.toPercent(60,w), UI.toPercent(35, h), UI.toPercent(20, w), UI.toPercent(10, h));
+        campaingB.addActionListener(e -> frame.showScene("CAMPAIGN"));
 
         JButton multiplayerB = new JButton("Multiplayer");
         multiplayerB.setBounds(UI.toPercent(20,w), UI.toPercent(55, h), UI.toPercent(20, w), UI.toPercent(10, h));
@@ -41,8 +42,8 @@ public class PlayMenu extends JPanel {
         rogueB .setBounds(UI.toPercent(60,w), UI.toPercent(55, h), UI.toPercent(20, w), UI.toPercent(10, h));
 
         JButton tutorialB = new JButton("Tutorial");
-        tutorialB .setBounds(UI.toPercent(46,w), UI.toPercent(75, h), UI.toPercent(8, w), UI.toPercent(7, h));
-
+        tutorialB.setBounds(UI.toPercent(46,w), UI.toPercent(75, h), UI.toPercent(8, w), UI.toPercent(7, h));
+        tutorialB.addActionListener(e -> frame.showScene("TUTORIAL"));
 
         add(title);
         add(selectMapB);
