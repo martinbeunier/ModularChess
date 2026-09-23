@@ -24,6 +24,65 @@ public class PlayerManager {
     private static Player profile = null;
 
     // ------------------------------------------------------------------
+    // Registr map (název + požadavky na odemčení) — sdílené napříč panely
+    // ------------------------------------------------------------------
+
+    private static final String MAPS_PATH = "src/files/positions";
+    private static final String MAP_EXTENSION = ".chess";
+
+    private static final Map<String, Integer> UNLOCK_REQUIREMENTS = new HashMap<>();
+    static {
+        UNLOCK_REQUIREMENTS.put("tutorial - Kill all kings as white", 0);
+        UNLOCK_REQUIREMENTS.put("standard", 0);
+        UNLOCK_REQUIREMENTS.put("fighter defense", 3);
+        UNLOCK_REQUIREMENTS.put("XXL chess (rip of)", 6);
+    }
+
+    private static List<String> allMapNamesCache = null;
+
+    /** Vrátí názvy všech map nalezených ve složce s pozicemi (bez přípony .chess). */
+    public static List<String> getAllMapNames() {
+        if (allMapNamesCache != null) {
+            return allMapNamesCache;
+        }
+
+        List<String> names = new ArrayList<>();
+
+        File dir = new File(MAPS_PATH);
+        File[] files = dir.listFiles((d, name) -> name.toLowerCase().endsWith(MAP_EXTENSION));
+
+        if (files != null) {
+            Arrays.sort(files);
+            for (File file : files) {
+                String fileName = file.getName();
+                int dotIndex = fileName.lastIndexOf('.');
+                String mapName = (dotIndex > 0) ? fileName.substring(0, dotIndex) : fileName;
+                names.add(mapName);
+            }
+        }
+
+        allMapNamesCache = names;
+        return names;
+    }
+
+    /** Kolik bodů je potřeba pro odemčení dané mapy (0, pokud není nastaveno jinak). */
+    public static int getRequiredPointsForMap(String mapName) {
+        return UNLOCK_REQUIREMENTS.getOrDefault(mapName, 0);
+    }
+
+    /** Je daná mapa odemčená? Počítá se ze všech aktuálně existujících map. */
+    public static boolean isMapUnlocked(String mapName) {
+        if (cheatcodeActivated) return true;
+        int required = getRequiredPointsForMap(mapName);
+        return getTotalPoints() >= required;
+    }
+
+    /** Celkový součet bodů za všechny mapy, které existují a byly dohrány s výhrou. */
+    public static int getTotalPoints() {
+        return getTotalPoints(getAllMapNames());
+    }
+
+    // ------------------------------------------------------------------
     // Načtení / vytvoření profilu
     // ------------------------------------------------------------------
 
@@ -273,5 +332,46 @@ public class PlayerManager {
             if (parts.length == 2) maps.add(parts[0]);
         }
         return maps;
+    }
+
+    // ------------------------------------------------------------------
+    // Progression / body za dohrané mapy
+    // ------------------------------------------------------------------
+
+    /** Body za poražení daného oponenta (podle jména bota v záznamu). */
+    private static int pointsForOpponent(String opponentName) {
+        if (opponentName == null) return 0;
+        String o = opponentName.toLowerCase();
+
+        if (o.contains("trapper")) return 3;
+        if (o.contains("greedy"))  return 2;
+        if (o.contains("bold"))    return 1;
+
+        return 0; // "Against yourself" a neznámí oponenti body nedávají
+    }
+
+    /**
+     * Nejvyšší počet bodů, které hráč na dané mapě získal
+     * (podle nejtěžšího poraženého bota). Max 3 body na mapu.
+     */
+    public static int getMapPoints(String mapName) {
+        ensureCompletedMapsLoaded();
+
+        int best = 0;
+        for (String entry : completedMapEntries) {
+            String[] parts = entry.split(";", 2);
+            if (parts.length != 2 || !parts[0].equals(mapName)) continue;
+
+            best = Math.max(best, pointsForOpponent(parts[1]));
+        }
+
+        return Math.min(best, 3);
+    }
+
+    /** Sečte body za všechny zadané mapy (viz getMapPoints). */
+    public static int getTotalPoints(java.util.Collection<String> mapNames) {
+        int total = 0;
+        for (String mapName : mapNames) total += getMapPoints(mapName);
+        return total;
     }
 }

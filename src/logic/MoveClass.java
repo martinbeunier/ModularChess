@@ -9,6 +9,9 @@ public enum MoveClass {
     CARRIER,
     TORPEDO,
     LINEBREAKER,
+    //SpawnPiece
+    //offset repeat
+    //edgerunner
 
 
 }

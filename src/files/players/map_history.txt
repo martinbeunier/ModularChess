@@ -36,3 +36,13 @@
 2026-09-22T19:09:23.579997300;tutorial - Kill all kings as white;Against yourself;LOSS (resignation);46_tutorial - Kill all kings as white.chess
 2026-09-22T19:10:51.648882100;fighter defense;Against yourself;LOSS (resignation);47_fighter defense.chess
 2026-09-22T19:14:45.448550500;fighter defense;Against yourself;LOSS (resignation);0_fighter defense.chess
+2026-09-22T19:36:58.236375400;tutorial - Kill all kings as white;Against yourself;LOSS;2_tutorial - Kill all kings as white.chess
+2026-09-22T19:37:16.989690700;tutorial - Kill all kings as white;Against yourself;LOSS (resignation);3_tutorial - Kill all kings as white.chess
+2026-09-22T19:41:27.787301700;tutorial - Kill all kings as white;Against yourself;LOSS;4_tutorial - Kill all kings as white.chess
+2026-09-22T19:42:04.036060800;tutorial - Kill all kings as white;Against yourself;LOSS (resignation);5_tutorial - Kill all kings as white.chess
+2026-09-22T19:49:34.044475100;fighter defense;Greedy;DRAW;6_fighter defense.chess
+2026-09-23T08:59:08.209762;tutorial - Kill all kings as white;Trapper;WIN;7_tutorial - Kill all kings as white.chess
+2026-09-23T08:59:27.658368500;standard;Against yourself;LOSS (resignation);8_standard.chess
+2026-09-23T09:01:42.785517700;standard;Greedy;LOSS;9_standard.chess
+2026-09-23T09:02:38.967098400;standard;Greedy;WIN;10_standard.chess
+2026-09-23T20:34:10.053444100;XXL chess (rip of);Trapper;WIN;11_XXL chess (rip of).chess

@@ -14,6 +14,7 @@ public class MainFrame extends JFrame {
     private CardLayout layout;
     private JPanel cards;
     private Loop loopPanel;
+    private MapSelect mapSelectPanel;
 
     private int width;
     private int height;
@@ -105,10 +106,11 @@ public class MainFrame extends JFrame {
 
         this.loopPanel = new Loop(this);
         this.gamePlayerPanel = new GamePlayer(this);
+        this.mapSelectPanel = new MapSelect(this);
 
         cards.add(new MenuPanel(this), "MENU");
         cards.add(new PlayMenu(this), "PLAYMENU");
-        cards.add(new MapSelect(this), "MAPSELECT");
+        cards.add(mapSelectPanel, "MAPSELECT");
         cards.add(new Settings(this), "SETTINGS");
         cards.add(new ProfileSettings(this), "PROFILESETTINGS");
         cards.add(new GameHistory(this), "GAMEHISTORY");
@@ -143,6 +145,9 @@ public class MainFrame extends JFrame {
     }
 
     public void showScene(String name) {
+        if ("MAPSELECT".equals(name)) {
+            mapSelectPanel.refresh();
+        }
         layout.show(cards, name);
     }
 

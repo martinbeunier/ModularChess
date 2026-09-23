@@ -9,8 +9,10 @@ public class MoveType {
     private MoveClass moveClass;
 
     private int rotate;
+    //private boolean needAbility
 
 
+   // public MoveType(int x, int y,boolean requiresFirstMoverstMove ,MoveBehaviour behaviour,MoveClass moveClass ,boolean needAbility, String pieceName){
 
     public MoveType(int x, int y,boolean requiresFirstMoverstMove ,MoveBehaviour behaviour,MoveClass moveClass){
         this.x = x;
@@ -22,8 +24,8 @@ public class MoveType {
 
         //Dafault move behaviour by moveclass
 
-        if(moveClass==MoveClass.ROTATE){this.behaviour = MoveBehaviour.NONE;}
-        if(moveClass==MoveClass.CASTLE  ){this.behaviour = MoveBehaviour.MOVE;}
+        if(moveClass==MoveClass.ROTATE ){this.behaviour = MoveBehaviour.NONE;}
+        if(moveClass==MoveClass.CASTLE ){this.behaviour = MoveBehaviour.MOVE;}
         if(moveClass==MoveClass.CARRIER){this.behaviour = MoveBehaviour.MOVE;}
         if(moveClass==MoveClass.TORPEDO){this.behaviour = MoveBehaviour.BOTH;}
         if(moveClass==MoveClass.LINEBREAKER ){this.behaviour = MoveBehaviour.BOTH;}

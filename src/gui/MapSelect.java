@@ -1,14 +1,14 @@
 package gui;
 
+import profile.PlayerManager;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
 
 
 public class MapSelect extends JPanel {
@@ -18,12 +18,7 @@ public class MapSelect extends JPanel {
     private JTextField searchField;
     private JPanel mapsPanel;
     private ButtonGroup mapGroup;
-
-    // --------------------------------------------------
-    // SLOŽKY
-    // --------------------------------------------------
-    private static final String MAPS_PATH = "src/files/positions";
-    private static final String MAP_EXTENSION = ".chess";
+    private JLabel points;
 
     // --------------------------------------------------
     // SLOŽKA S IKONAMI MAP
@@ -33,15 +28,12 @@ public class MapSelect extends JPanel {
     // --------------------------------------------------
     // ROZMĚRY TLAČÍTEK MAP (RELATIVNÍ)
     // --------------------------------------------------
-    // Šířka/výška ikony jako procento okna
-    private static final double THUMB_WIDTH_PERCENT = 6;   // % šířky okna
-    private static final double THUMB_HEIGHT_PERCENT = 10; // % výšky okna
+    private static final double THUMB_WIDTH_PERCENT = 6;
+    private static final double THUMB_HEIGHT_PERCENT = 10;
 
-    // Minimální rozměry, ať to nekolabuje na malém okně
     private static final int MIN_THUMB_WIDTH = 70;
     private static final int MIN_THUMB_HEIGHT = 70;
 
-    // Velikost náhledu obrázku mapy
     private static final int THUMB_WIDTH = 96;
     private static final int THUMB_HEIGHT = 96;
 
@@ -56,10 +48,7 @@ public class MapSelect extends JPanel {
             ".png", ".jpg", ".jpeg", ".gif"
     };
 
-    // Cache defaultní ikony, ať se nenačítá pořád dokola
     private ImageIcon defaultIcon;
-
-
 
     // --------------------------------------------------
     // JEDNA MAPA = NÁZEV + IKONA
@@ -86,17 +75,9 @@ public class MapSelect extends JPanel {
         setLayout(null);
         setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 
-        // --------------------------------------------------
-        // MAPY - NAČTENÍ ZE SLOŽKY
-        // --------------------------------------------------
-
         loadMapsFromFolder();
 
         mapGroup = new ButtonGroup();
-
-        // --------------------------------------------------
-        // START BUTTON
-        // --------------------------------------------------
 
         JButton startB = new JButton("Start");
 
@@ -107,10 +88,6 @@ public class MapSelect extends JPanel {
                 UI.toPercent(10, h)
         );
 
-        // --------------------------------------------------
-        // SEARCH
-        // --------------------------------------------------
-
         searchField = new JTextField();
 
         searchField.setBounds(
@@ -120,25 +97,13 @@ public class MapSelect extends JPanel {
                 UI.toPercent(5, h)
         );
 
-        // --------------------------------------------------
-        // MAP PANEL
-        // --------------------------------------------------
-
         mapsPanel = new JPanel();
-
-        mapsPanel.setLayout(
-                new FlowLayout(FlowLayout.LEFT)
-        );
+        mapsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         JScrollPane scrollPane = new JScrollPane(mapsPanel);
 
-        scrollPane.setHorizontalScrollBarPolicy(
-                JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS
-        );
-
-        scrollPane.setVerticalScrollBarPolicy(
-                JScrollPane.VERTICAL_SCROLLBAR_NEVER
-        );
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
 
         scrollPane.setBounds(
                 UI.toPercent(20, w),
@@ -147,12 +112,15 @@ public class MapSelect extends JPanel {
                 UI.toPercent(20, h)
         );
 
+        points = new JLabel();
+        points.setBounds(UI.toPercent(10, w), UI.toPercent(20, h), UI.toPercent(10, w), UI.toPercent(10, h));
+        add(points);
+
         // --------------------------------------------------
         // VÝBĚR BOTA
         // --------------------------------------------------
 
         JPanel radioPanel = new JPanel();
-
         radioPanel.setLayout(null);
 
         radioPanel.setBounds(
@@ -164,53 +132,21 @@ public class MapSelect extends JPanel {
 
         ButtonGroup group = new ButtonGroup();
 
-        JRadioButton selfButton =
-                new JRadioButton("Against yourself");
-
-        selfButton.setBounds(
-                0,
-                0,
-                UI.toPercent(15, w),
-                UI.toPercent(3, h)
-        );
-
+        JRadioButton selfButton = new JRadioButton("Against yourself");
+        selfButton.setBounds(0, 0, UI.toPercent(15, w), UI.toPercent(3, h));
         selfButton.setActionCommand("Against yourself");
 
-        JRadioButton bot1Button =
-                new JRadioButton("Bold man bot : Dificulty 1/10");
-
-        bot1Button.setBounds(
-                0,
-                UI.toPercent(3, h),
-                UI.toPercent(15, w),
-                UI.toPercent(3, h)
-        );
+        JRadioButton bot1Button = new JRadioButton("Bold man bot : Dificulty 1/10");
+        bot1Button.setBounds(0, UI.toPercent(3, h), UI.toPercent(15, w), UI.toPercent(3, h));
         bot1Button.setActionCommand("Bot 1");
 
-        JRadioButton bot2Button =
-                new JRadioButton("Greedy bot : Dificulty 2/10");
-
-        bot2Button.setBounds(
-                0,
-                UI.toPercent(6, h),
-                UI.toPercent(15, w),
-                UI.toPercent(3, h)
-        );
-
+        JRadioButton bot2Button = new JRadioButton("Greedy bot : Dificulty 2/10");
+        bot2Button.setBounds(0, UI.toPercent(6, h), UI.toPercent(15, w), UI.toPercent(3, h));
         bot2Button.setActionCommand("Bot 2");
 
-        JRadioButton bot3Button =
-                new JRadioButton("Trapper bot : Dificulty 6/10");
-
-        bot3Button.setBounds(
-                0,
-                UI.toPercent(9, h),
-                UI.toPercent(15, w),
-                UI.toPercent(3, h)
-        );
-
+        JRadioButton bot3Button = new JRadioButton("Trapper bot : Dificulty 6/10");
+        bot3Button.setBounds(0, UI.toPercent(9, h), UI.toPercent(15, w), UI.toPercent(3, h));
         bot3Button.setActionCommand("Bot 3");
-
 
         group.add(selfButton);
         group.add(bot1Button);
@@ -226,7 +162,6 @@ public class MapSelect extends JPanel {
         // Výběr barvy
         // --------------------------------------------------
         JPanel radioPanelColour = new JPanel();
-
         radioPanelColour.setLayout(null);
 
         ButtonGroup groupColour = new ButtonGroup();
@@ -238,54 +173,25 @@ public class MapSelect extends JPanel {
                 UI.toPercent(15, h)
         );
 
-
-        JRadioButton whiteButton =
-                new JRadioButton("White");
-
-        whiteButton.setBounds(
-                0,
-                0,
-                UI.toPercent(5, w),
-                UI.toPercent(3, h)
-        );
-
+        JRadioButton whiteButton = new JRadioButton("White");
+        whiteButton.setBounds(0, 0, UI.toPercent(5, w), UI.toPercent(3, h));
         whiteButton.setActionCommand("White");
         groupColour.add(whiteButton);
         radioPanelColour.add(whiteButton);
 
-        JRadioButton randomButton =
-                new JRadioButton("Random");
-
-
-        randomButton.setBounds(
-                UI.toPercent(7, w),
-                0,
-                UI.toPercent(5, w),
-                UI.toPercent(3, h)
-        );
-
+        JRadioButton randomButton = new JRadioButton("Random");
+        randomButton.setBounds(UI.toPercent(7, w), 0, UI.toPercent(5, w), UI.toPercent(3, h));
         randomButton.setActionCommand("Random");
         groupColour.add(randomButton);
         radioPanelColour.add(randomButton);
 
-        JRadioButton blackButton =
-                new JRadioButton("Black");
-
-        blackButton.setBounds(
-                UI.toPercent(14, w),
-                0,
-                UI.toPercent(5, w),
-                UI.toPercent(3, h)
-        );
-
+        JRadioButton blackButton = new JRadioButton("Black");
+        blackButton.setBounds(UI.toPercent(14, w), 0, UI.toPercent(5, w), UI.toPercent(3, h));
         blackButton.setActionCommand("Black");
         groupColour.add(blackButton);
         radioPanelColour.add(blackButton);
 
         randomButton.setSelected(true);
-        // --------------------------------------------------
-        // PŘIDÁNÍ KOMPONENT
-        // --------------------------------------------------
 
         add(startB);
         add(scrollPane);
@@ -293,15 +199,7 @@ public class MapSelect extends JPanel {
         add(radioPanel);
         add(radioPanelColour);
 
-        // --------------------------------------------------
-        // PRVNÍ VYKRESLENÍ MAP
-        // --------------------------------------------------
-
         updateMaps();
-
-        // --------------------------------------------------
-        // SEARCH LISTENER
-        // --------------------------------------------------
 
         searchField.getDocument().addDocumentListener(
                 new DocumentListener() {
@@ -323,77 +221,38 @@ public class MapSelect extends JPanel {
                 }
         );
 
-        // --------------------------------------------------
-        // START
-        // --------------------------------------------------
-
         startB.addActionListener(e -> {
 
-            ButtonModel selectedMapModel =
-                    mapGroup.getSelection();
-
-            ButtonModel selectedBotModel =
-                    group.getSelection();
-
+            ButtonModel selectedMapModel = mapGroup.getSelection();
+            ButtonModel selectedBotModel = group.getSelection();
             ButtonModel selectedColourModel = groupColour.getSelection();
 
-            // ----------------------------------------------
-            // KONTROLA MAPY
-            // ----------------------------------------------
-
             if (selectedMapModel == null) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Vyber prosím mapu!"
-                );
-
+                JOptionPane.showMessageDialog(this, "Vyber prosím mapu!");
                 return;
             }
-
-            // ----------------------------------------------
-            // KONTROLA PROTIVNÍKA
-            // ----------------------------------------------
 
             if (selectedBotModel == null) {
-
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Vyber prosím protivníka!"
-                );
-
+                JOptionPane.showMessageDialog(this, "Vyber prosím protivníka!");
                 return;
             }
 
-            // ----------------------------------------------
-            // ZÍSKÁNÍ VÝBĚRU
-            // ----------------------------------------------
-
-            String map =
-                    selectedMapModel.getActionCommand();
-
-            String bot =
-                    selectedBotModel.getActionCommand();
-            String colour
-                    = selectedColourModel.getActionCommand();
+            String map = selectedMapModel.getActionCommand();
+            String bot = selectedBotModel.getActionCommand();
+            String colour = selectedColourModel.getActionCommand();
 
             System.out.println("Selected map: " + map);
             System.out.println("Selected opponent: " + bot);
             System.out.println("Selected colour: " + colour);
-
-            // ----------------------------------------------
-            // PŘEDÁNÍ DO LOOP
-            // ----------------------------------------------
 
             Loop loop = frame.getLoopPanel();
 
             loop.setSelectedMap(map);
             loop.setSelectedOpponent(bot);
 
-            if(colour.equals("Random")) {
+            if (colour.equals("Random")) {
                 Random random = new Random();
-
-                if(random.nextInt(2) == 0    ){colour = "Black";}else{colour = "White";}
+                if (random.nextInt(2) == 0) { colour = "Black"; } else { colour = "White"; }
             }
 
             loop.setSelectedColour(colour);
@@ -403,16 +262,7 @@ public class MapSelect extends JPanel {
             frame.showScene("LOOP");
         });
 
-        // --------------------------------------------------
-        // ESC
-        // --------------------------------------------------
-
-        getInputMap(
-                WHEN_IN_FOCUSED_WINDOW
-        ).put(
-                KeyStroke.getKeyStroke("ESCAPE"),
-                "backTo"
-        );
+        getInputMap(WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke("ESCAPE"), "backTo");
 
         getActionMap().put(
                 "backTo",
@@ -420,16 +270,12 @@ public class MapSelect extends JPanel {
 
                     @Override
                     public void actionPerformed(java.awt.event.ActionEvent e) {
-
                         frame.showScene("PLAYMENU");
                     }
                 }
         );
 
     }
-
-
-
 
     // ======================================================
     // NAČTENÍ MAP ZE SLOŽKY S POZICEMI (.chess)
@@ -439,35 +285,11 @@ public class MapSelect extends JPanel {
 
         maps = new ArrayList<>();
 
-        File dir = new File(MAPS_PATH);
-
-        if (!dir.exists() || !dir.isDirectory()) {
-            System.out.println("Složka s mapami neexistuje: " + dir.getAbsolutePath());
-            return;
-        }
-
-        File[] files = dir.listFiles((d, name) ->
-                name.toLowerCase().endsWith(MAP_EXTENSION)
-        );
-
-        if (files == null) {
-            return;
-        }
-
-        Arrays.sort(files); // abecedně jako záloha
-
-        for (File file : files) {
-            String fileName = file.getName();
-            int dotIndex = fileName.lastIndexOf('.');
-            String mapName = (dotIndex > 0) ? fileName.substring(0, dotIndex) : fileName;
-
+        for (String mapName : PlayerManager.getAllMapNames()) {
             ImageIcon icon = loadIconForMap(mapName);
             maps.add(new MapEntry(mapName, icon));
         }
 
-        // --------------------------------------------------
-        // FINÁLNÍ SEŘAZENÍ: vlastní pořadí, pak abecedně
-        // --------------------------------------------------
         maps.sort((a, b) -> {
             int ia = PRIORITY_ORDER.indexOf(a.name);
             int ib = PRIORITY_ORDER.indexOf(b.name);
@@ -476,34 +298,28 @@ public class MapSelect extends JPanel {
             boolean bInList = ib != -1;
 
             if (aInList && bInList) {
-                return Integer.compare(ia, ib);       // obě ve vlastním pořadí
+                return Integer.compare(ia, ib);
             }
-            if (aInList) return -1;                   // a má prioritu
-            if (bInList) return 1;                    // b má prioritu
-            return a.name.compareToIgnoreCase(b.name); // obě abecedně
+            if (aInList) return -1;
+            if (bInList) return 1;
+            return a.name.compareToIgnoreCase(b.name);
         });
     }
+
     // ======================================================
     // NAČTENÍ IKONY PRO DANOU MAPU (S FALLBACKEM NA DEFAULT)
     // ======================================================
 
     private ImageIcon loadIconForMap(String mapName) {
 
-        // --------------------------------------------------
-        // ZKUS NAJÍT SOUBOR S PŘESNÝM NÁZVEM MAPY
-        // --------------------------------------------------
-
         for (String ext : ICON_EXTENSIONS) {
 
-            File iconFile = new File(
-                    MAPS_ICONS_PATH + File.separator + mapName + ext
-            );
+            File iconFile = new File(MAPS_ICONS_PATH + File.separator + mapName + ext);
 
             if (iconFile.exists() && iconFile.isFile()) {
 
                 ImageIcon rawIcon = new ImageIcon(iconFile.getPath());
 
-                // Ochrana proti poškozenému / nenačitatelnému souboru
                 if (rawIcon.getImageLoadStatus() != MediaTracker.ERRORED
                         && rawIcon.getIconWidth() > 0) {
 
@@ -512,14 +328,7 @@ public class MapSelect extends JPanel {
             }
         }
 
-        // --------------------------------------------------
-        // IKONA NENALEZENA -> POUŽIJ DEFAULT.PNG
-        // --------------------------------------------------
-
-        System.out.println(
-                "Ikona pro mapu '" + mapName
-                        + "' nenalezena, používám výchozí ikonu."
-        );
+        System.out.println("Ikona pro mapu '" + mapName + "' nenalezena, používám výchozí ikonu.");
 
         return getDefaultIcon();
     }
@@ -530,9 +339,7 @@ public class MapSelect extends JPanel {
             return defaultIcon;
         }
 
-        File defaultFile = new File(
-                MAPS_ICONS_PATH + File.separator + DEFAULT_ICON_NAME
-        );
+        File defaultFile = new File(MAPS_ICONS_PATH + File.separator + DEFAULT_ICON_NAME);
 
         if (defaultFile.exists() && defaultFile.isFile()) {
 
@@ -546,15 +353,7 @@ public class MapSelect extends JPanel {
             }
         }
 
-        // --------------------------------------------------
-        // ANI DEFAULT.PNG NEEXISTUJE -> PRÁZDNÁ IKONA
-        // --------------------------------------------------
-
-        System.out.println(
-                "Výchozí ikona '" + DEFAULT_ICON_NAME
-                        + "' nebyla nalezena ve složce: "
-                        + MAPS_ICONS_PATH
-        );
+        System.out.println("Výchozí ikona '" + DEFAULT_ICON_NAME + "' nebyla nalezena ve složce: " + MAPS_ICONS_PATH);
 
         defaultIcon = new ImageIcon(
                 new java.awt.image.BufferedImage(
@@ -568,16 +367,9 @@ public class MapSelect extends JPanel {
     }
 
     private ImageIcon scaleIcon(ImageIcon icon, int width, int height) {
-
-        Image scaled = icon.getImage().getScaledInstance(
-                width,
-                height,
-                Image.SCALE_SMOOTH
-        );
-
+        Image scaled = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
         return new ImageIcon(scaled);
     }
-
 
     // ======================================================
     // VYKRESLENÍ / FILTROVÁNÍ MAP
@@ -585,34 +377,17 @@ public class MapSelect extends JPanel {
 
     private void updateMaps() {
 
-        /*
-         * Zapamatujeme si právě vybranou mapu.
-         *
-         * To je důležité, protože při removeAll()
-         * původní JToggleButton zmizí.
-         */
-
         String selectedMap = null;
 
-        ButtonModel selected =
-                mapGroup.getSelection();
+        ButtonModel selected = mapGroup.getSelection();
 
         if (selected != null) {
-            selectedMap =
-                    selected.getActionCommand();
+            selectedMap = selected.getActionCommand();
         }
 
-        // --------------------------------------------------
-        // ODSTRANĚNÍ STARÝCH TLAČÍTEK Z BUTTON GROUP
-        // --------------------------------------------------
+        ArrayList<AbstractButton> oldButtons = new ArrayList<>();
 
-        ArrayList<AbstractButton> oldButtons =
-                new ArrayList<>();
-
-        for (java.util.Enumeration<AbstractButton> e =
-             mapGroup.getElements();
-             e.hasMoreElements();) {
-
+        for (java.util.Enumeration<AbstractButton> e = mapGroup.getElements(); e.hasMoreElements(); ) {
             oldButtons.add(e.nextElement());
         }
 
@@ -620,39 +395,16 @@ public class MapSelect extends JPanel {
             mapGroup.remove(button);
         }
 
-        // --------------------------------------------------
-        // ODSTRANĚNÍ STARÝCH KOMPONENT
-        // --------------------------------------------------
-
         mapsPanel.removeAll();
 
-        // --------------------------------------------------
-        // FILTR
-        // --------------------------------------------------
-
-        String filter =
-                searchField.getText()
-                        .trim()
-                        .toLowerCase();
-
-        // --------------------------------------------------
-        // VYTVOŘENÍ TLAČÍTEK MAP (OBRÁZEK + NÁZEV)
-        // --------------------------------------------------
+        String filter = searchField.getText().trim().toLowerCase();
 
         int frameW = frame.getWidth();
         int frameH = frame.getHeight();
 
-        int thumbW = Math.max(
-                MIN_THUMB_WIDTH,
-                UI.toPercent((int) THUMB_WIDTH_PERCENT, frameW)
-        );
+        int thumbW = Math.max(MIN_THUMB_WIDTH, UI.toPercent((int) THUMB_WIDTH_PERCENT, frameW));
+        int thumbH = Math.max(MIN_THUMB_HEIGHT, UI.toPercent((int) THUMB_HEIGHT_PERCENT, frameH));
 
-        int thumbH = Math.max(
-                MIN_THUMB_HEIGHT,
-                UI.toPercent((int) THUMB_HEIGHT_PERCENT, frameH)
-        );
-
-        // Šířka pro zalomení textu - o něco širší než ikona
         int buttonW = (int) (thumbW * 1.4);
 
         for (MapEntry entry : maps) {
@@ -661,38 +413,41 @@ public class MapSelect extends JPanel {
                 continue;
             }
 
-            ImageIcon scaledIcon = scaleIcon(
-                    entry.icon,
-                    thumbW,
-                    thumbH
-            );
-
             // ------------------------------------------
-            // TEXT JAKO HTML - AUTOMATICKÉ ZALOMENÍ
+            // KONTROLA ODEMČENÍ MAPY (progression systém)
             // ------------------------------------------
 
-            String htmlName =
-                    "<html><div style='text-align:center; width:"
-                            + buttonW
-                            + "px;'>"
-                            + entry.name
-                            + "</div></html>";
+            int requiredPoints = PlayerManager.getRequiredPointsForMap(entry.name);
+            boolean unlocked = PlayerManager.isMapUnlocked(entry.name);
 
-            JToggleButton mapButton =
-                    new JToggleButton(htmlName, scaledIcon);
+            ImageIcon scaledIcon = scaleIcon(entry.icon, thumbW, thumbH);
+
+            if (!unlocked) {
+                scaledIcon = makeGrayscale(scaledIcon);
+            }
+
+            String htmlName;
+
+            if (unlocked) {
+                htmlName =
+                        "<html><div style='text-align:center; width:" + buttonW + "px;'>"
+                                + entry.name
+                                + "</div></html>";
+            } else {
+                htmlName =
+                        "<html><div style='text-align:center; width:" + buttonW + "px; color:gray;'>"
+                                + "&#128274; " + entry.name
+                                + "<br><span style='font-size:10px;'>(" + requiredPoints + " b. potřeba)</span>"
+                                + "</div></html>";
+            }
+
+            JToggleButton mapButton = new JToggleButton(htmlName, scaledIcon);
 
             mapButton.setHorizontalTextPosition(SwingConstants.CENTER);
             mapButton.setVerticalTextPosition(SwingConstants.BOTTOM);
             mapButton.setIconTextGap(6);
             mapButton.setFocusPainted(false);
-
-            /*
-             * NEVOLÁME setPreferredSize s pevnou výškou!
-             * Necháme Swing spočítat skutečnou velikost
-             * podle zalomeného HTML textu, aby se nic
-             * neořízlo. Jen zajistíme minimální šířku,
-             * ať tlačítko není užší, než potřebuje ikona.
-             */
+            mapButton.setEnabled(unlocked);
 
             Dimension natural = mapButton.getPreferredSize();
 
@@ -714,17 +469,49 @@ public class MapSelect extends JPanel {
             mapGroup.add(mapButton);
             mapsPanel.add(mapButton);
 
-            if (entry.name.equals(selectedMap)) {
+            if (unlocked && entry.name.equals(selectedMap)) {
                 mapButton.setSelected(true);
             }
         }
 
-        // --------------------------------------------------
-        // REFRESH GUI
-        // --------------------------------------------------
-
         mapsPanel.revalidate();
         mapsPanel.repaint();
+    }
+
+    // ======================================================
+    // ODBARVENÍ IKONY (vizuální indikace zamčené mapy)
+    // ======================================================
+
+    private ImageIcon makeGrayscale(ImageIcon icon) {
+
+        int w = icon.getIconWidth();
+        int h = icon.getIconHeight();
+
+        if (w <= 0 || h <= 0) {
+            return icon;
+        }
+
+        java.awt.image.BufferedImage gray = new java.awt.image.BufferedImage(
+                w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB
+        );
+
+        Graphics2D g2d = gray.createGraphics();
+        g2d.drawImage(icon.getImage(), 0, 0, null);
+        g2d.dispose();
+
+        java.awt.image.ColorConvertOp op = new java.awt.image.ColorConvertOp(
+                java.awt.color.ColorSpace.getInstance(java.awt.color.ColorSpace.CS_GRAY),
+                null
+        );
+
+        op.filter(gray, gray);
+
+        return new ImageIcon(gray);
+    }
+
+    public void refresh() {
+        updateMaps();
+        points.setText("Body: " + PlayerManager.getTotalPoints());
     }
 
     // ======================================================
@@ -734,21 +521,11 @@ public class MapSelect extends JPanel {
     private void styleMapButton(JToggleButton button, boolean selected) {
 
         if (selected) {
-            button.setBorder(
-                    BorderFactory.createLineBorder(
-                            new Color(0, 120, 215),
-                            3
-                    )
-            );
+            button.setBorder(BorderFactory.createLineBorder(new Color(0, 120, 215), 3));
             button.setBackground(new Color(200, 225, 255));
             button.setOpaque(true);
         } else {
-            button.setBorder(
-                    BorderFactory.createLineBorder(
-                            Color.GRAY,
-                            1
-                    )
-            );
+            button.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
             button.setOpaque(false);
         }
     }

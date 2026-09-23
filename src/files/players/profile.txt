@@ -1,1 +1,1 @@
-martin;1000;src/files/images/skins/whitefighter.svg;22;82;2
+martin;1000;src/files/images/skins/whitewasp.svg;27;89;3

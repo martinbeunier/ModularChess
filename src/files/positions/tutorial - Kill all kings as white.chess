@@ -24,10 +24,10 @@ Pieces :
 piece : class pieces.Airplane ;airplane; 0 0 White true 200 0
 piece : class pieces.Blocade ;blocade; 0 1 Blockade true 0
 piece : class pieces.Blocade ;blocade; 0 2 Blockade true 0
-piece : class pieces.utilities.TutorialPiece ;Rotate moves : \nRotate Airplane and take king ,\n golden square is promotion .; 0 3 Blockade true 0
+piece : class pieces.Blocade ;blocade; 0 3 Blockade true 0
 piece : class pieces.Blocade ;blocade; 0 4 Blockade true 0
 piece : class pieces.Blocade ;blocade; 0 5 Blockade true 0
-piece : class pieces.Blocade ;blocade; 1 0 Blockade true 0
+piece : class pieces.utilities.TutorialPiece ;Rotate moves : \nRotate Airplane and take king ,\n golden square is promotion .; 1 0 Blockade true 0
 piece : class pieces.Blocade ;blocade; 1 1 Blockade true 0
 piece : class pieces.King ;b king; 1 2 Black true 100000
 piece : class pieces.Blocade ;blocade; 1 3 Blockade true 0
@@ -38,19 +38,19 @@ piece : class pieces.Blocade ;blocade; 2 0 Blockade true 0
 piece : class pieces.Blocade ;blocade; 2 1 Blockade true 0
 piece : class pieces.Blocade ;blocade; 2 2 Blockade true 0
 piece : class pieces.Blocade ;blocade; 2 3 Blockade true 0
-piece : class pieces.King ;w king; 2 4 White true 100000
+piece : class pieces.Blocade ;blocade; 2 4 Blockade true 0
 piece : class pieces.Blocade ;blocade; 2 5 Blockade true 0
 piece : class pieces.Bishop ;bishop; 2 7 White true 320
 piece : class pieces.Blocade ;blocade; 3 0 Blockade true 0
 piece : class pieces.Blocade ;blocade; 3 1 Blockade true 0
 piece : class pieces.Blocade ;blocade; 3 2 Blockade true 0
 piece : class pieces.Blocade ;blocade; 3 3 Blockade true 0
-piece : class pieces.utilities.TutorialPiece ;Torpedo moves : \nTorpedo can take trought multiple \n pieces with friendly fire; 3 4 Blockade true 0
+piece : class pieces.Blocade ;blocade; 3 4 Blockade true 0
 piece : class pieces.Blocade ;blocade; 3 5 Blockade true 0
-piece : class pieces.Blocade ;blocade; 3 6 Blockade true 0
+piece : class pieces.utilities.TutorialPiece ;Carrier moves : \nMove Land Carrier ,carriers can \nmove other pieces .; 3 6 Blockade true 0
 piece : class pieces.Blocade ;blocade; 3 8 Blockade true 0
 piece : class pieces.Blocade ;blocade; 3 9 Blockade true 0
-piece : class pieces.Blocade ;blocade; 4 0 Blockade true 0
+piece : class pieces.utilities.TutorialPiece ;Torpedo moves : \nTorpedo can take trought multiple \n pieces with friendly fire; 4 0 Blockade true 0
 piece : class pieces.Blocade ;blocade; 4 1 Blockade true 0
 piece : class pieces.Blocade ;blocade; 4 2 Blockade true 0
 piece : class pieces.Blocade ;blocade; 4 3 Blockade true 0
@@ -65,7 +65,7 @@ piece : class pieces.Pawn ;pawm; 5 2 Black true 100 2
 piece : class pieces.Pawn ;pawm; 5 3 White true 100 2
 piece : class pieces.Torpedo ;torpedo; 5 4 White true 200 0
 piece : class pieces.Blocade ;blocade; 5 5 Blockade true 0
-piece : class pieces.utilities.TutorialPiece ;Carrier moves : \nMove Land Carrier ,carriers can \nmove other pieces .; 5 6 Blockade true 0
+piece : class pieces.Blocade ;blocade; 5 6 Blockade true 0
 piece : class pieces.Blocade ;blocade; 5 7 Blockade true 0
 piece : class pieces.Blocade ;blocade; 5 8 Blockade true 0
 piece : class pieces.King ;w king; 5 9 Black true 100000
@@ -75,7 +75,7 @@ piece : class pieces.Blocade ;blocade; 6 2 Blockade true 0
 piece : class pieces.Blocade ;blocade; 6 3 Blockade true 0
 piece : class pieces.Blocade ;blocade; 6 4 Blockade true 0
 piece : class pieces.Blocade ;blocade; 6 5 Blockade true 0
-piece : class pieces.utilities.TutorialPiece ;Linebreaker moves : \n Self destruction move ,\n takes piece behind piece and \n piece and piece in front of .; 6 6 Blockade true 0
+piece : class pieces.King ;w king; 6 6 White true 100000
 piece : class pieces.Blocade ;blocade; 6 7 Blockade true 0
 piece : class pieces.Blocade ;blocade; 6 8 Blockade true 0
 piece : class pieces.Blocade ;blocade; 6 9 Blockade true 0
@@ -96,9 +96,9 @@ piece : class pieces.Blocade ;blocade; 8 7 Blockade true 0
 piece : class pieces.Blocade ;blocade; 8 8 Blockade true 0
 piece : class pieces.Blocade ;blocade; 8 9 Blockade true 0
 piece : class pieces.Pawn ;pawm; 9 0 Black true 100 2
-piece : class pieces.Blocade ;blocade; 9 1 Blockade true 0
-piece : class pieces.Blocade ;blocade; 9 2 Blockade true 0
-piece : class pieces.utilities.TutorialPiece ;Water : \nTakes pawns on water squares .\n Carrier and life buoy protects pawns .; 9 3 Blockade true 0
+piece : class pieces.utilities.TutorialPiece ;Linebreaker moves : \n Self destruction move ,\n takes piece behind piece and \n piece and piece in front of .; 9 1 Blockade true 0
+piece : class pieces.utilities.TutorialPiece ;Water : \nTakes pawns on water squares .\n Carrier and life buoy protects pawns .; 9 2 Blockade true 0
+piece : class pieces.Blocade ;blocade; 9 3 Blockade true 0
 piece : class pieces.Blocade ;blocade; 9 4 Blockade true 0
 piece : class pieces.Blocade ;blocade; 9 5 Blockade true 0
 piece : class pieces.Blocade ;blocade; 9 6 Blockade true 0

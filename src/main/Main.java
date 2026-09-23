@@ -193,24 +193,19 @@ public class Main {
                 chessBoard.addPiece(new Blocade("blocade",5,7));
                 chessBoard.addPiece(new Blocade("blocade",5,8));
 
-                chessBoard.addPiece(new TutorialPiece("Rotate moves : \\nRotate Airplane and take king ,\\n golden square is promotion .",0,3));
-                chessBoard.addPiece(new TutorialPiece("Carrier moves : \\nMove Land Carrier ,carriers can \\nmove other pieces .",5,6));
-                chessBoard.addPiece(new TutorialPiece("Torpedo moves : \\nTorpedo can take trought multiple \\n pieces with friendly fire",3,4));
-                chessBoard.addPiece(new TutorialPiece("Linebreaker moves : \\n Self destruction move ,\\n takes piece behind piece and \\n piece and piece in front of .",6,6));
-                chessBoard.addPiece(new TutorialPiece("Water : \\nTakes pawns on water squares .\\n Carrier and life buoy protects pawns .",9,3));
+                chessBoard.addPiece(new TutorialPiece("Rotate moves : \\nRotate Airplane and take king ,\\n golden square is promotion .",1,0));
+                chessBoard.addPiece(new TutorialPiece("Carrier moves : \\nMove Land Carrier ,carriers can \\nmove other pieces .",3,6));
+                chessBoard.addPiece(new TutorialPiece("Torpedo moves : \\nTorpedo can take trought multiple \\n pieces with friendly fire",4,0));
+                chessBoard.addPiece(new TutorialPiece("Linebreaker moves : \\n Self destruction move ,\\n takes piece behind piece and \\n piece and piece in front of .",9,1));
+                chessBoard.addPiece(new TutorialPiece("Water : \\nTakes pawns on water squares .\\n Carrier and life buoy protects pawns .",9,2));
                 chessBoard.addPiece(new RestartPiece("Restart",9,8,Colour.White));
-               chessBoard.addPiece( new King("w king", 2, 4, Colour.White, 0));
+               chessBoard.addPiece( new King("w king", 6, 6, Colour.White, 0));
 //konec inicializace šachovnice
 
-
-
-
-
-//konec inicializace šachovnice
 
                 chessBoard.printBoard();
 
-                chessBoard.savePosition("tutorial - Kill all kings as white",player1);
+                chessBoard.savePosition("test 2",player1);
 
 
 
@@ -230,19 +225,18 @@ public class Main {
 
 
 
-
+zrušit přetíženou metodu getTotalPoints
 
 Přidat campaign .
 
 Přidat progress systém .
 
-
+bugnuty zvuk v loop
 
 přidat mazání starých her
 přidat zvuk do gamePlayer
 
 
-tutorial piece
 
 nepodstatné :
 přidat ,ať můžu vybrat(označit piece), než odehraje bot
@@ -255,6 +249,15 @@ dát zápis hry do vlastního vlákna
 //překreslit letadlo
 
 */
+
+/*
+Další koncepty :
+torpedo bomber - spawne jen jednou torpedo
+offset repeat moves
+infiltrator z ouroboros
+
+
+ */
 
     //konec kódu
 

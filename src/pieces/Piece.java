@@ -12,6 +12,7 @@ public class Piece implements Cloneable  {
     private Colour colour;
     private ArrayList<MoveType> moves;
     private boolean firstMove;
+    //private boolean ability;
     private int value;
     private ArrayList<PromotionFactory> promotionPieces;
 
