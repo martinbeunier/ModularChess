@@ -225,11 +225,9 @@ public class Main {
 
 
 
-zrušit přetíženou metodu getTotalPoints
 
-Přidat campaign .
 
-Přidat progress systém .
+
 
 bugnuty zvuk v loop
 
