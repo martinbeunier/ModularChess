@@ -32,4 +32,8 @@ public class Emperor extends Head {
         addMove(new MoveType(-1,-2,MoveBehaviour.BOTH , MoveClass.LEAP));
 
     }
+    @Override
+    public String toString() {
+        return "E  M";
+    }
 }

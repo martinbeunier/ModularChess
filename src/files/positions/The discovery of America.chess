@@ -1,0 +1,110 @@
+Width : 10 Height: 10
+
+Tiles promotion colours :
+promotion colours of tile : 0 0 White
+promotion colours of tile : 0 9 Black
+promotion colours of tile : 1 0 White
+promotion colours of tile : 1 9 Black
+promotion colours of tile : 2 0 White
+promotion colours of tile : 2 9 Black
+promotion colours of tile : 3 0 White
+promotion colours of tile : 3 9 Black
+promotion colours of tile : 4 0 White
+promotion colours of tile : 4 9 Black
+promotion colours of tile : 5 0 White
+promotion colours of tile : 5 9 Black
+promotion colours of tile : 6 0 White
+promotion colours of tile : 6 9 Black
+
+Tiles water :
+water : 0 2
+water : 0 3
+water : 0 4
+water : 0 5
+water : 0 6
+water : 0 7
+water : 1 2
+water : 1 3
+water : 1 4
+water : 1 5
+water : 1 6
+water : 1 7
+water : 2 2
+water : 2 3
+water : 2 4
+water : 2 5
+water : 2 6
+water : 2 7
+water : 3 2
+water : 3 3
+water : 3 4
+water : 3 5
+water : 3 6
+water : 3 7
+water : 4 2
+water : 4 3
+water : 4 4
+water : 4 5
+water : 4 6
+water : 4 7
+water : 5 2
+water : 5 3
+water : 5 4
+water : 5 5
+water : 5 6
+water : 5 7
+water : 6 2
+water : 6 3
+water : 6 4
+water : 6 5
+water : 6 6
+water : 6 7
+
+Pieces :
+piece : class pieces.Emperor ;k; 1 0 Black true 100000
+piece : class pieces.Bishop ;b; 1 1 Black true 320
+piece : class pieces.Pawn ;p; 2 7 White true 100 0
+piece : class pieces.Guardian ;g; 2 8 White true 400
+piece : class pieces.Pawn ;p; 3 1 Black true 100 2
+piece : class pieces.Pawn ;p; 3 7 White true 100 0
+piece : class pieces.LandCarrier ;c; 3 8 White true 250
+piece : class pieces.King ;k; 3 9 White true 100000
+piece : class pieces.Pawn ;p; 4 7 White true 100 0
+piece : class pieces.Guardian ;g; 4 8 White true 400
+piece : class pieces.Pawn ;p; 5 1 Black true 100 2
+piece : class pieces.Bishop ;b; 6 1 Black true 320
+piece : class pieces.Blocade ;blocade; 7 0 Blockade true 0
+piece : class pieces.Blocade ;blocade; 7 1 Blockade true 0
+piece : class pieces.Blocade ;blocade; 7 2 Blockade true 0
+piece : class pieces.Blocade ;blocade; 7 3 Blockade true 0
+piece : class pieces.Blocade ;blocade; 7 4 Blockade true 0
+piece : class pieces.Blocade ;blocade; 7 5 Blockade true 0
+piece : class pieces.Blocade ;blocade; 7 6 Blockade true 0
+piece : class pieces.Blocade ;blocade; 7 7 Blockade true 0
+piece : class pieces.Blocade ;blocade; 7 8 Blockade true 0
+piece : class pieces.Blocade ;blocade; 7 9 Blockade true 0
+piece : class pieces.Blocade ;blocade; 8 0 Blockade true 0
+piece : class pieces.Blocade ;blocade; 8 1 Blockade true 0
+piece : class pieces.Blocade ;blocade; 8 2 Blockade true 0
+piece : class pieces.Blocade ;blocade; 8 3 Blockade true 0
+piece : class pieces.Blocade ;blocade; 8 4 Blockade true 0
+piece : class pieces.Blocade ;blocade; 8 5 Blockade true 0
+piece : class pieces.Blocade ;blocade; 8 6 Blockade true 0
+piece : class pieces.Blocade ;blocade; 8 7 Blockade true 0
+piece : class pieces.Blocade ;blocade; 8 8 Blockade true 0
+piece : class pieces.Blocade ;blocade; 8 9 Blockade true 0
+piece : class pieces.Blocade ;blocade; 9 0 Blockade true 0
+piece : class pieces.Blocade ;blocade; 9 1 Blockade true 0
+piece : class pieces.Blocade ;blocade; 9 2 Blockade true 0
+piece : class pieces.Blocade ;blocade; 9 3 Blockade true 0
+piece : class pieces.Blocade ;blocade; 9 4 Blockade true 0
+piece : class pieces.Blocade ;blocade; 9 5 Blockade true 0
+piece : class pieces.Blocade ;blocade; 9 6 Blockade true 0
+piece : class pieces.utilities.TutorialPiece ;Push Land carrier \n and promote pawns \n to checkmate emperor.; 9 7 Blockade true 0
+piece : class pieces.utilities.RestartPiece ;restart; 9 9 White true 0
+
+Players :
+Player :  ;Bílý; White 600 id:none wins:0 losses:0 draws:0 PowerUps :
+Player :  ;Černý; Black 600 id:none wins:0 losses:0 draws:0 PowerUps :
+
+current player : White

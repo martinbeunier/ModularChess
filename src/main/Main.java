@@ -37,7 +37,7 @@ public class Main {
 
     public static void main(String[] args) {
         int choice = 0;
-       // launch(args);
+
 
         DebugConfiguration.getInstance() ;
         UIconfiguration.getInstance();
@@ -54,158 +54,65 @@ public class Main {
                 gameLoop.run("standard", null);
                 break;
             case 2: //spuštění krokové simulace hry
-                //inicializace hráčů
-
                 Player player1 = new Player("Bílý", Colour.White, 600);
                 Player player2 = new Player("Černý", Colour.Black, 600);
 
 
-//konec inicializace hráčů
-
 //inicializace figur
 
+//white
+                King wk = new King("k", 3, 6, Colour.White, 0);
+                Airplane a1 = new Airplane("a", 3, 5, Colour.White, 2);
+                Airplane a2 = new Airplane("a", 1, 6, Colour.White, 0);
+                Airplane a3 = new Airplane("a", 5, 6, Colour.White, 0);
 
-                //Not tutorial
-                Torpedo torpedo2 = new Torpedo("w torpedo", 9, 8, Colour.White, 2);
+//black
+                King bk = new King("k", 3, 0, Colour.Black, 2);
+                Rook br = new Rook("r", 4, 0, Colour.Black);
 
-                Rook rook = new Rook("rook",7,8,Colour.Black);
-
-
-//Tutorial 4
-                King king5 = new King("b king", 5, 0, Colour.Black, 0);
-                Torpedo torpedo = new Torpedo("torpedo",5,4, Colour.White, 0);
-
-                Pawn pawn6 = new Pawn("pawm",5,2,Colour.Black, 2);
-                Pawn pawn4 = new Pawn("pawm",5,3,Colour.White, 2);
-                Pawn pawn5 = new Pawn("pawm",5,1,Colour.Black, 2);
-
-
-                //Tutorial 3
-                King king4 = new King("b king", 8, 0, Colour.Black, 0);
-                LandCarrier landCarrier2 = new LandCarrier("carrier",8,1,Colour.Black);
-                Pawn pawn1 = new Pawn("pawm",7,0,Colour.Black, 2);
-                Pawn pawn2 = new Pawn("pawm",9,0,Colour.Black, 2);
-
-                Pawn pawn3 = new Pawn("pawm",8,5,Colour.White, 0);
-                LinebreakerRook linebreakerRook = new LinebreakerRook("linebreaker Rook",8,6,Colour.White);
-
-                //Tutorial 2
-                Airplane airplane = new Airplane("airplane", 0, 0, Colour.White, 0);
-                King king3 = new King("b king", 1, 2, Colour.Black, 0);
-
-//Tutorial 1
-                LandCarrier landCarrier = new LandCarrier("carrier", 1, 8, Colour.White);
-                Bishop bishop = new Bishop("bishop", 2, 7, Colour.White);
-                King king2 = new King("w king", 5, 9, Colour.Black, 0);
-
-//konec inicializace figur
+//other
+                RestartPiece restartPiece = new RestartPiece("restart", 9, 7, Colour.White);
+                TutorialPiece tutorialPiece = new TutorialPiece("Promote airplanes \\nfighter and checkmate .\\n You can use rotation .",9,5 );
 
 
 //inicializace šachovnice
 
-                ChessBoard chessBoard = new ChessBoard(10, 10);
+                ChessBoard chessBoard = new ChessBoard(10, 8);
 
                 chessBoard.addPlayer(player1);
                 chessBoard.addPlayer(player2);
 
-
-                //Not Tutorial
-
-                chessBoard.addPiece(torpedo2);
-                chessBoard.addPiece(rook);
-
-
-                chessBoard.addPiece(new Blocade("blocade", 8, 8));
-                chessBoard.addPiece(new Blocade("blocade", 8,9));
-
-                //  Tutorial 4
-
-                chessBoard.addPiece(pawn6);
-                chessBoard.addPiece(pawn4);
-                chessBoard.addPiece(pawn5);
-                chessBoard.addPiece(torpedo);
-
-                chessBoard.addPiece(king5);
-                //Tutorial 3
-
-                chessBoard.addPiece(pawn1);
-                chessBoard.addPiece(pawn2);
-                chessBoard.addPiece(landCarrier2);
-
-                chessBoard.addPiece(king4);
-
-                chessBoard.addPiece(pawn3);
-                chessBoard.addPiece(linebreakerRook);
-
-                for (int j = 0; j < 5; j++) {
-                    chessBoard.addPiece(new Blocade("blocade", 6, j));
+// blokády
+                for (int i = 0; i < 8; i++) {
+                    chessBoard.addPiece(new Blocade("blocade", 7, i));
+                    chessBoard.addPiece(new Blocade("blocade", 8, i));
                 }
-
-                for (int i = 1; i < 8; i++) {
-                    chessBoard.addPiece(new Blocade("blocade", 7, i));
-                    chessBoard.addPiece(new Blocade("blocade", 9, i));
-
-                    chessBoard.addPiece(new Blocade("blocade", 7, i));
+                for (int i = 0; i < 5; i++) {
                     chessBoard.addPiece(new Blocade("blocade", 9, i));
                 }
-                chessBoard.addPiece(new Blocade("blocade", 8,7));
 
-                for (int i = 7; i < 10; i++){
-                    for (int j = 0; j < 5; j++) {
 
-                        chessBoard.addWaterSquares(i,j);
-                    }
+                for (int i = 0; i < 7; i++) {
+                    chessBoard.addPromotionSquares(i, 0, Colour.White);
+                    chessBoard.addPromotionSquares(i, 7, Colour.Black);
                 }
 
-                //Tutorial 2
-                for (int i = 0; i < 5; i++){
-                    for (int j = 0; j < 5; j++) {
+// figury
+                chessBoard.addPiece(wk);
+                chessBoard.addPiece(a1);
+                chessBoard.addPiece(a2);
+                chessBoard.addPiece(a3);
 
-                        chessBoard.addPiece(new Blocade("blocade", i, j));
-                    }
-                }
+                chessBoard.addPiece(bk);
+                chessBoard.addPiece(br);
 
-                chessBoard.addPiece(king3);
-                chessBoard.addPiece(airplane);
-                chessBoard.addPromotionSquares(1,2,Colour.White);
-
-
-
-                // Tutorial 1
-                chessBoard.addPiece(landCarrier);
-                chessBoard.addPiece(bishop);
-                chessBoard.addPiece(king2);
-                for(int j = 0;j<7;j++){
-                    chessBoard.addPiece(new Blocade("blocade",j,5));
-                }
-                for(int j = 6;j<10;j++){
-                    chessBoard.addPiece(new Blocade("blocade",6,j));
-                }
-                chessBoard.addPiece(new Blocade("blocade",3,6));
-                chessBoard.addPiece(new Blocade("blocade",3,8));
-                chessBoard.addPiece(new Blocade("blocade",3,9));
-
-                chessBoard.addPiece(new Blocade("blocade",4,6));
-                chessBoard.addPiece(new Blocade("blocade",4,7));
-                chessBoard.addPiece(new Blocade("blocade",4,9));
-
-                chessBoard.addPiece(new Blocade("blocade",5,6));
-                chessBoard.addPiece(new Blocade("blocade",5,7));
-                chessBoard.addPiece(new Blocade("blocade",5,8));
-
-                chessBoard.addPiece(new TutorialPiece("Rotate moves : \\nRotate Airplane and take king ,\\n golden square is promotion .",1,0));
-                chessBoard.addPiece(new TutorialPiece("Carrier moves : \\nMove Land Carrier ,carriers can \\nmove other pieces .",3,6));
-                chessBoard.addPiece(new TutorialPiece("Torpedo moves : \\nTorpedo can take trought multiple \\n pieces with friendly fire",4,0));
-                chessBoard.addPiece(new TutorialPiece("Linebreaker moves : \\n Self destruction move ,\\n takes piece behind piece and \\n piece and piece in front of .",9,1));
-                chessBoard.addPiece(new TutorialPiece("Water : \\nTakes pawns on water squares .\\n Carrier and life buoy protects pawns .",9,2));
-                chessBoard.addPiece(new RestartPiece("Restart",9,8,Colour.White));
-               chessBoard.addPiece( new King("w king", 6, 6, Colour.White, 0));
-//konec inicializace šachovnice
+                chessBoard.addPiece(restartPiece);
+                chessBoard.addPiece(tutorialPiece);
 
 
                 chessBoard.printBoard();
 
-                chessBoard.savePosition("test 2",player1);
+                chessBoard.savePosition("test 2", player1);
 
 
 
@@ -223,10 +130,7 @@ public class Main {
 /*TODO
 
 
-
-
-
-
+zobrazit v map select dohrané mapy .
 
 
 bugnuty zvuk v loop

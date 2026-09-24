@@ -10,7 +10,9 @@ public class Campaign extends MapSelectBase {
     // --------------------------------------------------
     public static final List<String> MAPS = Arrays.asList(
             "standard",
-            "fighter defense"
+            "fighter defense",
+            "XXL chess (rip of)",
+            "The discovery of America"
     );
 
     public Campaign(MainFrame frame) {

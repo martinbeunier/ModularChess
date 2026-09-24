@@ -32,10 +32,9 @@ public class PlayerManager {
 
     private static final Map<String, Integer> UNLOCK_REQUIREMENTS = new HashMap<>();
     static {
-        UNLOCK_REQUIREMENTS.put("tutorial - Kill all kings as white", 0);
         UNLOCK_REQUIREMENTS.put("standard", 0);
-        UNLOCK_REQUIREMENTS.put("fighter defense", 3);
-        UNLOCK_REQUIREMENTS.put("XXL chess (rip of)", 6);
+        UNLOCK_REQUIREMENTS.put("fighter defense", 1);
+        UNLOCK_REQUIREMENTS.put("XXL chess (rip of)", 3);
     }
 
     private static List<String> allMapNamesCache = null;
@@ -295,44 +294,7 @@ public class PlayerManager {
         }
     }
 
-    /** Vrátí, zda hráč danou mapu už dohrál s výhrou, s libovolným oponentem. */
-    public static boolean isMapCompleted(String mapName) {
-        ensureCompletedMapsLoaded();
-        for (String entry : completedMapEntries) {
-            if (entry.startsWith(mapName + ";")) return true;
-        }
-        return false;
-    }
-
-    /** Vrátí, zda hráč porazil konkrétního oponenta na konkrétní mapě. */
-    public static boolean isMapCompletedAgainst(String mapName, String opponent) {
-        ensureCompletedMapsLoaded();
-        return completedMapEntries.contains(mapName + ";" + opponent);
-    }
-
-    /** Vrátí všechny oponenty, které hráč na dané mapě porazil. */
-    public static Set<String> getDefeatedOpponentsOnMap(String mapName) {
-        ensureCompletedMapsLoaded();
-        Set<String> opponents = new LinkedHashSet<>();
-        for (String entry : completedMapEntries) {
-            String[] parts = entry.split(";", 2);
-            if (parts.length == 2 && parts[0].equals(mapName)) {
-                opponents.add(parts[1]);
-            }
-        }
-        return opponents;
-    }
-
-    /** Vrátí všechny unikátní názvy map, na kterých hráč aspoň jednou vyhrál. */
-    public static Set<String> getCompletedMaps() {
-        ensureCompletedMapsLoaded();
-        Set<String> maps = new LinkedHashSet<>();
-        for (String entry : completedMapEntries) {
-            String[] parts = entry.split(";", 2);
-            if (parts.length == 2) maps.add(parts[0]);
-        }
-        return maps;
-    }
+//region MapPoints
 
     // ------------------------------------------------------------------
     // Progression / body za dohrané mapy
@@ -355,6 +317,10 @@ public class PlayerManager {
      * (podle nejtěžšího poraženého bota). Max 3 body na mapu.
      */
     public static int getMapPoints(String mapName) {
+        if (!isMapEligibleForPoints(mapName)) {
+            return 0;
+        }
+
         ensureCompletedMapsLoaded();
 
         int best = 0;
@@ -374,4 +340,21 @@ public class PlayerManager {
         for (String mapName : mapNames) total += getMapPoints(mapName);
         return total;
     }
+
+// ------------------------------------------------------------------
+// Mapy, které se počítají do bodového systému
+// ------------------------------------------------------------------
+
+    private static final Set<String> POINT_ELIGIBLE_MAPS = new HashSet<>(Arrays.asList(
+            "standard",
+            "fighter defense",
+            "XXL chess (rip of)"
+            // "tutorial - Kill all kings as white" záměrně chybí — tutoriál body nedává
+    ));
+
+    /** Dává tato mapa vůbec body? */
+    public static boolean isMapEligibleForPoints(String mapName) {
+        return POINT_ELIGIBLE_MAPS.contains(mapName);
+    }
+    //endregion
 }

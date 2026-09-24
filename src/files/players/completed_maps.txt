@@ -1,2 +1,8 @@
 tutorial - Kill all kings as white;Trapper
 standard;Greedy
+level 1;Trapper
+level 1;Greedy
+The discovery of America;Trapper
+Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings;Bold man
+level 2;Greedy
+level 2;Trapper

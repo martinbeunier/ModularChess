@@ -22,10 +22,10 @@ public class Wasp extends Piece{
         addMove(new MoveType(-1,0, MoveBehaviour.BOTH, MoveClass.TORPEDO));
         addMove(new MoveType(-2,0, MoveBehaviour.BOTH, MoveClass.TORPEDO));
 
-        addMove(new MoveType(1,1,MoveBehaviour.BOTH, MoveClass.REPEAT));
-        addMove(new MoveType(-1,-1,MoveBehaviour.BOTH, MoveClass.REPEAT));
-        addMove(new MoveType(1,-1,MoveBehaviour.BOTH, MoveClass.REPEAT));
-        addMove(new MoveType(-1,1,MoveBehaviour.BOTH, MoveClass.REPEAT));
+        addMove(new MoveType(1,1,MoveBehaviour.BOTH, MoveClass.LINEBREAKER));
+        addMove(new MoveType(-1,-1,MoveBehaviour.BOTH, MoveClass.LINEBREAKER));
+        addMove(new MoveType(1,-1,MoveBehaviour.BOTH, MoveClass.LINEBREAKER));
+        addMove(new MoveType(-1,1,MoveBehaviour.BOTH, MoveClass.LINEBREAKER));
 
     }
 

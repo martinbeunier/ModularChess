@@ -46,3 +46,54 @@
 2026-09-23T09:01:42.785517700;standard;Greedy;LOSS;9_standard.chess
 2026-09-23T09:02:38.967098400;standard;Greedy;WIN;10_standard.chess
 2026-09-23T20:34:10.053444100;XXL chess (rip of);Trapper;WIN;11_XXL chess (rip of).chess
+2026-09-23T21:32:21.342951300;fighter defense;Greedy;LOSS;0_fighter defense.chess
+2026-09-23T21:32:37.505895500;fighter defense;Greedy;LOSS;1_fighter defense.chess
+2026-09-23T21:35:14.545328300;fighter defense;Greedy;LOSS;2_fighter defense.chess
+2026-09-24T16:25:48.633624900;test;Against yourself;LOSS (resignation);3_test.chess
+2026-09-24T16:51:48.362318100;test;Against yourself;LOSS (resignation);4_test.chess
+2026-09-24T16:57:48.635662300;test;Against yourself;LOSS (resignation);6_test.chess
+2026-09-24T16:58:31.129445300;test;Against yourself;LOSS (resignation);7_test.chess
+2026-09-24T17:54:14.469479900;level 1;Trapper;WIN;9_level 1.chess
+2026-09-24T18:06:47.828154300;Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings;Bold man;LOSS (resignation);10_Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings.chess
+2026-09-24T18:07:54.089868600;test;Against yourself;LOSS (resignation);11_test.chess
+2026-09-24T18:12:06.284139500;level 1;Against yourself;LOSS (resignation);12_level 1.chess
+2026-09-24T18:12:49.871971800;level 1;Trapper;LOSS (resignation);13_level 1.chess
+2026-09-24T18:19:39.087115;level 1;Trapper;WIN;15_level 1.chess
+2026-09-24T18:20:42.034780200;level 1;Trapper;WIN;16_level 1.chess
+2026-09-24T18:23:59.168798500;level 1;Against yourself;LOSS (resignation);17_level 1.chess
+2026-09-24T18:24:37.211904100;level 1;Trapper;WIN;18_level 1.chess
+2026-09-24T18:30:09.331213900;level 1;Trapper;WIN;19_level 1.chess
+2026-09-24T18:32:11.236768600;level 1;Trapper;LOSS;20_level 1.chess
+2026-09-24T18:32:58.306441900;level 1;Trapper;LOSS;21_level 1.chess
+2026-09-24T18:33:42.246420700;level 1;Trapper;LOSS;22_level 1.chess
+2026-09-24T18:36:46.855465500;level 1;Trapper;DRAW;24_level 1.chess
+2026-09-24T18:38:27.020051900;level 1;Greedy;WIN;25_level 1.chess
+2026-09-24T18:39:13.592085100;level 1;Trapper;LOSS;26_level 1.chess
+2026-09-24T18:40:50.428225200;level 1;Trapper;LOSS;27_level 1.chess
+2026-09-24T18:49:46.631185600;level 1;Greedy;DRAW;28_level 1.chess
+2026-09-24T18:50:27.268820300;level 1;Greedy;LOSS;29_level 1.chess
+2026-09-24T18:50:52.525754800;level 1;Greedy;LOSS;30_level 1.chess
+2026-09-24T18:51:23.705783200;level 1;Greedy;LOSS;31_level 1.chess
+2026-09-24T18:51:41.078148800;level 1;Greedy;LOSS;32_level 1.chess
+2026-09-24T18:53:01.820153100;level 1;Greedy;WIN;33_level 1.chess
+2026-09-24T18:59:43.663429600;level 1;Trapper;DRAW;34_level 1.chess
+2026-09-24T19:00:38.732143200;level 1;Trapper;LOSS;35_level 1.chess
+2026-09-24T19:02:08.746304600;level 1;Trapper;WIN;36_level 1.chess
+2026-09-24T19:09:45.046067500;level 1;Trapper;DRAW;37_level 1.chess
+2026-09-24T19:11:09.952092700;level 1;Trapper;LOSS;38_level 1.chess
+2026-09-24T19:12:17.886450800;level 1;Trapper;LOSS (resignation);39_level 1.chess
+2026-09-24T19:14:02.540291400;level 1;Greedy;WIN;40_level 1.chess
+2026-09-24T19:40:21.405048600;The discovery of America;Against yourself;LOSS (resignation);41_The discovery of America.chess
+2026-09-24T19:45:49.331188700;The discovery of America;Trapper;WIN;42_The discovery of America.chess
+2026-09-24T19:46:18.829979;Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings;Bold man;WIN;43_Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings.chess
+2026-09-24T20:37:54.814030700;level 2;Trapper;LOSS (resignation);0_level 2.chess
+2026-09-24T20:40:38.164556100;level 2;Greedy;DRAW;1_level 2.chess
+2026-09-24T20:42:30.241710700;level 2;Greedy;WIN;2_level 2.chess
+2026-09-24T20:46:07.519223200;level 2;Trapper;WIN;3_level 2.chess
+2026-09-24T20:48:04.163206800;level 2;Trapper;LOSS (resignation);4_level 2.chess
+2026-09-24T20:48:40.352597700;level 2;Trapper;LOSS (resignation);5_level 2.chess
+2026-09-24T20:52:44.750092600;level 2;Trapper;WIN;6_level 2.chess
+2026-09-24T20:57:22.528220200;level 2;Trapper;WIN;7_level 2.chess
+2026-09-24T20:59:20.693501700;level 2;Against yourself;LOSS (resignation);8_level 2.chess
+2026-09-24T21:01:30.822988700;level 2;Greedy;WIN;9_level 2.chess
+2026-09-24T21:03:16.441642600;first flight;Against yourself;LOSS (resignation);10_first flight.chess

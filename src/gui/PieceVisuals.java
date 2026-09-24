@@ -20,7 +20,10 @@ public class PieceVisuals {
             case "linebreakerrook": scale = 1.76; break;
             case "landcarrier": scale = 2.9; break;
             case "torpedo": scale = 1.25; break;
+
+
             case "wasp": scale = 1.5; break;
+            case "carbide" : scale = 1.37;break;
 
             case "empress": scale = 1.15; break;
             case "hexarook": scale = 1.1; break;
