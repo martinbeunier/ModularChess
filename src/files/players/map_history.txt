@@ -97,3 +97,22 @@
 2026-09-24T20:59:20.693501700;level 2;Against yourself;LOSS (resignation);8_level 2.chess
 2026-09-24T21:01:30.822988700;level 2;Greedy;WIN;9_level 2.chess
 2026-09-24T21:03:16.441642600;first flight;Against yourself;LOSS (resignation);10_first flight.chess
+2026-09-24T21:19:21.814636;Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings;Against yourself;LOSS (resignation);0_Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings.chess
+2026-09-24T21:19:33.112745500;test;Against yourself;LOSS (resignation);1_test.chess
+2026-09-24T21:24:54.093928300;test 2 v 2;Against yourself;LOSS (resignation);3_test 2 v 2.chess
+2026-09-24T21:28:40.487886200;standard;Against yourself;WIN;4_standard.chess
+2026-09-24T21:28:57.637132200;test 2 v 2;Against yourself;DRAW;5_test 2 v 2.chess
+2026-09-24T21:29:23.323825300;standard;Against yourself;WIN;6_standard.chess
+2026-09-24T21:29:43.426697600;test 2 v 2;Against yourself;DRAW;7_test 2 v 2.chess
+2026-09-24T21:30:51.910054900;standard;Against yourself;WIN;8_standard.chess
+2026-09-24T21:31:09.128916700;test 2 v 2;Against yourself;DRAW;9_test 2 v 2.chess
+2026-09-24T21:32:42.966052500;standard;Against yourself;LOSS (resignation);10_standard.chess
+2026-09-24T21:34:45.248544400;standard;Against yourself;WIN;11_standard.chess
+2026-09-24T21:35:02.987381;test 2 v 2;Against yourself;LOSS (resignation);12_test 2 v 2.chess
+2026-09-24T21:38:04.179095;test 2 v 2;Against yourself;DRAW;13_test 2 v 2.chess
+2026-09-24T21:38:31.973918400;standard;Against yourself;WIN;14_standard.chess
+2026-09-24T21:39:16.806877800;standard;Against yourself;WIN;15_standard.chess
+2026-09-24T21:39:30.832160700;test 2 v 2;Against yourself;DRAW;16_test 2 v 2.chess
+2026-09-24T21:49:28.389844;test 2 v 2;Against yourself;LOSS;17_test 2 v 2.chess
+2026-09-24T21:49:47.716851700;standard;Against yourself;WIN;18_standard.chess
+2026-09-24T21:50:08.687436700;test 2 v 2;Against yourself;WIN;19_test 2 v 2.chess

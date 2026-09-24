@@ -349,19 +349,23 @@ public class ChessBoard {
      * Vrátí null, pokud zbývá 0 hlav (remíza) nebo víc než 1 (hra ještě neskončila).
      */
     public Colour getSurvivingHeadColour() {
+
+        HashSet<Colour> colours = new HashSet<Colour>();
         Colour found = null;
-        int count = 0;
 
         for (int x = 0; x < board.length; x++) {
             for (int y = 0; y < board[x].length; y++) {
+
                 if (board[x][y] instanceof Head) {
-                    found = board[x][y].getColour();
-                    count++;
+
+                    Colour colour = board[x][y].getColour();
+                    colours.add(colour);
+                    found = colour;
                 }
             }
         }
 
-        return (count == 1) ? found : null;
+        return (colours.size() == 1) ? found : null;
     }
     public String getPositionSignature(Colour toMove) {
         StringBuilder sb = new StringBuilder();
@@ -2079,19 +2083,23 @@ for (MoveType m : moves) {
     }
 
     public int countHeads(){
-        int count = 0;
+
+
+        HashSet<Colour> colours = new HashSet<Colour>();
 
         for (int x = 0; x < board.length; x++) {
             for (int y = 0; y < board[x].length; y++) {
                 if (board[x][y] != null) {
                     if (board[x][y] instanceof Head) {
-                        count++;
+                        colours.add(board[x][y].getColour());
+
                     }
                 }
             }
         }
 
-        return count;
+        System.out.println(colours.size());
+        return colours.size();
     }
     //endregion
 

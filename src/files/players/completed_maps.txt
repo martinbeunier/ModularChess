@@ -6,3 +6,5 @@ The discovery of America;Trapper
 Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings;Bold man
 level 2;Greedy
 level 2;Trapper
+standard;Against yourself
+test 2 v 2;Against yourself

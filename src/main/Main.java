@@ -54,65 +54,59 @@ public class Main {
                 gameLoop.run("standard", null);
                 break;
             case 2: //spuštění krokové simulace hry
-                Player player1 = new Player("Bílý", Colour.White, 600);
-                Player player2 = new Player("Černý", Colour.Black, 600);
+                //inicializace hráčů
 
+                Player player1 = new Player("Bílý",Colour.White,600);
+                Player player2 = new Player("Černý",Colour.Black,600);
+
+
+//konec inicializace hráčů
 
 //inicializace figur
 
-//white
-                King wk = new King("k", 3, 6, Colour.White, 0);
-                Airplane a1 = new Airplane("a", 3, 5, Colour.White, 2);
-                Airplane a2 = new Airplane("a", 1, 6, Colour.White, 0);
-                Airplane a3 = new Airplane("a", 5, 6, Colour.White, 0);
 
-//black
-                King bk = new King("k", 3, 0, Colour.Black, 2);
-                Rook br = new Rook("r", 4, 0, Colour.Black);
 
-//other
-                RestartPiece restartPiece = new RestartPiece("restart", 9, 7, Colour.White);
-                TutorialPiece tutorialPiece = new TutorialPiece("Promote airplanes \\nfighter and checkmate .\\n You can use rotation .",9,5 );
+
+                Emperor wemperor = new Emperor("White Emperor",4,8,Colour.White);
+                Emperor bemperor = new Emperor("Black Emperor",4,0,Colour.Black);
+                Emperor wemperor2 = new Emperor("White Emperor",5,8,Colour.White);
+                Emperor bemperor2 = new Emperor("Black Emperor",5,0,Colour.Black);
+
+
+
+
+//konec inicializace figur
 
 
 //inicializace šachovnice
 
-                ChessBoard chessBoard = new ChessBoard(10, 8);
+                ChessBoard chessBoard = new ChessBoard(13,9);
 
                 chessBoard.addPlayer(player1);
                 chessBoard.addPlayer(player2);
 
-// blokády
-                for (int i = 0; i < 8; i++) {
-                    chessBoard.addPiece(new Blocade("blocade", 7, i));
-                    chessBoard.addPiece(new Blocade("blocade", 8, i));
-                }
-                for (int i = 0; i < 5; i++) {
-                    chessBoard.addPiece(new Blocade("blocade", 9, i));
-                }
 
 
-                for (int i = 0; i < 7; i++) {
-                    chessBoard.addPromotionSquares(i, 0, Colour.White);
-                    chessBoard.addPromotionSquares(i, 7, Colour.Black);
-                }
 
-// figury
-                chessBoard.addPiece(wk);
-                chessBoard.addPiece(a1);
-                chessBoard.addPiece(a2);
-                chessBoard.addPiece(a3);
 
-                chessBoard.addPiece(bk);
-                chessBoard.addPiece(br);
 
-                chessBoard.addPiece(restartPiece);
-                chessBoard.addPiece(tutorialPiece);
+                chessBoard.addPiece(wemperor);
+                chessBoard.addPiece(bemperor);
+                chessBoard.addPiece(wemperor2);
+                chessBoard.addPiece(bemperor2);
+
+
+
+
+
+
+
+//konec inicializace šachovnice
 
 
                 chessBoard.printBoard();
 
-                chessBoard.savePosition("test 2", player1);
+                chessBoard.savePosition("test 2 v 2", player1);
 
 
 
@@ -131,6 +125,7 @@ public class Main {
 
 
 zobrazit v map select dohrané mapy .
+opravit metodu na counting kingů .
 
 
 bugnuty zvuk v loop

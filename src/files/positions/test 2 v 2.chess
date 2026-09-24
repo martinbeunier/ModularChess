@@ -1,0 +1,17 @@
+Width : 13 Height: 9
+
+Tiles promotion colours :
+
+Tiles water :
+
+Pieces :
+piece : class pieces.Emperor ;Black Emperor; 4 0 Black true 100000
+piece : class pieces.Emperor ;White Emperor; 4 8 White true 100000
+piece : class pieces.Emperor ;Black Emperor; 5 0 Black true 100000
+piece : class pieces.Emperor ;White Emperor; 5 8 White true 100000
+
+Players :
+Player :  ;Bílý; White 600 id:none wins:0 losses:0 draws:0 PowerUps :
+Player :  ;Černý; Black 600 id:none wins:0 losses:0 draws:0 PowerUps :
+
+current player : White

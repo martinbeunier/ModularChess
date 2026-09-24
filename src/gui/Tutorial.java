@@ -12,7 +12,7 @@ import java.util.List;
 public class Tutorial extends MapSelectBase {
 
     public static final List<String> MAPS = Arrays.asList(
-            "Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings"
+       //     "Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings"
     );
 
     public Tutorial(MainFrame frame) {
