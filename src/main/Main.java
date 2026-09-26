@@ -54,59 +54,77 @@ public class Main {
                 gameLoop.run("standard", null);
                 break;
             case 2: //spuštění krokové simulace hry
-                //inicializace hráčů
 
-                Player player1 = new Player("Bílý",Colour.White,600);
-                Player player2 = new Player("Černý",Colour.Black,600);
+// inicializace hráčů
+                Player player1 = new Player("Bílý", Colour.White, 600);
+                Player player2 = new Player("Černý", Colour.Black, 600);
 
+// inicializace šachovnice
 
-//konec inicializace hráčů
-
-//inicializace figur
-
-
-
-
-                Emperor wemperor = new Emperor("White Emperor",4,8,Colour.White);
-                Emperor bemperor = new Emperor("Black Emperor",4,0,Colour.Black);
-                Emperor wemperor2 = new Emperor("White Emperor",5,8,Colour.White);
-                Emperor bemperor2 = new Emperor("Black Emperor",5,0,Colour.Black);
-
-
-
-
-//konec inicializace figur
-
-
-//inicializace šachovnice
-
-                ChessBoard chessBoard = new ChessBoard(13,9);
-
+                ChessBoard chessBoard = new ChessBoard(8,10 );
                 chessBoard.addPlayer(player1);
                 chessBoard.addPlayer(player2);
 
+                for (int j= 0;j<10;j++){for (int i= 0;i<8;i++){ chessBoard.addWaterSquares(i,j);}}
 
 
+                for (int i = 0; i < 8; i++) {
+                    chessBoard.addPromotionSquares(i, 0, Colour.White);
+                    chessBoard.addPromotionSquares(i, 1, Colour.White);
+
+                    chessBoard.addPromotionSquares(i, 8, Colour.Black);
+                    chessBoard.addPromotionSquares(i, 9, Colour.Black);
+
+                }
 
 
+// inicializace figur
+                //white
+                chessBoard.addPiece(new King("piece",1,8,Colour.White,0));
+                chessBoard.addPiece(new ShipCarrier("piece",1,7,Colour.White,0));
+                chessBoard.addPiece(new Helicopter("Piece",0,7,Colour.White));
 
-                chessBoard.addPiece(wemperor);
-                chessBoard.addPiece(bemperor);
-                chessBoard.addPiece(wemperor2);
-                chessBoard.addPiece(bemperor2);
+                chessBoard.addPiece(new Bishop("Piece",2,9,Colour.White));
+                chessBoard.addPiece(new Torpedo("Piece",2,7,Colour.White,0));
 
+                chessBoard.addPiece(new Pawn("Piece",0,6,Colour.White,0));
+                chessBoard.addPiece(new Pawn("Piece",1,6,Colour.White,0));
+                chessBoard.addPiece(new Pawn("Piece",2,6,Colour.White,0));
+                chessBoard.addPiece(new Pawn("Piece",1,5,Colour.White,0));
 
+                chessBoard.addPiece(new ArciBishop("Piece",0,8,Colour.White));
+                chessBoard.addPiece(new HexaRook("Piece",0,9,Colour.White));
 
+                chessBoard.addPiece(new Airplane("Piece",1,9,Colour.White,0));
+                chessBoard.addPiece(new Airplane("Piece",2,8,Colour.White,0));
 
+                chessBoard.addPiece(new RaftCarrier("Piece",6,9,Colour.White,0));
+                chessBoard.addPiece(new Bishop("Piece",6,8,Colour.White));
+// black
+                chessBoard.addPiece(new King("piece",6,1,Colour.Black,2));
+                chessBoard.addPiece(new ShipCarrier("piece",6,2,Colour.Black,2));
+                chessBoard.addPiece(new Helicopter("Piece",7,2,Colour.Black));
 
+                chessBoard.addPiece(new Bishop("Piece",5,0,Colour.Black));
+                chessBoard.addPiece(new Torpedo("Piece",5,2,Colour.Black,2));
 
+                chessBoard.addPiece(new Pawn("Piece",7,3,Colour.Black,2));
+                chessBoard.addPiece(new Pawn("Piece",6,3,Colour.Black,2));
+                chessBoard.addPiece(new Pawn("Piece",5,3,Colour.Black,2));
+                chessBoard.addPiece(new Pawn("Piece",6,4,Colour.Black,2));
 
-//konec inicializace šachovnice
+                chessBoard.addPiece(new ArciBishop("Piece",7,1,Colour.Black));
+                chessBoard.addPiece(new HexaRook("Piece",7,0,Colour.Black));
 
+                chessBoard.addPiece(new Airplane("Piece",5,1,Colour.Black,2));
+                chessBoard.addPiece(new Airplane("Piece",6,0,Colour.Black,2));
 
+                chessBoard.addPiece(new RaftCarrier("Piece",1,0,Colour.Black,2));
+                chessBoard.addPiece(new Bishop("Piece",1,1,Colour.Black));
+//end inicializace figur
                 chessBoard.printBoard();
 
-                chessBoard.savePosition("test 2 v 2", player1);
+                chessBoard.savePosition("level 4", player1);
 
 
 
@@ -125,7 +143,7 @@ public class Main {
 
 
 zobrazit v map select dohrané mapy .
-opravit metodu na counting kingů .
+zobrazit lépe linebreaker move i jako threat warning.
 
 
 bugnuty zvuk v loop
@@ -156,6 +174,111 @@ infiltrator z ouroboros
 
  */
 
+/*
+
+Seznámení hráče s :
+
+            case "helicopter": scale = 2.17; break;
+
+            case "arcibishop": scale = 1.4; break;
+
+
+            case "linebreakerrook": scale = 1.76; break;
+            case "torpedo": scale = 1.25; break;
+
+
+            case "empress": scale = 1.15; break;
+            case "hexarook": scale = 1.1; break;
+            case "hobbyhorse": scale = 2.0; break;
+
+
+
+
+            case "wasp": scale = 1.5; break;
+            case "carbide" : scale = 1.37;break;
+
+            case "lifebuoy": scale = 1.85; break;
+            case "overclocker": scale = 1.25; break;
+            case "blocade": scale = 1.05; break;
+
+            case "restartpiece": scale = 1.5; break;
+            case "tutorialpiece": scale = 1.92; break;
+
+priority :
+1.
+arcibishop ,linebreaker rook ,helicopter
+2.
+empress , hexarook ,hobbyhorse
+3.
+lifebuyoy , torpedo
+*/
+
+
+
     //konec kódu
 
+/*
+Player player1 = new Player("Bílý", Colour.White, 600);
+Player player2 = new Player("Černý", Colour.Black, 600);
 
+
+
+// Black
+Pawn bp0 = new Pawn("Black Pawn", 0, 1, Colour.Black, 2);
+Pawn bp1 = new Pawn("Black Pawn", 1, 1, Colour.Black, 2);
+Pawn bp2 = new Pawn("Black Pawn", 2, 1, Colour.Black, 2);
+Pawn bp3 = new Pawn("Black Pawn", 3, 1, Colour.Black, 2);
+Pawn bp4 = new Pawn("Black Pawn", 4, 1, Colour.Black, 2);
+Pawn bp5 = new Pawn("Black Pawn", 5, 1, Colour.Black, 2);
+Pawn bp6 = new Pawn("Black Pawn", 6, 1, Colour.Black, 2);
+Pawn bp7 = new Pawn("Black Pawn", 7, 1, Colour.Black, 2);
+
+Rook br1 = new Rook("Black Rook", 0, 0, Colour.Black);
+Knight bn1 = new Knight("Black Knight", 1, 0, Colour.Black);
+Bishop bb1 = new Bishop("Black Bishop", 2, 0, Colour.Black);
+Queen bq = new Queen("Black Queen", 3, 0, Colour.Black);
+King bk = new King("Black King", 4, 0, Colour.Black, 0);
+Bishop bb2 = new Bishop("Black Bishop", 5, 0, Colour.Black);
+Knight bn2 = new Knight("Black Knight", 6, 0, Colour.Black);
+Rook br2 = new Rook("Black Rook", 7, 0, Colour.Black);
+
+//white
+King wk = new King("k",4,7,Colour.White,0) ;
+LinebreakerRook lbr = new LinebreakerRook("lbr",6,5,Colour.White);
+Helicopter h1 = new Helicopter("h",7,6,Colour.White);
+Helicopter h2 = new Helicopter("h",1,6,Colour.White);
+ArciBishop ab1 = new ArciBishop("ab",2,6,Colour.White);
+ArciBishop ab2 = new ArciBishop("ab",3,6,Colour.White);
+ArciBishop ab3 = new ArciBishop("ab",5,6,Colour.White);
+ArciBishop ab4 = new ArciBishop("ab",6,6,Colour.White);
+
+
+
+
+
+ChessBoard chessBoard = new ChessBoard(8, 8);
+
+                chessBoard.addPiece(wk);
+                chessBoard.addPiece(lbr);
+                chessBoard.addPiece(h1);
+                chessBoard.addPiece(h2);
+                chessBoard.addPiece(ab1);
+                chessBoard.addPiece(ab2);
+                chessBoard.addPiece(ab3);
+                chessBoard.addPiece(ab4);
+
+
+                chessBoard.addPiece(bp0); chessBoard.addPiece(bp1); chessBoard.addPiece(bp2);
+                chessBoard.addPiece(bp3); chessBoard.addPiece(bp4); chessBoard.addPiece(bp5);
+                chessBoard.addPiece(bp6); chessBoard.addPiece(bp7);
+
+
+                chessBoard.addPiece(br1); chessBoard.addPiece(bn1); chessBoard.addPiece(bb1);
+                chessBoard.addPiece(bq);  chessBoard.addPiece(bk);  chessBoard.addPiece(bb2);
+                chessBoard.addPiece(bn2); chessBoard.addPiece(br2);
+
+                chessBoard.addPlayer(player1);
+                chessBoard.addPlayer(player2);
+
+                for (int i = 0; i < 8; i++) chessBoard.addPromotionSquares(i, 0, Colour.White);
+                for (int i = 0; i < 8; i++) chessBoard.addPromotionSquares(i, 7, Colour.Black);*/

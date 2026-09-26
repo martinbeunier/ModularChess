@@ -8,3 +8,8 @@ level 2;Greedy
 level 2;Trapper
 standard;Against yourself
 test 2 v 2;Against yourself
+test;Against yourself
+level 3;Trapper
+level 3;Greedy
+Behind the mirroor - rip of;Trapper
+first flight;Greedy

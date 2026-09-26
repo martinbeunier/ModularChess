@@ -1,0 +1,177 @@
+Width : 14 Height: 14
+
+Tiles promotion colours :
+promotion colours of tile : 0 3 White
+promotion colours of tile : 0 10 Black
+promotion colours of tile : 1 3 White
+promotion colours of tile : 1 10 Black
+promotion colours of tile : 2 3 White
+promotion colours of tile : 2 10 Black
+promotion colours of tile : 3 3 White
+promotion colours of tile : 3 10 Black
+promotion colours of tile : 4 3 White
+promotion colours of tile : 4 10 Black
+promotion colours of tile : 5 3 White
+promotion colours of tile : 5 10 Black
+promotion colours of tile : 6 3 White
+promotion colours of tile : 6 10 Black
+promotion colours of tile : 7 3 White
+promotion colours of tile : 7 10 Black
+promotion colours of tile : 8 3 White
+promotion colours of tile : 8 10 Black
+promotion colours of tile : 9 3 White
+promotion colours of tile : 9 10 Black
+promotion colours of tile : 10 3 White
+promotion colours of tile : 10 10 Black
+promotion colours of tile : 11 3 White
+promotion colours of tile : 11 10 Black
+promotion colours of tile : 12 3 White
+promotion colours of tile : 12 10 Black
+promotion colours of tile : 13 3 White
+promotion colours of tile : 13 10 Black
+
+Tiles water :
+
+Pieces :
+piece : class pieces.Blocade ;blockade; 0 0 Blockade true 0
+piece : class pieces.Blocade ;blockade; 0 1 Blockade true 0
+piece : class pieces.Blocade ;blockade; 0 2 Blockade true 0
+piece : class pieces.Rook ;piece; 0 3 Black true 500
+piece : class pieces.Pawn ;piece; 0 4 Black true 100 2
+piece : class pieces.Pawn ;piece; 0 9 White true 100 0
+piece : class pieces.Rook ;piece; 0 10 White true 500
+piece : class pieces.Blocade ;blockade; 0 11 Blockade true 0
+piece : class pieces.Blocade ;blockade; 0 12 Blockade true 0
+piece : class pieces.Blocade ;blockade; 0 13 Blockade true 0
+piece : class pieces.Blocade ;blockade; 1 0 Blockade true 0
+piece : class pieces.Blocade ;blockade; 1 1 Blockade true 0
+piece : class pieces.Blocade ;blockade; 1 2 Blockade true 0
+piece : class pieces.Bishop ;piece; 1 3 Black true 320
+piece : class pieces.Pawn ;piece; 1 4 Black true 100 2
+piece : class pieces.Pawn ;piece; 1 9 White true 100 0
+piece : class pieces.Bishop ;piece; 1 10 White true 320
+piece : class pieces.Blocade ;blockade; 1 11 Blockade true 0
+piece : class pieces.Blocade ;blockade; 1 12 Blockade true 0
+piece : class pieces.Blocade ;blockade; 1 13 Blockade true 0
+piece : class pieces.Blocade ;blockade; 2 0 Blockade true 0
+piece : class pieces.Blocade ;blockade; 2 1 Blockade true 0
+piece : class pieces.Blocade ;blockade; 2 2 Blockade true 0
+piece : class pieces.King ;piece; 2 3 Black true 100000
+piece : class pieces.Pawn ;piece; 2 4 Black true 100 2
+piece : class pieces.Pawn ;piece; 2 9 White true 100 0
+piece : class pieces.King ;piece; 2 10 White true 100000
+piece : class pieces.Blocade ;blockade; 2 11 Blockade true 0
+piece : class pieces.Blocade ;blockade; 2 12 Blockade true 0
+piece : class pieces.Blocade ;blockade; 2 13 Blockade true 0
+piece : class pieces.Blocade ;blockade; 3 0 Blockade true 0
+piece : class pieces.Knight ;piece; 3 1 Black true 300
+piece : class pieces.Blocade ;blockade; 3 2 Blockade true 0
+piece : class pieces.Queen ;piece; 3 3 Black true 900
+piece : class pieces.Pawn ;piece; 3 4 Black true 100 2
+piece : class pieces.Pawn ;piece; 3 9 White true 100 0
+piece : class pieces.Queen ;piece; 3 10 White true 900
+piece : class pieces.Blocade ;blockade; 3 11 Blockade true 0
+piece : class pieces.Knight ;piece; 3 12 White true 300
+piece : class pieces.Blocade ;blockade; 3 13 Blockade true 0
+piece : class pieces.Knight ;piece; 4 0 Black true 300
+piece : class pieces.Blocade ;blockade; 4 1 Blockade true 0
+piece : class pieces.Blocade ;blockade; 4 2 Blockade true 0
+piece : class pieces.Bishop ;piece; 4 3 Black true 320
+piece : class pieces.Pawn ;piece; 4 4 Black true 100 2
+piece : class pieces.Pawn ;piece; 4 9 White true 100 0
+piece : class pieces.Bishop ;piece; 4 10 White true 320
+piece : class pieces.Blocade ;blockade; 4 11 Blockade true 0
+piece : class pieces.Blocade ;blockade; 4 12 Blockade true 0
+piece : class pieces.Knight ;piece; 4 13 White true 300
+piece : class pieces.Blocade ;blockade; 5 0 Blockade true 0
+piece : class pieces.Blocade ;blockade; 5 1 Blockade true 0
+piece : class pieces.Rook ;piece; 5 3 Black true 500
+piece : class pieces.Pawn ;piece; 5 4 Black true 100 2
+piece : class pieces.Pawn ;piece; 5 9 White true 100 0
+piece : class pieces.Rook ;piece; 5 10 White true 500
+piece : class pieces.Blocade ;blockade; 5 12 Blockade true 0
+piece : class pieces.Blocade ;blockade; 5 13 Blockade true 0
+piece : class pieces.Blocade ;blockade; 6 0 Blockade true 0
+piece : class pieces.Blocade ;blockade; 6 3 Blockade true 0
+piece : class pieces.Blocade ;blockade; 6 4 Blockade true 0
+piece : class pieces.Blocade ;blockade; 6 5 Blockade true 0
+piece : class pieces.Blocade ;blockade; 6 6 Blockade true 0
+piece : class pieces.Blocade ;blockade; 6 7 Blockade true 0
+piece : class pieces.Blocade ;blockade; 6 8 Blockade true 0
+piece : class pieces.Blocade ;blockade; 6 9 Blockade true 0
+piece : class pieces.Blocade ;blockade; 6 10 Blockade true 0
+piece : class pieces.Blocade ;blockade; 6 13 Blockade true 0
+piece : class pieces.Blocade ;blockade; 7 0 Blockade true 0
+piece : class pieces.Blocade ;blockade; 7 3 Blockade true 0
+piece : class pieces.Blocade ;blockade; 7 4 Blockade true 0
+piece : class pieces.Blocade ;blockade; 7 5 Blockade true 0
+piece : class pieces.Blocade ;blockade; 7 6 Blockade true 0
+piece : class pieces.Blocade ;blockade; 7 7 Blockade true 0
+piece : class pieces.Blocade ;blockade; 7 8 Blockade true 0
+piece : class pieces.Blocade ;blockade; 7 9 Blockade true 0
+piece : class pieces.Blocade ;blockade; 7 10 Blockade true 0
+piece : class pieces.Blocade ;blockade; 7 13 Blockade true 0
+piece : class pieces.Blocade ;blockade; 8 0 Blockade true 0
+piece : class pieces.Blocade ;blockade; 8 1 Blockade true 0
+piece : class pieces.Rook ;piece; 8 3 Black true 500
+piece : class pieces.Pawn ;piece; 8 4 Black true 100 2
+piece : class pieces.Pawn ;piece; 8 9 White true 100 0
+piece : class pieces.Rook ;piece; 8 10 White true 500
+piece : class pieces.Blocade ;blockade; 8 12 Blockade true 0
+piece : class pieces.Blocade ;blockade; 8 13 Blockade true 0
+piece : class pieces.Knight ;piece; 9 0 Black true 300
+piece : class pieces.Blocade ;blockade; 9 1 Blockade true 0
+piece : class pieces.Blocade ;blockade; 9 2 Blockade true 0
+piece : class pieces.Bishop ;piece; 9 3 Black true 320
+piece : class pieces.Pawn ;piece; 9 4 Black true 100 2
+piece : class pieces.Pawn ;piece; 9 9 White true 100 0
+piece : class pieces.Bishop ;piece; 9 10 White true 320
+piece : class pieces.Blocade ;blockade; 9 11 Blockade true 0
+piece : class pieces.Blocade ;blockade; 9 12 Blockade true 0
+piece : class pieces.Knight ;piece; 9 13 White true 300
+piece : class pieces.Blocade ;blockade; 10 0 Blockade true 0
+piece : class pieces.Knight ;piece; 10 1 Black true 300
+piece : class pieces.Blocade ;blockade; 10 2 Blockade true 0
+piece : class pieces.Queen ;piece; 10 3 Black true 900
+piece : class pieces.Pawn ;piece; 10 4 Black true 100 2
+piece : class pieces.Pawn ;piece; 10 9 White true 100 0
+piece : class pieces.Queen ;piece; 10 10 White true 900
+piece : class pieces.Blocade ;blockade; 10 11 Blockade true 0
+piece : class pieces.Knight ;piece; 10 12 White true 300
+piece : class pieces.Blocade ;blockade; 10 13 Blockade true 0
+piece : class pieces.Blocade ;blockade; 11 0 Blockade true 0
+piece : class pieces.Blocade ;blockade; 11 1 Blockade true 0
+piece : class pieces.Blocade ;blockade; 11 2 Blockade true 0
+piece : class pieces.King ;piece; 11 3 Black true 100000
+piece : class pieces.Pawn ;piece; 11 4 Black true 100 2
+piece : class pieces.Pawn ;piece; 11 9 White true 100 0
+piece : class pieces.King ;piece; 11 10 White true 100000
+piece : class pieces.Blocade ;blockade; 11 11 Blockade true 0
+piece : class pieces.Blocade ;blockade; 11 12 Blockade true 0
+piece : class pieces.Blocade ;blockade; 11 13 Blockade true 0
+piece : class pieces.Blocade ;blockade; 12 0 Blockade true 0
+piece : class pieces.Blocade ;blockade; 12 1 Blockade true 0
+piece : class pieces.Blocade ;blockade; 12 2 Blockade true 0
+piece : class pieces.Bishop ;piece; 12 3 Black true 320
+piece : class pieces.Pawn ;piece; 12 4 Black true 100 2
+piece : class pieces.Pawn ;piece; 12 9 White true 100 0
+piece : class pieces.Bishop ;piece; 12 10 White true 320
+piece : class pieces.Blocade ;blockade; 12 11 Blockade true 0
+piece : class pieces.Blocade ;blockade; 12 12 Blockade true 0
+piece : class pieces.Blocade ;blockade; 12 13 Blockade true 0
+piece : class pieces.Blocade ;blockade; 13 0 Blockade true 0
+piece : class pieces.Blocade ;blockade; 13 1 Blockade true 0
+piece : class pieces.Blocade ;blockade; 13 2 Blockade true 0
+piece : class pieces.Rook ;piece; 13 3 Black true 500
+piece : class pieces.Pawn ;piece; 13 4 Black true 100 2
+piece : class pieces.Pawn ;piece; 13 9 White true 100 0
+piece : class pieces.Rook ;piece; 13 10 White true 500
+piece : class pieces.Blocade ;blockade; 13 11 Blockade true 0
+piece : class pieces.Blocade ;blockade; 13 12 Blockade true 0
+piece : class pieces.Blocade ;blockade; 13 13 Blockade true 0
+
+Players :
+Player :  ;Bílý; White 600 id:none wins:0 losses:0 draws:0 PowerUps :
+Player :  ;Černý; Black 600 id:none wins:0 losses:0 draws:0 PowerUps :
+
+current player : White

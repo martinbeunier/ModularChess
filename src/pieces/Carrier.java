@@ -13,7 +13,7 @@ public class Carrier extends Piece {
         super(name, x,  y, colour,value);
         this.ocupationSquares = new ArrayList<OcupationSquare>() ;
 
-
+        ocupationSquares.add(new OcupationSquare(0, 0));
     }
 
     public ArrayList<OcupationSquare> getOcupationSquares() {

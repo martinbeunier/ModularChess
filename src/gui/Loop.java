@@ -1275,6 +1275,34 @@ public class Loop extends JPanel {
         paintImmediately(0, 0, getWidth(), getHeight());
     }
 
+    private void pintTileIfWaterAndPromotion(Graphics2D g2d, int posX, int posY, int tileSize,
+                                             Color colorPromotion, Color colorWater) {
+
+        // Podklad = vodní barva (celá dlaždice)
+        g2d.setColor(colorWater);
+        g2d.fillRect(posX, posY, tileSize, tileSize);
+
+        // Promotion barva jen v jednom rohu jako diagonální trojúhelník,
+        // s mírnou průhledností, aby to nebylo tak "tvrdé"
+        Color softPromotion = new Color(
+                colorPromotion.getRed(),
+                colorPromotion.getGreen(),
+                colorPromotion.getBlue(),
+                160 // průhlednost - uprav dle vkusu (0-255)
+        );
+
+        Graphics2D gClip = (Graphics2D) g2d.create();
+        gClip.setColor(softPromotion);
+
+        int corner = (int) (tileSize * 0.4); // jen malý roh, ne půlka dlaždice
+
+        int[] xs = {posX + tileSize - corner, posX + tileSize, posX + tileSize};
+        int[] ys = {posY, posY, posY + corner};
+        gClip.fillPolygon(xs, ys, 3); // pravý horní trojúhelník
+
+        gClip.dispose();
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -1326,59 +1354,77 @@ public class Loop extends JPanel {
                     tile = tiles[x][y];
                 }
 
-                // Základní barva šachovnice
+// Základní barva šachovnice
                 if ((x + y) % 2 == 0) {
                     g2d.setColor(UIconfiguration.boardColorLight);
                 } else {
                     g2d.setColor(UIconfiguration.boardColorDark);
                 }
 
-                // Speciální vlastnosti dlaždice
+                boolean tileAlreadyPainted = false;
+
+// Speciální vlastnosti dlaždice
                 if (tile != null) {
 
-                    if (tile.getWater()) {
+                    boolean isWater = tile.getWater();
+                    boolean hasPromotion = tile.getPromotionColours() != null
+                            && !tile.getPromotionColours().isEmpty();
+
+                    if (isWater && hasPromotion) {
+
+                        boolean hasWhite = tile.getPromotionColours().contains(Colour.White);
+                        boolean hasBlack = tile.getPromotionColours().contains(Colour.Black);
+
+                        Color waterColor = ((x + y) % 2 == 0)
+                                ? UIconfiguration.waterColorLight
+                                : UIconfiguration.waterColorDark;
+
+                        Color promotionColor;
+                        if (hasWhite && hasBlack) {
+                            promotionColor = ((x + y) % 2 == 0)
+                                    ? new Color(189, 122, 199)
+                                    : new Color(186, 85, 211);
+                        } else if (hasWhite) {
+                            promotionColor = ((x + y) % 2 == 0)
+                                    ? new Color(225, 212, 157)
+                                    : new Color(204, 177, 93);
+                        } else {
+                            promotionColor = ((x + y) % 2 == 0)
+                                    ? new Color(211, 134, 134)
+                                    : new Color(218, 94, 94);
+                        }
+
+                        pintTileIfWaterAndPromotion(g2d, posX, posY, tileSize, promotionColor, waterColor);
+                        tileAlreadyPainted = true;
+
+                    } else if (isWater) {
+
                         if ((x + y) % 2 == 0) {
                             g2d.setColor(UIconfiguration.waterColorLight);
                         } else {
                             g2d.setColor(UIconfiguration.waterColorDark);
                         }
 
+                    } else if (hasPromotion) {
 
-                    } else if (tile.getPromotionColours() != null
-                            && !tile.getPromotionColours().isEmpty()) {
-
-                        boolean hasWhite =
-                                tile.getPromotionColours().contains(Colour.White);
-
-                        boolean hasBlack =
-                                tile.getPromotionColours().contains(Colour.Black);
+                        boolean hasWhite = tile.getPromotionColours().contains(Colour.White);
+                        boolean hasBlack = tile.getPromotionColours().contains(Colour.Black);
 
                         if (hasWhite && hasBlack) {
-
-
                             if ((x + y) % 2 == 0) {
-
-
                                 g2d.setColor(new Color(189, 122, 199));
                             } else {
                                 g2d.setColor(new Color(186, 85, 211));
                             }
-
                         } else if (hasWhite) {
-
                             if ((x + y) % 2 == 0) {
-
                                 g2d.setColor(new Color(225, 212, 157));
-
                             } else {
                                 g2d.setColor(new Color(204, 177, 93));
                             }
-
                         } else if (hasBlack) {
-
                             if ((x + y) % 2 == 0) {
                                 g2d.setColor(new Color(211, 134, 134));
-
                             } else {
                                 g2d.setColor(new Color(218, 94, 94));
                             }
@@ -1386,12 +1432,14 @@ public class Loop extends JPanel {
                     }
                 }
 
-                g2d.fillRect(
-                        posX,
-                        posY,
-                        tileSize,
-                        tileSize
-                );
+                if (!tileAlreadyPainted) {
+                    g2d.fillRect(
+                            posX,
+                            posY,
+                            tileSize,
+                            tileSize
+                    );
+                }
 
                 // Zvýraznění posledního tahu (odkud -> kam)
                 if ((x == lastMoveFromX && y == lastMoveFromY) || (x == lastMoveToX && y == lastMoveToY)) {

@@ -116,3 +116,48 @@
 2026-09-24T21:49:28.389844;test 2 v 2;Against yourself;LOSS;17_test 2 v 2.chess
 2026-09-24T21:49:47.716851700;standard;Against yourself;WIN;18_standard.chess
 2026-09-24T21:50:08.687436700;test 2 v 2;Against yourself;WIN;19_test 2 v 2.chess
+2026-09-24T22:58:23.687086300;test;Against yourself;LOSS;0_test.chess
+2026-09-25T09:59:42.845967900;level 3;Trapper;LOSS;2_level 3.chess
+2026-09-25T10:00:59.408679400;level 3;Trapper;LOSS;3_level 3.chess
+2026-09-25T10:04:36.081029500;level 3;Trapper;WIN;4_level 3.chess
+2026-09-25T10:15:07.163184400;level 3;Trapper;LOSS;5_level 3.chess
+2026-09-25T10:18:26.069974800;level 3;Trapper;WIN;6_level 3.chess
+2026-09-25T10:19:57.367779200;level 3;Greedy;WIN;7_level 3.chess
+2026-09-25T11:14:27.097010700;trash;Trapper;LOSS;8_trash.chess
+2026-09-25T11:34:00.429499600;level 3;Against yourself;LOSS (resignation);9_level 3.chess
+2026-09-25T11:34:07.947763500;level 3;Against yourself;LOSS (resignation);10_level 3.chess
+2026-09-25T11:34:21.023234700;level 3;Against yourself;LOSS (resignation);11_level 3.chess
+2026-09-25T11:42:04.855968;level 3;Against yourself;LOSS (resignation);13_level 3.chess
+2026-09-25T11:47:01.143542200;level 3;Against yourself;LOSS (resignation);14_level 3.chess
+2026-09-25T12:19:33.341096500;level 3;Against yourself;LOSS (resignation);17_level 3.chess
+2026-09-25T12:19:44.950435500;test;Against yourself;LOSS (resignation);18_test.chess
+2026-09-25T12:21:10.224423400;level 3;Against yourself;LOSS (resignation);19_level 3.chess
+2026-09-25T12:41:30.898466400;test;Against yourself;LOSS (resignation);24_test.chess
+2026-09-25T12:53:55.466079900;level 3;Trapper;WIN;27_level 3.chess
+2026-09-25T12:58:05.577168200;level 3;Trapper;DRAW;28_level 3.chess
+2026-09-25T12:58:58.229922600;level 3;Trapper;LOSS (resignation);29_level 3.chess
+2026-09-25T13:44:26.509515600;Behind the mirroor - rip of;Against yourself;LOSS (resignation);35_Behind the mirroor - rip of.chess
+2026-09-25T13:58:08.419981300;level 3;Against yourself;LOSS (resignation);37_level 3.chess
+2026-09-25T13:58:26.082710;Behind the mirroor - rip of;Against yourself;LOSS (resignation);38_Behind the mirroor - rip of.chess
+2026-09-25T13:59:04.698032100;Behind the mirroor - rip of;Against yourself;LOSS (resignation);39_Behind the mirroor - rip of.chess
+2026-09-25T14:07:22.083240700;Behind the mirroor - rip of;Trapper;WIN;40_Behind the mirroor - rip of.chess
+2026-09-25T14:27:37.598252900;first flight;Greedy;WIN;41_first flight.chess
+2026-09-25T14:28:42.264012700;trash;Greedy;LOSS;42_trash.chess
+2026-09-25T14:31:53.649974700;Behind the mirroor - rip of;Greedy;LOSS;43_Behind the mirroor - rip of.chess
+2026-09-25T14:32:37.158191300;level 3;Greedy;LOSS (resignation);44_level 3.chess
+2026-09-26T20:28:39.464274800;level 4;Against yourself;DRAW;45_level 4.chess
+2026-09-26T20:29:59.930279300;level 4;Against yourself;LOSS (resignation);46_level 4.chess
+2026-09-26T21:09:28.441864400;level 4;Against yourself;LOSS (resignation);55_level 4.chess
+2026-09-26T21:10:42.449922300;level 3;Against yourself;LOSS (resignation);57_level 3.chess
+2026-09-26T21:21:05.645460300;level 4;Against yourself;LOSS (resignation);60_level 4.chess
+2026-09-26T21:35:09.942801300;level 4;Against yourself;LOSS (resignation);64_level 4.chess
+2026-09-26T22:10:51.633503400;level 4;Against yourself;LOSS (resignation);72_level 4.chess
+2026-09-26T22:13:15.114079800;level 4;Against yourself;LOSS (resignation);74_level 4.chess
+2026-09-26T22:15:22.036843500;level 4;Trapper;LOSS;75_level 4.chess
+2026-09-26T22:21:03.735360700;level 4;Trapper;LOSS;76_level 4.chess
+2026-09-26T22:21:49.704442600;level 4;Trapper;LOSS;77_level 4.chess
+2026-09-26T22:24:07.387390600;level 4;Trapper;LOSS;78_level 4.chess
+2026-09-26T22:24:32.198119;level 4;Trapper;LOSS (resignation);79_level 4.chess
+2026-09-26T22:25:41.476166200;level 4;Greedy;LOSS;80_level 4.chess
+2026-09-26T22:29:38.822280800;level 4;Against yourself;LOSS (resignation);82_level 4.chess
+2026-09-26T22:31:51.560185200;level 4;Against yourself;LOSS (resignation);84_level 4.chess

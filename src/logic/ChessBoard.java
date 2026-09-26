@@ -2342,8 +2342,11 @@ for (MoveType m : moves) {
                 .append(piece.getFirstMove()).append(" ")
                 .append(piece.getValue());
 
-        if (piece instanceof OrientedPiece) {
-            sb.append(" ").append(((OrientedPiece) piece).getRotation());
+        if (piece instanceof OrientedPiece || piece instanceof OrientedCarrier) {
+            int rotation = (piece instanceof OrientedPiece)
+                    ? ((OrientedPiece) piece).getRotation()
+                    : ((OrientedCarrier) piece).getRotation();
+            sb.append(" ").append(rotation);
         }
 
         return sb.toString();
