@@ -57,9 +57,14 @@ public abstract class MapSelectBase extends JPanel {
 
     private ImageIcon defaultIcon;
 
+    private final Map<String, ImageIcon> iconCache = new HashMap<>();
+    private final Map<String, ImageIcon> thumbCache = new HashMap<>();   // klíč: name|w|h|unlocked
+
     private static class MapEntry {
         String name;
         ImageIcon icon;
+        int requiredPoints;
+        boolean unlocked;
 
         MapEntry(String name, ImageIcon icon) {
             this.name = name;
@@ -461,10 +466,18 @@ public abstract class MapSelectBase extends JPanel {
 
     private void loadMaps(List<String> mapNames) {
         maps = new ArrayList<>();
-
+        lastNames = new ArrayList<>(mapNames);
         for (String mapName : mapNames) {
-            ImageIcon icon = loadIconForMap(mapName);
+            ImageIcon icon = iconCache.computeIfAbsent(mapName, this::loadIconForMap);
             maps.add(new MapEntry(mapName, icon));
+        }
+        updateLockStates();
+    }
+
+    private void updateLockStates() {
+        for (MapEntry entry : maps) {
+            entry.requiredPoints = PlayerManager.getRequiredPointsForMap(entry.name);
+            entry.unlocked = PlayerManager.isMapUnlocked(entry.name);
         }
     }
 
@@ -529,8 +542,14 @@ public abstract class MapSelectBase extends JPanel {
     }
 
     private ImageIcon scaleIcon(ImageIcon icon, int width, int height) {
-        Image scaled = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        return new ImageIcon(scaled);
+        java.awt.image.BufferedImage out = new java.awt.image.BufferedImage(
+                width, height, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = out.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(icon.getImage(), 0, 0, width, height, null);
+        g.dispose();
+        return new ImageIcon(out);
     }
 
     // ======================================================
@@ -539,34 +558,24 @@ public abstract class MapSelectBase extends JPanel {
 
     protected void updateMaps() {
 
+        // zapamatovat si vybranou mapu
         String selectedMap = null;
-
         ButtonModel selected = mapGroup.getSelection();
-
         if (selected != null) {
             selectedMap = selected.getActionCommand();
         }
 
-        ArrayList<AbstractButton> oldButtons = new ArrayList<>();
-
-        for (java.util.Enumeration<AbstractButton> e = mapGroup.getElements(); e.hasMoreElements(); ) {
-            oldButtons.add(e.nextElement());
+        // vyčistit skupinu a panel
+        ArrayList<AbstractButton> oldButtons = Collections.list(mapGroup.getElements());
+        for (AbstractButton b : oldButtons) {
+            mapGroup.remove(b);
         }
-
-        for (AbstractButton button : oldButtons) {
-            mapGroup.remove(button);
-        }
-
         mapsPanel.removeAll();
 
         String filter = searchField.getText().trim().toLowerCase();
 
-        int frameW = frame.getWidth();
-        int frameH = frame.getHeight();
-
-        int thumbW = Math.max(MIN_THUMB_WIDTH, UI.toPercent((int) THUMB_WIDTH_PERCENT, frameW));
-        int thumbH = Math.max(MIN_THUMB_HEIGHT, UI.toPercent((int) THUMB_HEIGHT_PERCENT, frameH));
-
+        int thumbW = Math.max(MIN_THUMB_WIDTH, UI.toPercent((int) THUMB_WIDTH_PERCENT, frame.getWidth()));
+        int thumbH = Math.max(MIN_THUMB_HEIGHT, UI.toPercent((int) THUMB_HEIGHT_PERCENT, frame.getHeight()));
         int buttonW = (int) (thumbW * 1.4);
 
         for (MapEntry entry : maps) {
@@ -575,31 +584,29 @@ public abstract class MapSelectBase extends JPanel {
                 continue;
             }
 
-            int requiredPoints = PlayerManager.getRequiredPointsForMap(entry.name);
-            boolean unlocked = PlayerManager.isMapUnlocked(entry.name);
-
-            ImageIcon scaledIcon = scaleIcon(entry.icon, thumbW, thumbH);
-
-            if (!unlocked) {
-                scaledIcon = makeGrayscale(scaledIcon);
+            // náhled z cache (škáluje se a šedí jen poprvé)
+            String key = entry.name + "|" + thumbW + "|" + thumbH + "|" + entry.unlocked;
+            ImageIcon thumb = thumbCache.get(key);
+            if (thumb == null) {
+                thumb = scaleIcon(entry.icon, thumbW, thumbH);
+                if (!entry.unlocked) {
+                    thumb = makeGrayscale(thumb);
+                }
+                thumbCache.put(key, thumb);
             }
 
-            String htmlName = buildMapLabel(entry.name, unlocked, requiredPoints, buttonW);
+            String html = buildMapLabel(entry.name, entry.unlocked, entry.requiredPoints, buttonW);
+            JToggleButton button = createMapButton(entry.name, thumb, html, entry.unlocked, buttonW);
 
-            JToggleButton mapButton = createMapButton(entry.name, scaledIcon, htmlName, unlocked, buttonW);
+            mapGroup.add(button);
+            mapsPanel.add(button);
 
-            styleMapButton(mapButton, mapButton.isSelected());
-
-            mapButton.addChangeListener(e ->
-                    styleMapButton(mapButton, mapButton.isSelected())
-            );
-
-            mapGroup.add(mapButton);
-            mapsPanel.add(mapButton);
-
-            if (unlocked && entry.name.equals(selectedMap)) {
-                mapButton.setSelected(true);
+            if (entry.unlocked && entry.name.equals(selectedMap)) {
+                button.setSelected(true);
             }
+
+            styleMapButton(button, button.isSelected());
+            button.addChangeListener(e -> styleMapButton(button, button.isSelected()));
         }
 
         mapsPanel.revalidate();
@@ -637,7 +644,20 @@ public abstract class MapSelectBase extends JPanel {
         return new ImageIcon(gray);
     }
 
+    protected List<String> provideMapNames() {
+        return null;
+    }
+
+    private List<String> lastNames;
+
     public void refresh() {
+        List<String> fresh = provideMapNames();
+        if (fresh != null && !fresh.equals(lastNames)) {
+            loadMaps(fresh);                    // už volá updateLockStates()
+            lastNames = new ArrayList<>(fresh);
+        } else {
+            updateLockStates();
+        }
         updateMaps();
         points.setText("Body: " + PlayerManager.getTotalPoints());
     }

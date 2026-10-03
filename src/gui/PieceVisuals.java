@@ -18,7 +18,11 @@ public class PieceVisuals {
             case "queen": scale = 1.70; break;
             case "rook": scale = 1.76; break;
             case "linebreakerrook": scale = 1.76; break;
+
             case "landcarrier": scale = 2.9; break;
+            case "shipcarrier": scale = 2.9; break;
+            case "raftcarrier": scale = 2.9; break;
+
             case "torpedo": scale = 1.25; break;
 
 

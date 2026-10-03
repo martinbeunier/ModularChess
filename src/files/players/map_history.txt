@@ -161,3 +161,41 @@
 2026-09-26T22:25:41.476166200;level 4;Greedy;LOSS;80_level 4.chess
 2026-09-26T22:29:38.822280800;level 4;Against yourself;LOSS (resignation);82_level 4.chess
 2026-09-26T22:31:51.560185200;level 4;Against yourself;LOSS (resignation);84_level 4.chess
+2026-09-26T22:56:53.649453;level 4;Against yourself;LOSS (resignation);0_level 4.chess
+2026-09-26T22:58:59.666665300;level 4;Greedy;LOSS;1_level 4.chess
+2026-09-26T22:59:20.251842100;level 4;Greedy;LOSS;2_level 4.chess
+2026-09-26T23:01:57.220165300;XXL chess (rip of);Greedy;LOSS;3_XXL chess (rip of).chess
+2026-09-26T23:09:47.801263200;fighter defense;Greedy;LOSS;4_fighter defense.chess
+2026-09-27T12:08:02.924195800;level 4;Greedy;WIN;5_level 4.chess
+2026-09-27T12:12:45.676457;level 4;Trapper;WIN;6_level 4.chess
+2026-09-27T12:14:03.958664800;level 4;Trapper;LOSS;7_level 4.chess
+2026-09-27T18:01:37.533319400;level 4;Against yourself;LOSS (resignation);8_level 4.chess
+2026-09-27T18:21:02.966925800;level 5;Against yourself;LOSS (resignation);9_level 5.chess
+2026-09-27T18:34:57.106441700;level 5;Against yourself;LOSS (resignation);11_level 5.chess
+2026-09-27T18:35:30.724714900;level 5;Trapper;LOSS;12_level 5.chess
+2026-09-27T18:37:24.838503800;level 5;Trapper;LOSS (resignation);13_level 5.chess
+2026-09-27T18:38:36.879230700;level 5;Trapper;LOSS;14_level 5.chess
+2026-09-27T18:39:17.872028600;level 5;Trapper;DRAW;15_level 5.chess
+2026-09-27T18:41:17.499534200;level 5;Against yourself;LOSS (resignation);17_level 5.chess
+2026-09-27T18:42:06.482299700;level 5;Trapper;LOSS (resignation);18_level 5.chess
+2026-09-27T18:45:21.898734400;level 5;Trapper;LOSS (resignation);19_level 5.chess
+2026-09-27T18:46:14.490152900;level 5;Trapper;LOSS (resignation);20_level 5.chess
+2026-09-27T18:47:09.474509;level 5;Against yourself;LOSS (resignation);21_level 5.chess
+2026-09-27T18:49:02.035438200;level 5;Trapper;LOSS;22_level 5.chess
+2026-09-27T18:51:22.049903500;level 5;Trapper;DRAW;23_level 5.chess
+2026-09-27T18:51:50.694713900;level 5;Trapper;LOSS (resignation);24_level 5.chess
+2026-09-27T18:52:34.856303200;level 5;Trapper;LOSS;25_level 5.chess
+2026-09-27T18:52:57.294820800;level 5;Trapper;LOSS (resignation);26_level 5.chess
+2026-09-27T18:53:17.018697600;level 5;Trapper;LOSS (resignation);27_level 5.chess
+2026-09-27T18:54:04.295050900;level 5;Trapper;LOSS;28_level 5.chess
+2026-09-27T18:54:29.705888500;level 5;Trapper;LOSS (resignation);29_level 5.chess
+2026-09-27T18:57:53.233160900;level 5;Trapper;LOSS;30_level 5.chess
+2026-09-27T19:00:10.662371200;level 5;Greedy;WIN;31_level 5.chess
+2026-09-27T20:25:46.635903100;level 5;Greedy;LOSS (resignation);32_level 5.chess
+2026-09-27T21:33:03.180567300;level 4;Trapper;WIN;34_level 4.chess
+2026-10-02T21:43:22.621496800;XXL chess (rip of);Trapper;LOSS;36_XXL chess (rip of).chess
+2026-10-02T21:48:21.309332200;XXL chess (rip of);Trapper;LOSS;37_XXL chess (rip of).chess
+2026-10-03T09:16:12.950630600;level 3;Against yourself;LOSS (resignation);38_level 3.chess
+2026-10-03T09:16:24.394995900;level 4;Against yourself;LOSS (resignation);39_level 4.chess
+2026-10-03T09:16:35.522760300;level 5;Against yourself;LOSS (resignation);40_level 5.chess
+2026-10-03T09:17:26.194956300;level 3;Against yourself;LOSS (resignation);41_level 3.chess

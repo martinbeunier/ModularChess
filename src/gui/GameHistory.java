@@ -152,10 +152,6 @@ public class GameHistory extends JPanel {
         openReplay(entry);
     }
 
-    /**
-     * TODO: zde se později napojí nový JPanel pro přehrávání konkrétní partie.
-     * Zatím jen placeholder, ať je vidět, který záznam by se měl přehrát.
-     */
     private void openReplay(HistoryEntry entry) {
         File historyFile = new File(GAME_HISTORY_DIR, entry.historyFileName);
         frame.getGamePlayerPanel().loadFromFile(historyFile);

@@ -7,17 +7,26 @@ import java.util.List;
 
 public class MapSelect extends MapSelectBase {
 
-    // --------------------------------------------------
-    // Pořadí jmenovaných map — mají přednost před abecedním řazením
-    // a zobrazí se v MapSelect i tehdy, když jsou zároveň
-    // v Tutorial.MAPS nebo Campaign.MAPS.
-    // --------------------------------------------------
     private static final List<String> PRIORITY_ORDER = Arrays.asList(
-          //  "tutorial - Kill all kings as white",
+            //  "tutorial - Kill all kings as white",
             "standard",
             "fighter defense",
             "XXL chess (rip of)"
     );
+
+    // --------------------------------------------------
+    // Zakázané mapy — nezobrazí se, dokud není aktivní cheat code.
+    // Sem doplň přesné názvy map.
+    // --------------------------------------------------
+    private static final Set<String> BANNED_MAPS = new HashSet<>(Arrays.asList(
+            "test 2 v 2",
+            "test 2",
+            "test",
+            "trash",
+            "Water Fight(unready)",
+            "level 3"
+    ));
+
 
     public MapSelect(MainFrame frame) {
         super(
@@ -33,10 +42,10 @@ public class MapSelect extends MapSelectBase {
 
     /**
      * Sestaví seznam map pro volný výběr:
-     * 1. Jmenované mapy (PRIORITY_ORDER) se zobrazí vždy, bez ohledu na to,
-     *    jestli jsou i v Tutorial/Campaign.
-     * 2. Zbylé mapy z Tutorial/Campaign (ty NEJMENOVANÉ v PRIORITY_ORDER) se vynechají.
-     * 3. Zbytek (nejmenované a nikde jinde nepoužité) se zobrazí, seřazený abecedně.
+     * 1. Jmenované mapy (PRIORITY_ORDER) se zobrazí vždy (kromě banned bez cheatu).
+     * 2. Mapy z Tutorial/Campaign, které nejsou v PRIORITY_ORDER, se vynechají.
+     * 3. Banned mapy se zobrazí jen při aktivním cheat code.
+     * 4. Zbytek se zobrazí, seřazený abecedně.
      */
     private static List<String> buildMapNames() {
 
@@ -45,13 +54,13 @@ public class MapSelect extends MapSelectBase {
         Set<String> excludedByOtherModes = new HashSet<>();
         excludedByOtherModes.addAll(Tutorial.MAPS);
         excludedByOtherModes.addAll(Campaign.MAPS);
-        excludedByOtherModes.removeAll(PRIORITY_ORDER); // jmenované mapy se nevylučují
+        excludedByOtherModes.removeAll(PRIORITY_ORDER);
 
         List<String> names = new ArrayList<>();
         for (String mapName : allMaps) {
-            if (!excludedByOtherModes.contains(mapName)) {
-                names.add(mapName);
-            }
+            if (excludedByOtherModes.contains(mapName)) continue;
+            if (!PlayerManager.cheatcodeActivated && BANNED_MAPS.contains(mapName)) continue;
+            names.add(mapName);
         }
 
         names.sort((a, b) -> {
@@ -68,5 +77,9 @@ public class MapSelect extends MapSelectBase {
         });
 
         return names;
+    }
+    @Override
+    protected List<String> provideMapNames() {
+        return buildMapNames();
     }
 }

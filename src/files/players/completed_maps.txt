@@ -13,3 +13,6 @@ level 3;Trapper
 level 3;Greedy
 Behind the mirroor - rip of;Trapper
 first flight;Greedy
+level 4;Greedy
+level 4;Trapper
+level 5;Greedy

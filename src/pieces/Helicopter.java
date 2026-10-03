@@ -3,7 +3,7 @@ import logic.*;
 
 public class Helicopter extends Piece {
     public Helicopter(String name,int x, int y, Colour colour) {
-        super(name, x,  y, colour,400);
+        super(name, x,  y, colour,350);
 
 
         addMove(new MoveType(2,1,MoveBehaviour.BOTH , MoveClass.LEAP));

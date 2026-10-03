@@ -133,4 +133,18 @@ public class Piece implements Cloneable  {
                  + value
                 ;
     }
+
+
 }
+/*
+//todo
+Unready pieces
+torpedo
+wasp
+carbide
+mouse
+operator
+
+
+
+ */
