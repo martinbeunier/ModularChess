@@ -10,8 +10,8 @@ public class Airplane extends RotablePiece {
     public Airplane(String name, int x, int y, Colour colour, int rotation) {
         super(name, x,  y, colour,200,rotation);
 
-addMove(new MoveType(1));
-addMove(new MoveType(3));
+        addMove(new MoveType(1));
+        addMove(new MoveType(3));
 
         addRotatePiece((n,px, py, r,c) ->
                 new Airplane( n,px, py,  c,r)
@@ -26,8 +26,6 @@ addMove(new MoveType(3));
         addPromotionPiece((px, py, pc) ->
                 new Helicopter("Helicopter", px, py, pc)
         );
-
-
 
 
                 addMove(rotateMove(new MoveType(1,-1, MoveBehaviour.BOTH, MoveClass.LEAP),rotation));

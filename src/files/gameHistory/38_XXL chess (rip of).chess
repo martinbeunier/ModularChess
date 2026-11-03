@@ -1,0 +1,108 @@
+
+========================================
+GAME HISTORY SNAPSHOT 1
+========================================
+Width : 14 Height: 14
+
+Tiles promotion colours :
+promotion colours of tile : 0 6 White
+promotion colours of tile : 0 7 Black
+promotion colours of tile : 1 6 White
+promotion colours of tile : 1 7 Black
+promotion colours of tile : 2 6 White
+promotion colours of tile : 2 7 Black
+promotion colours of tile : 3 6 White
+promotion colours of tile : 3 7 Black
+promotion colours of tile : 4 6 White
+promotion colours of tile : 4 7 Black
+promotion colours of tile : 5 6 White
+promotion colours of tile : 5 7 Black
+promotion colours of tile : 6 6 White
+promotion colours of tile : 6 7 Black
+promotion colours of tile : 7 6 White
+promotion colours of tile : 7 7 Black
+promotion colours of tile : 8 6 White
+promotion colours of tile : 8 7 Black
+promotion colours of tile : 9 6 White
+promotion colours of tile : 9 7 Black
+promotion colours of tile : 10 6 White
+promotion colours of tile : 10 7 Black
+promotion colours of tile : 11 6 White
+promotion colours of tile : 11 7 Black
+promotion colours of tile : 12 6 White
+promotion colours of tile : 12 7 Black
+promotion colours of tile : 13 6 White
+promotion colours of tile : 13 7 Black
+
+Tiles water :
+
+Pieces :
+piece : class pieces.Rook ;rook; 0 0 Black true 500
+piece : class pieces.Pawn ;b pawn; 0 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 0 12 White true 100 0
+piece : class pieces.Rook ;rook; 0 13 White true 500
+piece : class pieces.Knight ;knight; 1 0 Black true 300
+piece : class pieces.Pawn ;b pawn; 1 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 1 12 White true 100 0
+piece : class pieces.Knight ;knight; 1 13 White true 300
+piece : class pieces.Bishop ;bishop; 2 0 Black true 320
+piece : class pieces.Pawn ;b pawn; 2 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 2 12 White true 100 0
+piece : class pieces.Bishop ;bishop; 2 13 White true 320
+piece : class pieces.ArciBishop ;arcibishop; 3 0 Black true 700
+piece : class pieces.Pawn ;b pawn; 3 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 3 12 White true 100 0
+piece : class pieces.ArciBishop ;arcibishop; 3 13 White true 700
+piece : class pieces.HobbyHorse ;hobbyhorse; 4 0 Black true 300
+piece : class pieces.Pawn ;b pawn; 4 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 4 12 White true 100 0
+piece : class pieces.HobbyHorse ;hobbyhorse; 4 13 White true 300
+piece : class pieces.Guardian ;guardian; 5 0 Black true 400
+piece : class pieces.Pawn ;b pawn; 5 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 5 12 White true 100 0
+piece : class pieces.Guardian ;guardian; 5 13 White true 400
+piece : class pieces.Empress ;empress; 6 0 Black true 1300
+piece : class pieces.Pawn ;b pawn; 6 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 6 12 White true 100 0
+piece : class pieces.Empress ;empress; 6 13 White true 1300
+piece : class pieces.King ;b king; 7 0 Black true 100000
+piece : class pieces.Pawn ;b pawn; 7 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 7 12 White true 100 0
+piece : class pieces.King ;w king; 7 13 White true 100000
+piece : class pieces.Guardian ;guardian; 8 0 Black true 400
+piece : class pieces.Pawn ;b pawn; 8 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 8 12 White true 100 0
+piece : class pieces.Guardian ;guardian; 8 13 White true 400
+piece : class pieces.HobbyHorse ;hobbyhorse; 9 0 Black true 300
+piece : class pieces.Pawn ;b pawn; 9 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 9 12 White true 100 0
+piece : class pieces.HobbyHorse ;hobbyhorse; 9 13 White true 300
+piece : class pieces.HexaRook ;hexarook; 10 0 Black true 800
+piece : class pieces.Pawn ;b pawn; 10 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 10 12 White true 100 0
+piece : class pieces.HexaRook ;hexarook; 10 13 White true 800
+piece : class pieces.Bishop ;bishop; 11 0 Black true 320
+piece : class pieces.Pawn ;b pawn; 11 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 11 12 White true 100 0
+piece : class pieces.Bishop ;bishop; 11 13 White true 320
+piece : class pieces.Knight ;knight; 12 0 Black true 300
+piece : class pieces.Pawn ;b pawn; 12 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 12 12 White true 100 0
+piece : class pieces.Knight ;knight; 12 13 White true 300
+piece : class pieces.Rook ;rook; 13 0 Black true 500
+piece : class pieces.Pawn ;b pawn; 13 1 Black true 100 2
+piece : class pieces.Pawn ;w pawn; 13 12 White true 100 0
+piece : class pieces.Rook ;rook; 13 13 White true 500
+
+Players :
+Player :  ;Bílý; White 600 id:none wins:0 losses:0 draws:0 PowerUps :
+Player :  ;Černý; Black 600 id:none wins:0 losses:0 draws:0 PowerUps :
+
+current player : White
+
+========================================
+GAME RESULT
+========================================
+RESIGNATION — player quit the game
+Player :  ;martin; White 1000 id:player wins:80 losses:282 draws:19 material : 7840
+Player :  ;Bold man; Black 1200 id:1/10 wins:0 losses:0 draws:0 material : 7840

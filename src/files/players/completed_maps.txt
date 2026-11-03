@@ -16,3 +16,13 @@ first flight;Greedy
 level 4;Greedy
 level 4;Trapper
 level 5;Greedy
+level 4;Against yourself
+level 5;Against yourself
+fighter defense;Against yourself
+fighter defense;Bold man
+standard;Bold man
+XXL chess (rip of);Against yourself
+XXL chess (rip of);Bold man
+Behind the mirroor - rip of;Against yourself
+first flight;Trapper
+fighter defense;Trapper

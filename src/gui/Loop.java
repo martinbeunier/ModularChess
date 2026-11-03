@@ -1546,7 +1546,7 @@ public class Loop extends JPanel {
             }
         }
 
-        g2d.setColor(new Color(120, 120, 120, 110)); // šedá poloprůhledná
+        g2d.setColor(new Color(120, 120, 140, 170)); // šedá poloprůhledná
         for (int cx = 0; cx < cols; cx++) {
             for (int cy = 0; cy < rows; cy++) {
                 if (carrierSquares[cx][cy]) {

@@ -498,16 +498,14 @@ public abstract class MapSelectBase extends JPanel {
                 if (rawIcon.getImageLoadStatus() != MediaTracker.ERRORED
                         && rawIcon.getIconWidth() > 0) {
 
-                    return scaleIcon(rawIcon, THUMB_WIDTH, THUMB_HEIGHT);
+                    return rawIcon;   // originál, škáluje se až v updateMaps()
                 }
             }
         }
 
         System.out.println("Ikona pro mapu '" + mapName + "' nenalezena, používám výchozí ikonu.");
-
         return getDefaultIcon();
     }
-
     private ImageIcon getDefaultIcon() {
 
         if (defaultIcon != null) {
@@ -542,14 +540,40 @@ public abstract class MapSelectBase extends JPanel {
     }
 
     private ImageIcon scaleIcon(ImageIcon icon, int width, int height) {
+        java.awt.image.BufferedImage src = new java.awt.image.BufferedImage(
+                icon.getIconWidth(), icon.getIconHeight(),
+                java.awt.image.BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g0 = src.createGraphics();
+        g0.drawImage(icon.getImage(), 0, 0, null);
+        g0.dispose();
+
+        java.awt.image.BufferedImage current = src;
+        int w = src.getWidth();
+        int h = src.getHeight();
+
+        // zmenšuj max. na polovinu v každém kroku (výrazně lepší než jeden velký skok)
+        while (w > width * 2 || h > height * 2) {
+            w = Math.max(width, w / 2);
+            h = Math.max(height, h / 2);
+            current = drawScaled(current, w, h);
+        }
+
+        return new ImageIcon(drawScaled(current, width, height));
+    }
+
+    private java.awt.image.BufferedImage drawScaled(java.awt.image.BufferedImage in, int w, int h) {
         java.awt.image.BufferedImage out = new java.awt.image.BufferedImage(
-                width, height, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+                w, h, java.awt.image.BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = out.createGraphics();
         g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-                RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g.drawImage(icon.getImage(), 0, 0, width, height, null);
+                RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g.setRenderingHint(RenderingHints.KEY_RENDERING,
+                RenderingHints.VALUE_RENDER_QUALITY);
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                RenderingHints.VALUE_ANTIALIAS_ON);
+        g.drawImage(in, 0, 0, w, h, null);
         g.dispose();
-        return new ImageIcon(out);
+        return out;
     }
 
     // ======================================================

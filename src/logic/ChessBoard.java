@@ -1103,11 +1103,8 @@ if (firstTime == false)
     public ArrayList<MoveType> getGeneratedMovesByClass(int startX, int startY ,MoveClass moveClass) {
         ArrayList<MoveType> goodMoves = new ArrayList<>();
 
-
-
         if(DebugConfiguration.definedRepeatMoves) System.out.println("Defined generative moves " + moveClass);
-        if (board[startX][startY] == null)
-            return goodMoves;
+        if (board[startX][startY] == null)return goodMoves;
 
         Piece piece = board[startX][startY];
         for (MoveType m : piece.getMoves()) {
@@ -1122,22 +1119,14 @@ if (firstTime == false)
                 if (!inBoard(startX, startY, endX, endY))
                     break;
 
-
                  if (m.getMoveClass() == moveClass) {
-
-
                          goodMoves.add(new MoveType(dx * step, dy * step, m.getRequiresFirstMove(), m.getBehaviour(), MoveClass.LEAP));
-
-
-
-
                     if(DebugConfiguration.definedRepeatMoves) System.out.println("x : " + (dx * step) +" y : " + (dy * step));
                     step++;
                 }
             } while (m.getMoveClass() == moveClass);
         }
 
-        // Optional: filter moves that are inside board (already done above)
         return goodMoves;
     }
 
@@ -1146,27 +1135,19 @@ if (firstTime == false)
 
     public ArrayList<MoveType> getRotateMoves(int startX, int startY) {
 
-
         ArrayList<MoveType> goodMoves = new ArrayList<>();
        if(DebugConfiguration.definedRotateMoves) System.out.println("Defined Rotate Moves ");
         if (board[startX][startY] != null) {
-
-
             Piece piece = board[startX][startY];
             for (MoveType m : piece.getMoves()) {
                 //  System.out.println("1 move");
                 if (m.getMoveClass().equals(MoveClass.ROTATE)) {
-
                     if(DebugConfiguration.definedRotateMoves) System.out.println("r : " + m.getRotate() );
                    goodMoves.add(m);
-
-
-
                 }
             }
         }
         return goodMoves;
-
     }
 
     /**
@@ -1178,28 +1159,18 @@ if (firstTime == false)
      */
     public ArrayList<MoveType> getMovesByClass(int j, int i,MoveClass moveClass) {
         ArrayList<MoveType> goodMoves = new ArrayList<>();
-
         if (board[j][i] != null) {
 
             if(DebugConfiguration.definedMovesByClass) System.out.println("Defined moves " + moveClass);
 
             for (MoveType m : board[j][i].getMoves()) {
-
-
                 if (m.getMoveClass().equals(moveClass)) {
-
-
-
                     if (inBoard(j, i, j + m.getX(), i + m.getY()) == true) {
                         if(DebugConfiguration.definedMovesByClass)  System.out.println("x : " + (j+ m.getX() )+ " y : "+( i+ m.getY()));
                         goodMoves.add(m);
                     }
-
-
                 }
             }
-
-
         }
         return goodMoves;
     }
@@ -1290,13 +1261,13 @@ if (firstTime == false)
 
     public ArrayList<MoveType> validateBigMoves(int startX, int startY, ArrayList<MoveType> moves, Player player) {
         ArrayList<MoveType> validMoves = new ArrayList<>();
-        if(DebugConfiguration.validBigMoves) System.out.println("Valid big moves");
-        for (MoveType m : moves) {
 
+        if(DebugConfiguration.validBigMoves) System.out.println("Valid big moves");
+        
+        for (MoveType m : moves) {
 
             int endX = startX + m.getX();
             int endY = startY + m.getY();
-
 
             if(standardValidations(startX, startY, endX, endY,player))
             {
@@ -1306,16 +1277,13 @@ if (firstTime == false)
                                 if(!m.getRequiresFirstMove() || board[startX][startY].getFirstMove())
                                 {
                                 validMoves.add(m);
+
                                     if(DebugConfiguration.validBigMoves) System.out.println("x : " + endX + " y : " + endY);
                                 }
                             }
                         }
-
-
             }
         }
-
-
         return validMoves;
     }
 

@@ -199,3 +199,54 @@
 2026-10-03T09:16:24.394995900;level 4;Against yourself;LOSS (resignation);39_level 4.chess
 2026-10-03T09:16:35.522760300;level 5;Against yourself;LOSS (resignation);40_level 5.chess
 2026-10-03T09:17:26.194956300;level 3;Against yourself;LOSS (resignation);41_level 3.chess
+2026-10-03T09:43:16.928236400;The discovery of America;Against yourself;LOSS (resignation);0_The discovery of America.chess
+2026-10-03T09:43:59.353147700;The discovery of America;Trapper;WIN;1_The discovery of America.chess
+2026-10-03T15:14:39.890652800;fighter defense;Trapper;LOSS (resignation);2_fighter defense.chess
+2026-10-03T15:31:57.727333500;Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings;Bold man;DRAW;3_Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings.chess
+2026-10-03T15:33:12.514599;standard;Trapper;LOSS (resignation);4_standard.chess
+2026-10-03T15:39:18.048564100;level 4;Against yourself;LOSS (resignation);5_level 4.chess
+2026-10-03T15:51:36.169437800;level 4;Against yourself;WIN;6_level 4.chess
+2026-10-03T15:57:08.865216;Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings;Bold man;DRAW;7_Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings.chess
+2026-10-03T15:58:45.054879400;standard;Bold man;LOSS;8_standard.chess
+2026-10-03T15:59:35.069705;standard;Bold man;LOSS (resignation);9_standard.chess
+2026-10-03T15:59:42.142300200;standard;Against yourself;LOSS (resignation);10_standard.chess
+2026-10-03T16:03:02.481980400;standard;Against yourself;WIN;11_standard.chess
+2026-10-03T16:03:32.884351600;first flight;Against yourself;LOSS (resignation);12_first flight.chess
+2026-10-03T16:03:38.823372700;level 4;Against yourself;LOSS (resignation);13_level 4.chess
+2026-10-03T16:03:47.355246600;level 5;Against yourself;LOSS (resignation);14_level 5.chess
+2026-10-03T16:09:17.444886400;level 5;Against yourself;LOSS;15_level 5.chess
+2026-10-03T16:24:13.510447400;fighter defense;Against yourself;LOSS;16_fighter defense.chess
+2026-10-03T16:27:06.998765700;fighter defense;Bold man;LOSS;17_fighter defense.chess
+2026-10-03T16:38:43.623879200;fighter defense;Bold man;WIN;18_fighter defense.chess
+2026-10-03T16:40:00.137353500;standard;Bold man;WIN;19_standard.chess
+2026-10-03T16:52:22.421903600;XXL chess (rip of);Against yourself;LOSS;20_XXL chess (rip of).chess
+2026-10-03T16:54:10.094544900;XXL chess (rip of);Against yourself;LOSS (resignation);21_XXL chess (rip of).chess
+2026-10-03T16:58:05.435636800;standard;Bold man;WIN;22_standard.chess
+2026-10-03T17:19:47.549442100;fighter defense;Against yourself;WIN;23_fighter defense.chess
+2026-10-03T17:26:59.365671400;XXL chess (rip of);Bold man;WIN;24_XXL chess (rip of).chess
+2026-10-03T17:49:34.874054300;Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings;Bold man;LOSS (resignation);25_Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings.chess
+2026-10-03T18:19:00.266375900;Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings;Bold man;DRAW;26_Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings.chess
+2026-10-03T18:24:33.445721;fighter defense;Bold man;WIN;27_fighter defense.chess
+2026-10-03T18:32:07.218260100;fighter defense;Against yourself;LOSS;28_fighter defense.chess
+2026-10-03T18:32:26.621513300;level 5;Against yourself;LOSS (resignation);29_level 5.chess
+2026-10-03T18:35:32.156714900;level 4;Against yourself;WIN;30_level 4.chess
+2026-10-03T18:41:04.674891300;level 4;Against yourself;WIN;31_level 4.chess
+2026-10-03T18:49:23.442653600;Behind the mirroor - rip of;Against yourself;WIN;32_Behind the mirroor - rip of.chess
+2026-10-03T18:56:04.443366300;level 4;Against yourself;LOSS;33_level 4.chess
+2026-10-05T12:21:59.045931;fighter defense;Against yourself;LOSS (resignation);34_fighter defense.chess
+2026-10-05T15:15:37.905111500;fighter defense;Bold man;LOSS (resignation);36_fighter defense.chess
+2026-10-05T15:19:29.432357200;Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings;Bold man;LOSS (resignation);37_Moves-torpedo,linebreaker,carrier,rotate,water Kill all kings.chess
+2026-10-05T15:19:54.502073600;XXL chess (rip of);Bold man;LOSS (resignation);38_XXL chess (rip of).chess
+2026-10-05T15:20:17.321498200;Water Fight(unready);Bold man;LOSS (resignation);39_Water Fight(unready).chess
+2026-10-05T15:20:30.801870700;level 3;Bold man;LOSS (resignation);40_level 3.chess
+2026-10-08T18:39:11.181904800;first flight;Against yourself;LOSS (resignation);42_first flight.chess
+2026-10-08T18:43:34.248122;first flight;Trapper;WIN;43_first flight.chess
+2026-10-12T19:43:58.027580400;fighter defense;Trapper;WIN;44_fighter defense.chess
+2026-10-14T15:10:54.518258200;standard;Bold man;LOSS (resignation);45_standard.chess
+2026-11-03T22:37:16.063681300;fighter defense;Against yourself;LOSS (resignation);47_fighter defense.chess
+2026-11-03T22:37:46.901218900;fighter defense;Against yourself;LOSS (resignation);48_fighter defense.chess
+2026-11-03T22:40:25.428832200;fighter defense;Trapper;LOSS (resignation);52_fighter defense.chess
+2026-11-03T22:43:31.332099200;fighter defense;Against yourself;DRAW;57_fighter defense.chess
+2026-11-03T22:43:52.559019500;level 5;Against yourself;LOSS (resignation);58_level 5.chess
+2026-11-03T22:45:16.947178800;fighter defense;Against yourself;LOSS (resignation);60_fighter defense.chess
+2026-11-03T22:45:31.061700900;level 5;Against yourself;LOSS (resignation);61_level 5.chess

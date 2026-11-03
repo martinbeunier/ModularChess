@@ -54,14 +54,12 @@ public class Main {
 
                 for (int j= 0;j<12;j++){for (int i= 0;i<9;i++){ chessBoard.addWaterSquares(i,j);}}
 
-
                 for (int i = 0; i < 8; i++) {
                     chessBoard.addPromotionSquares(i, 0, Colour.White);
                     //  / chessBoard.addPromotionSquares(i, 1, Colour.White);
 
                     chessBoard.addPromotionSquares(i, 10, Colour.Black);
                     chessBoard.addPromotionSquares(i, 11, Colour.Black);
-
                 }
 
 
@@ -99,9 +97,6 @@ public class Main {
                 chessBoard.printBoard();
 
                 chessBoard.savePosition("level 5", player1);
-
-
-
 
 
         break;
